@@ -58,7 +58,7 @@ export default function OfertasPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
           <div>
             <p className="text-lg font-semibold tracking-[0.2em] uppercase">
-              VL Viajes
+              Wonderlust
             </p>
             <p className="text-xs text-slate-500">Super ofertas</p>
           </div>
@@ -85,7 +85,7 @@ export default function OfertasPage() {
       <section className="bg-[linear-gradient(90deg,#fb923c_0%,#facc15_45%,#4ade80_100%)]">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-12">
           <p className="text-sm font-black uppercase tracking-[0.3em] text-white/90">
-            VL Viajes
+            Wonderlust
           </p>
           <h1 className="mt-3 text-5xl font-black text-white md:text-7xl">
             ¡SUPER OFERTAS!

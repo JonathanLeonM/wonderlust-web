@@ -7,7 +7,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
           <div>
             <p className="text-lg font-semibold tracking-[0.2em] uppercase">
-              VL Viajes
+              Wonderlust
             </p>
             <p className="text-xs text-white/60">
               Experiencias y servicios globales
@@ -167,7 +167,7 @@ export default function Home() {
               <div className="relative p-8 md:p-10">
                 <div className="absolute -right-10 top-0 h-full w-24 rounded-l-full bg-amber-400/95" />
                 <p className="relative text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  VL Viajes
+                  Wonderlust
                 </p>
 
                 <h3 className="relative mt-2 text-5xl font-extrabold leading-none text-orange-500 md:text-7xl">
@@ -490,7 +490,7 @@ export default function Home() {
 
       <footer className="bg-[#f8f6f2]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-12">
-          <p>© 2026 VL Viajes. Todos los derechos reservados.</p>
+          <p>© 2026 Wonderlust. Todos los derechos reservados.</p>
           <p>Diseño web moderno para viajes, visas y ventas.</p>
         </div>
       </footer>
