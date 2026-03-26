@@ -1,18 +1,28 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-slate-900">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 text-white backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
-          <div>
-            <p className="text-lg font-semibold tracking-[0.2em] uppercase">
-              Wonderlust
-            </p>
-            <p className="text-xs text-white/60">
-              Experiencias y servicios globales
-            </p>
-          </div>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-12 w-12 overflow-hidden rounded-full bg-white/5 ring-1 ring-white/10">
+              <Image
+                src="/logo-wonderlust.png"
+                alt="Wonderlust"
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+
+            <div className="leading-tight">
+              <p className="text-lg font-semibold tracking-[0.22em] uppercase">
+                WONDERLUST
+              </p>
+              <p className="text-xs text-white/65">by Villamor S.A.S</p>
+            </div>
+          </Link>
 
           <nav className="hidden gap-6 text-sm md:flex">
             <a href="#inicio" className="transition hover:text-amber-300">
@@ -45,111 +55,117 @@ export default function Home() {
 
       <section
         id="inicio"
-        className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white"
+        className="relative overflow-hidden bg-slate-950 text-white"
       >
-        <div className="absolute inset-0 opacity-[0.18]">
-          <svg
-            viewBox="0 0 1200 700"
-            className="h-full w-full"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-          >
-            <g stroke="white" strokeWidth="1.2">
-              <path d="M120 180C170 150 220 145 270 155C320 165 350 145 390 135C450 120 510 135 560 160C590 175 640 180 700 175C760 170 820 145 880 150C940 155 1000 190 1060 220" />
-              <path d="M130 240C170 225 220 215 270 220C320 225 350 210 395 200C445 188 500 198 555 225C595 245 650 250 705 245C760 240 820 220 870 225C930 230 975 255 1030 285" />
-              <path d="M160 320C200 300 240 290 290 295C340 300 380 285 420 275C470 262 520 272 565 300C610 328 665 336 720 330C780 324 840 300 895 305C945 310 990 330 1040 355" />
-              <path d="M180 410C230 390 280 382 330 390C380 398 420 385 460 375C505 364 555 372 600 396C640 418 690 425 745 420C800 415 860 395 915 398C965 400 1010 420 1055 440" />
-              <path d="M420 130C410 170 408 210 420 250C432 290 430 330 425 370C420 410 425 455 445 500" />
-              <path d="M560 145C550 180 548 220 555 260C562 300 560 340 555 380C550 425 555 470 570 515" />
-              <path d="M710 150C700 190 700 225 708 268C716 310 714 350 710 392C706 432 712 472 726 520" />
-              <path d="M860 160C852 195 850 235 856 278C862 320 860 358 855 398C850 438 854 474 865 515" />
-              <path d="M300 210C330 190 370 185 405 190C450 196 475 215 510 220C550 226 580 210 618 204C670 196 720 205 760 230C790 248 830 255 875 250" />
-              <path d="M285 365C325 345 365 338 410 345C450 352 480 370 520 375C560 380 595 364 635 356C690 345 740 355 785 382C815 400 855 410 900 406" />
-            </g>
-
-            <g fill="white" opacity="0.45">
-              <circle cx="250" cy="210" r="3" />
-              <circle cx="430" cy="185" r="3" />
-              <circle cx="610" cy="225" r="3" />
-              <circle cx="790" cy="248" r="3" />
-              <circle cx="960" cy="255" r="3" />
-              <circle cx="320" cy="365" r="3" />
-              <circle cx="520" cy="375" r="3" />
-              <circle cx="740" cy="355" r="3" />
-              <circle cx="915" cy="398" r="3" />
-            </g>
-          </svg>
+        <div className="absolute inset-0">
+          <Image
+            src="/hero/mapamundi-wonderlust.png"
+            alt="Mapamundi Wonderlust"
+            fill
+            priority
+            className="object-cover"
+          />
         </div>
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.12),_transparent_28%),radial-gradient(circle_at_bottom_left,_rgba(245,158,11,0.18),_transparent_25%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/70 to-slate-950/45" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.10),_transparent_35%)]" />
 
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:px-12 lg:py-28">
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:py-28">
           <div className="flex flex-col justify-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-amber-300">
-              Conectividad, visas y viajes
+            <p className="mb-5 text-sm font-medium uppercase tracking-[0.35em] text-amber-300">
+              Viajes, visas y conectividad global
             </p>
 
-            <h1 className="max-w-2xl text-4xl font-bold leading-tight md:text-6xl">
-              Todo lo que necesitas para viajar, en un solo lugar
+            <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-6xl">
+              Viaja con estilo, respaldo y visión global
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg text-white/80">
-              Compra SIM internacionales, recibe asesoría para visas y descubre
-              paquetes de viaje con una experiencia elegante, clara y pensada
-              para convertir visitantes en clientes.
+            <p className="mt-6 max-w-2xl text-lg text-white/82">
+              Descubre ofertas de viaje, asesoría para visas y soluciones de
+              conectividad internacional con una experiencia clara, elegante y
+              diseñada para inspirar confianza desde el primer clic.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/ofertas"
+                className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 shadow-lg transition hover:scale-[1.02]"
+              >
+                Ver ofertas
+              </Link>
+
               <a
                 href="https://wa.me/573212620948"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 shadow-lg transition hover:scale-[1.02]"
+                className="rounded-2xl border border-white/25 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
               >
                 Cotizar por WhatsApp
               </a>
+            </div>
 
-              <Link
-                href="/visas"
-                className="rounded-2xl border border-white/25 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-              >
-                Ver visas
-              </Link>
+            <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+                <p className="text-2xl font-bold">Global</p>
+                <p className="text-sm text-white/70">Destinos y experiencias</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+                <p className="text-2xl font-bold">Premium</p>
+                <p className="text-sm text-white/70">Imagen y servicio</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+                <p className="text-2xl font-bold">Directo</p>
+                <p className="text-sm text-white/70">Atención por WhatsApp</p>
+              </div>
             </div>
           </div>
 
           <div className="flex items-center">
-            <div className="w-full rounded-[2rem] border border-white/10 bg-white/10 p-6 shadow-2xl backdrop-blur">
-              <div className="rounded-[1.5rem] bg-white p-8 text-slate-900">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-600">
-                  Lo más solicitado
+            <div className="w-full rounded-[2rem] border border-white/10 bg-white/8 p-6 shadow-2xl backdrop-blur-md">
+              <div className="rounded-[1.6rem] border border-white/10 bg-white/95 p-8 text-slate-900">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
+                  Lo que encuentras en Wonderlust
                 </p>
+
                 <h2 className="mt-3 text-3xl font-bold">
-                  Soluciones prácticas para viajar mejor
+                  Experiencias, visas y conectividad internacional
                 </h2>
+
+                <p className="mt-4 text-slate-600">
+                  Un ecosistema pensado para ayudarte a vender viajes con una
+                  imagen mucho más sólida, moderna y profesional.
+                </p>
 
                 <div className="mt-8 space-y-4">
                   <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="font-semibold">SIM internacionales</p>
+                    <p className="font-semibold">Ofertas de viaje</p>
                     <p className="text-sm text-slate-600">
-                      Conexión antes, durante y después del viaje.
+                      Campañas visuales y promociones reales listas para mostrar.
                     </p>
                   </div>
 
                   <div className="rounded-2xl bg-slate-50 p-4">
                     <p className="font-semibold">Asesoría para visas</p>
                     <p className="text-sm text-slate-600">
-                      Acompañamiento claro para orientar al cliente en su
-                      proceso.
+                      Acompañamiento claro para procesos migratorios y turísticos.
                     </p>
                   </div>
 
                   <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="font-semibold">Paquetes de viaje</p>
+                    <p className="font-semibold">SIM internacionales</p>
                     <p className="text-sm text-slate-600">
-                      Ofertas por destino, presupuesto y estilo.
+                      Conectividad pensada para viajeros frecuentes y clientes exigentes.
                     </p>
                   </div>
+                </div>
+
+                <div className="mt-8">
+                  <Link
+                    href="/ofertas"
+                    className="inline-flex rounded-2xl bg-slate-950 px-5 py-3 font-semibold text-white transition hover:scale-[1.02]"
+                  >
+                    Explorar Wonderlust
+                  </Link>
                 </div>
               </div>
             </div>
@@ -236,7 +252,7 @@ export default function Home() {
 
                 <div className="mt-6">
                   <span className="inline-flex rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white">
-                    Código: VIAJAVL
+                    Código: WONDER
                   </span>
                 </div>
 
@@ -250,7 +266,7 @@ export default function Home() {
               <div className="absolute -right-12 top-6 h-44 w-44 rounded-full border-[24px] border-lime-400" />
               <div className="relative p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Hoteles en México
+                  Hoteles y escapadas
                 </p>
                 <h3 className="mt-4 text-5xl font-black text-slate-950">
                   $400.000
@@ -264,7 +280,7 @@ export default function Home() {
 
                 <div className="mt-6">
                   <span className="inline-flex rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white">
-                    Código: DESTINOVL
+                    Código: VIAJA
                   </span>
                 </div>
 
@@ -490,7 +506,7 @@ export default function Home() {
 
       <footer className="bg-[#f8f6f2]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-12">
-          <p>© 2026 Wonderlust. Todos los derechos reservados.</p>
+          <p>© 2026 Wonderlust by Villamor S.A.S. Todos los derechos reservados.</p>
           <p>Diseño web moderno para viajes, visas y ventas.</p>
         </div>
       </footer>
