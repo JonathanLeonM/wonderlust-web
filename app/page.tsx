@@ -1,18 +1,72 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+
+const slides = [
+  {
+    id: 0,
+    eyebrow: "DESTINOS",
+    title: "Destinos destacados",
+    type: "destinos",
+  },
+  {
+    id: 1,
+    eyebrow: "VISAS",
+    title: "Visas",
+    description:
+      "Acompañamiento profesional en perfilamiento, formularios, documentos y preparación para distintos procesos de visa.",
+    type: "visas",
+  },
+  {
+    id: 2,
+    eyebrow: "SIM",
+    title: "SIM internacionales",
+    description:
+      "Conectividad para viajeros que quieren llegar preparados, evitar complicaciones y mantenerse siempre conectados.",
+    type: "sim",
+  },
+];
 
 export default function Home() {
+  const [current, setCurrent] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      changeSlide((current + 1) % slides.length);
+    }, 5500);
+
+    return () => clearInterval(interval);
+  }, [current]);
+
+  const changeSlide = (nextIndex: number) => {
+    setVisible(false);
+    setTimeout(() => {
+      setCurrent(nextIndex);
+      setVisible(true);
+    }, 320);
+  };
+
+  const goPrev = () =>
+    changeSlide((current - 1 + slides.length) % slides.length);
+
+  const goNext = () => changeSlide((current + 1) % slides.length);
+
+  const currentSlide = slides[current];
+
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-slate-900">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 text-white backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-12 w-12 overflow-hidden rounded-full bg-white/5 ring-1 ring-white/10">
+            <div className="relative h-14 w-14 overflow-hidden rounded-full ring-1 ring-white/10 bg-transparent">
               <Image
                 src="/logo-wonderlust.png"
                 alt="Wonderlust"
                 fill
-                className="object-contain p-1"
+                className="object-contain scale-125"
               />
             </div>
 
@@ -25,20 +79,17 @@ export default function Home() {
           </Link>
 
           <nav className="hidden gap-6 text-sm md:flex">
-            <a href="#inicio" className="transition hover:text-amber-300">
-              Inicio
+            <a href="#explorar" className="transition hover:text-amber-300">
+              Explorar
             </a>
-            <a href="#ofertas" className="transition hover:text-amber-300">
+            <a href="#mas-destinos" className="transition hover:text-amber-300">
+              Más destinos
+            </a>
+            <a href="/ofertas" className="transition hover:text-amber-300">
               Ofertas
             </a>
-            <a href="#sim" className="transition hover:text-amber-300">
-              SIM
-            </a>
-            <a href="#visas" className="transition hover:text-amber-300">
+            <a href="/visas" className="transition hover:text-amber-300">
               Visas
-            </a>
-            <a href="#paquetes" className="transition hover:text-amber-300">
-              Paquetes
             </a>
           </nav>
 
@@ -54,7 +105,7 @@ export default function Home() {
       </header>
 
       <section
-        id="inicio"
+        id="explorar"
         className="relative overflow-hidden bg-slate-950 text-white"
       >
         <div className="absolute inset-0">
@@ -67,442 +118,273 @@ export default function Home() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/70 to-slate-950/45" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.10),_transparent_35%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/55 to-slate-950/85" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_35%)]" />
 
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:py-28">
-          <div className="flex flex-col justify-center">
-            <p className="mb-5 text-sm font-medium uppercase tracking-[0.35em] text-amber-300">
-              Viajes, visas y conectividad global
-            </p>
-
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-6xl">
-              Viaja con estilo, respaldo y visión global
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-lg text-white/82">
-              Descubre ofertas de viaje, asesoría para visas y soluciones de
-              conectividad internacional con una experiencia clara, elegante y
-              diseñada para inspirar confianza desde el primer clic.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/ofertas"
-                className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 shadow-lg transition hover:scale-[1.02]"
-              >
-                Ver ofertas
-              </Link>
-
-              <a
-                href="https://wa.me/573212620948"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-2xl border border-white/25 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-              >
-                Cotizar por WhatsApp
-              </a>
-            </div>
-
-            <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <p className="text-2xl font-bold">Global</p>
-                <p className="text-sm text-white/70">Destinos y experiencias</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <p className="text-2xl font-bold">Premium</p>
-                <p className="text-sm text-white/70">Imagen y servicio</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <p className="text-2xl font-bold">Directo</p>
-                <p className="text-sm text-white/70">Atención por WhatsApp</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full rounded-[2rem] border border-white/10 bg-white/8 p-6 shadow-2xl backdrop-blur-md">
-              <div className="rounded-[1.6rem] border border-white/10 bg-white/95 p-8 text-slate-900">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
-                  Lo que encuentras en Wonderlust
-                </p>
-
-                <h2 className="mt-3 text-3xl font-bold">
-                  Experiencias, visas y conectividad internacional
-                </h2>
-
-                <p className="mt-4 text-slate-600">
-                  Un ecosistema pensado para ayudarte a vender viajes con una
-                  imagen mucho más sólida, moderna y profesional.
-                </p>
-
-                <div className="mt-8 space-y-4">
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="font-semibold">Ofertas de viaje</p>
-                    <p className="text-sm text-slate-600">
-                      Campañas visuales y promociones reales listas para mostrar.
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="font-semibold">Asesoría para visas</p>
-                    <p className="text-sm text-slate-600">
-                      Acompañamiento claro para procesos migratorios y turísticos.
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="font-semibold">SIM internacionales</p>
-                    <p className="text-sm text-slate-600">
-                      Conectividad pensada para viajeros frecuentes y clientes exigentes.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <Link
-                    href="/ofertas"
-                    className="inline-flex rounded-2xl bg-slate-950 px-5 py-3 font-semibold text-white transition hover:scale-[1.02]"
-                  >
-                    Explorar Wonderlust
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="ofertas" className="mx-auto max-w-7xl px-6 py-14 lg:px-12">
-        <div className="grid gap-5 lg:grid-cols-3">
-          <Link
-            href="/ofertas"
-            className="relative overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl lg:col-span-2"
+        <div className="relative mx-auto max-w-7xl px-6 py-16 pb-24 lg:px-12 lg:py-20 lg:pb-28">
+          <div
+            className={`relative rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-[0_25px_60px_rgba(0,0,0,0.35)] backdrop-blur-md transition-all duration-700 md:p-8 lg:p-10 ${
+              visible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-3 opacity-0"
+            }`}
           >
-            <div className="grid h-full md:grid-cols-[1.1fr_0.9fr]">
-              <div className="relative p-8 md:p-10">
-                <div className="absolute -right-10 top-0 h-full w-24 rounded-l-full bg-amber-400/95" />
-                <p className="relative text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Wonderlust
-                </p>
+            <div className="grid min-h-[620px] items-center gap-10">
+              {currentSlide.type === "destinos" && (
+                <div>
+                  <div className="mb-10 text-center">
+                    <p className="text-sm uppercase tracking-[0.3em] text-amber-300">
+                      {currentSlide.eyebrow}
+                    </p>
+                    <h1 className="mt-4 text-5xl font-bold leading-tight md:text-6xl xl:text-7xl">
+                      {currentSlide.title}
+                    </h1>
+                  </div>
 
-                <h3 className="relative mt-2 text-5xl font-extrabold leading-none text-orange-500 md:text-7xl">
-                  ¡OFERTAS!
-                </h3>
+                  <div className="grid gap-8 md:grid-cols-3">
+                    <Link
+                      href="/europa"
+                      className="group text-center transition hover:-translate-y-1.5"
+                    >
+                      <div className="flex h-[430px] items-end justify-center">
+                        <Image
+                          src="/destinos/europa.png"
+                          alt="Europa"
+                          width={1121}
+                          height={2048}
+                          className="max-h-full w-auto object-contain transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
 
-                <div className="relative mt-6 flex items-end gap-2">
-                  <span className="text-6xl font-black leading-none text-slate-950 md:text-8xl">
-                    20
-                  </span>
-                  <div className="pb-2">
-                    <span className="text-3xl font-black text-slate-950 md:text-5xl">
-                      %
-                    </span>
-                    <p className="text-xl text-slate-700 md:text-2xl">dto.</p>
+                      <div className="mt-4">
+                        <p className="text-sm uppercase tracking-[0.3em] text-amber-300/95">
+                          Destino
+                        </p>
+                        <h3 className="mt-3 text-[2.6rem] font-semibold tracking-tight">
+                          Europa
+                        </h3>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/mexico"
+                      className="group text-center transition hover:-translate-y-1.5"
+                    >
+                      <div className="flex h-[430px] items-end justify-center">
+                        <Image
+                          src="/destinos/mexico.png"
+                          alt="México"
+                          width={1121}
+                          height={2048}
+                          className="max-h-full w-auto object-contain transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-sm uppercase tracking-[0.3em] text-amber-300/95">
+                          Destino
+                        </p>
+                        <h3 className="mt-3 text-[2.6rem] font-semibold tracking-tight">
+                          México
+                        </h3>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/china"
+                      className="group text-center transition hover:-translate-y-1.5"
+                    >
+                      <div className="flex h-[430px] items-end justify-center">
+                        <Image
+                          src="/destinos/china.png"
+                          alt="China"
+                          width={1121}
+                          height={2048}
+                          className="max-h-full w-auto object-contain transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-sm uppercase tracking-[0.3em] text-amber-300/95">
+                          Destino
+                        </p>
+                        <h3 className="mt-3 text-[2.6rem] font-semibold tracking-tight">
+                          China
+                        </h3>
+                      </div>
+                    </Link>
+                  </div>
+
+                  <div className="mt-8 flex justify-center">
+                    <Link
+                      href="/destinos"
+                      className="rounded-2xl bg-amber-400 px-7 py-3.5 font-semibold text-slate-950 transition hover:scale-[1.02]"
+                    >
+                      Ver más destinos
+                    </Link>
                   </div>
                 </div>
+              )}
 
-                <p className="relative mt-5 max-w-md text-lg leading-snug text-slate-700">
-                  En paquetes a destinos de playa, escapadas, hoteles y
-                  experiencias especiales.
-                </p>
+              {currentSlide.type === "visas" && (
+                <div className="grid min-h-[620px] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-amber-300">
+                      {currentSlide.eyebrow}
+                    </p>
+                    <h1 className="mt-3 text-5xl font-bold leading-tight md:text-6xl xl:text-7xl">
+                      {currentSlide.title}
+                    </h1>
+                    <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/78">
+                      {currentSlide.description}
+                    </p>
 
-                <div className="relative mt-7 inline-flex rounded-2xl bg-slate-950 px-5 py-3 font-semibold text-white">
-                  Ver super ofertas
-                </div>
-              </div>
+                    <div className="mt-8 flex flex-wrap gap-4">
+                      <Link
+                        href="/visas"
+                        className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
+                      >
+                        Ver visas
+                      </Link>
 
-              <div className="min-h-[280px] bg-[linear-gradient(135deg,#7dd3fc_0%,#38bdf8_20%,#0ea5e9_45%,#0369a1_100%)]">
-                <div className="flex h-full items-center justify-center p-6">
-                  <div className="flex h-full min-h-[240px] w-full items-center justify-center rounded-[1.5rem] border border-white/30 bg-white/10 p-6 text-center text-white backdrop-blur-sm">
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.25em] text-white/75">
-                        Super promociones
+                      <a
+                        href="https://wa.me/573212620948"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-2xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+                      >
+                        Asesoría por WhatsApp
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <div className="w-full max-w-[540px] rounded-[1.75rem] border border-white/10 bg-white/[0.08] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur-sm">
+                      <p className="text-sm uppercase tracking-[0.2em] text-amber-300">
+                        Wonderlust Visas
                       </p>
-                      <h4 className="mt-3 text-3xl font-bold">
-                        Viajes con descuentos reales
-                      </h4>
-                      <p className="mt-3 text-white/80">
-                        Haz clic y descubre nuestras mejores ofertas
-                        disponibles.
-                      </p>
+                      <h2 className="mt-3 text-4xl font-bold leading-tight">
+                        Procesos más claros y profesionales
+                      </h2>
+                      <div className="mt-8 space-y-4">
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Perfilamiento
+                        </div>
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Formularios y documentos
+                        </div>
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Preparación para entrevista
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </Link>
+              )}
 
-          <div className="grid gap-5">
-            <article className="relative overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-black/5">
-              <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full border-[24px] border-lime-400" />
-              <div className="relative p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Paquetes y hoteles
-                </p>
-                <h3 className="mt-4 text-5xl font-black text-slate-950">
-                  $600.000
-                </h3>
-                <p className="mt-2 text-xl font-semibold text-slate-800">
-                  de descuento
-                </p>
-                <p className="mt-4 text-slate-600">
-                  En selecciones especiales con atención personalizada.
-                </p>
+              {currentSlide.type === "sim" && (
+                <div className="grid min-h-[620px] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-amber-300">
+                      {currentSlide.eyebrow}
+                    </p>
+                    <h1 className="mt-3 text-5xl font-bold leading-tight md:text-6xl xl:text-7xl">
+                      {currentSlide.title}
+                    </h1>
+                    <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/78">
+                      {currentSlide.description}
+                    </p>
 
-                <div className="mt-6">
-                  <span className="inline-flex rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white">
-                    Código: WONDER
-                  </span>
+                    <div className="mt-8 flex flex-wrap gap-4">
+                      <a
+                        href="https://wa.me/573212620948"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
+                      >
+                        Consultar SIM
+                      </a>
+
+                      <a
+                        href="https://wa.me/573212620948"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-2xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+                      >
+                        Hablar con asesor
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <div className="w-full max-w-[540px] rounded-[1.75rem] border border-white/10 bg-white/[0.08] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur-sm">
+                      <p className="text-sm uppercase tracking-[0.2em] text-amber-300">
+                        Wonderlust Connect
+                      </p>
+                      <h2 className="mt-3 text-4xl font-bold leading-tight">
+                        Viaja conectado desde el primer momento
+                      </h2>
+                      <div className="mt-8 space-y-4">
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Cobertura internacional
+                        </div>
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Activación fácil
+                        </div>
+                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                          Soporte cercano
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <p className="mt-4 text-xs text-slate-400">
-                  Aplican condiciones según destino y temporada.
-                </p>
-              </div>
-            </article>
-
-            <article className="relative overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-black/5">
-              <div className="absolute -right-12 top-6 h-44 w-44 rounded-full border-[24px] border-lime-400" />
-              <div className="relative p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Hoteles y escapadas
-                </p>
-                <h3 className="mt-4 text-5xl font-black text-slate-950">
-                  $400.000
-                </h3>
-                <p className="mt-2 text-xl font-semibold text-slate-800">
-                  dto. extra
-                </p>
-                <p className="mt-4 text-slate-600">
-                  Promociones seleccionadas para reservas y paquetes.
-                </p>
-
-                <div className="mt-6">
-                  <span className="inline-flex rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white">
-                    Código: VIAJA
-                  </span>
-                </div>
-
-                <p className="mt-4 text-xs text-slate-400">
-                  Válido en campañas específicas.
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div className="mt-8 overflow-hidden rounded-full bg-[linear-gradient(90deg,#00df9a_0%,#15f5ba_40%,#22e37a_100%)] px-6 py-5 shadow-lg">
-          <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 text-3xl">
-                ✈️
-              </div>
-              <div>
-                <p className="rounded-md bg-black px-3 py-1 text-lg font-black uppercase tracking-wide text-yellow-300">
-                  Nuevo carrito
-                </p>
-                <p className="mt-1 text-xl font-semibold text-slate-950 md:text-2xl">
-                  Arma tu viaje completo
-                </p>
-              </div>
+              )}
             </div>
 
-            <div>
-              <p className="text-lg font-bold text-slate-950 md:text-2xl">
-                Agrega fácilmente y paga menos
-              </p>
-              <p className="text-sm text-slate-900/80">
-                Próximamente: paquetes + hoteles + servicios en una sola compra.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="sim" className="mx-auto max-w-7xl px-6 py-20 lg:px-12">
-        <div className="mb-10 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
-            SIM internacionales
-          </p>
-          <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-            Viaja conectado desde el primer momento
-          </h2>
-          <p className="mt-4 text-slate-600">
-            Opciones de conectividad pensadas para viajeros frecuentes, turismo
-            y clientes que buscan comodidad desde antes de salir.
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <article className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-black/5">
-            <h3 className="text-2xl font-semibold">Cobertura global</h3>
-            <p className="mt-3 text-slate-600">
-              Alternativas para múltiples destinos y necesidades de datos.
-            </p>
-          </article>
-
-          <article className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-black/5">
-            <h3 className="text-2xl font-semibold">Activación simple</h3>
-            <p className="mt-3 text-slate-600">
-              Una oferta clara para que el cliente compre con confianza.
-            </p>
-          </article>
-
-          <article className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-black/5">
-            <h3 className="text-2xl font-semibold">Soporte cercano</h3>
-            <p className="mt-3 text-slate-600">
-              Acompañamiento para elegir la mejor opción según el viaje.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section id="visas" className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-12">
-          <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
-                Visas
-              </p>
-              <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-                Asesoría profesional para procesos de visa
-              </h2>
-              <p className="mt-4 text-slate-600">
-                Presenta tu servicio de visas de forma clara, elegante y
-                confiable para que el cliente entienda el proceso y se anime a
-                contactarte.
-              </p>
-            </div>
-
-            <Link
-              href="/visas"
-              className="inline-flex rounded-2xl bg-slate-950 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
+            <button
+              onClick={goPrev}
+              className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-slate-950/55 px-3 py-8 text-lg text-white shadow-[0_10px_28px_rgba(0,0,0,0.35)] transition hover:scale-[1.04] hover:bg-slate-950/85"
+              aria-label="Slide anterior"
             >
-              Ver todas las visas
-            </Link>
-          </div>
+              ←
+            </button>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-[2rem] bg-[#f8f6f2] p-8">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-lg font-bold text-amber-700">
-                1
-              </div>
-              <h3 className="text-xl font-semibold">Perfilamiento</h3>
-              <p className="mt-3 text-slate-600">
-                Evaluación inicial del perfil del solicitante y orientación
-                general según el tipo de visa.
-              </p>
-            </div>
-
-            <div className="rounded-[2rem] bg-[#f8f6f2] p-8">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-lg font-bold text-amber-700">
-                2
-              </div>
-              <h3 className="text-xl font-semibold">Formulario y documentos</h3>
-              <p className="mt-3 text-slate-600">
-                Acompañamiento en diligenciamiento, revisión documental y
-                organización de requisitos.
-              </p>
-            </div>
-
-            <div className="rounded-[2rem] bg-[#f8f6f2] p-8">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-lg font-bold text-amber-700">
-                3
-              </div>
-              <h3 className="text-xl font-semibold">Preparación</h3>
-              <p className="mt-3 text-slate-600">
-                Guía y entrenamiento previo para que el cliente llegue mejor
-                preparado a su proceso.
-              </p>
-            </div>
+            <button
+              onClick={goNext}
+              className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-slate-950/55 px-3 py-8 text-lg text-white shadow-[0_10px_28px_rgba(0,0,0,0.35)] transition hover:scale-[1.04] hover:bg-slate-950/85"
+              aria-label="Siguiente slide"
+            >
+              →
+            </button>
           </div>
         </div>
       </section>
 
-      <section id="paquetes" className="mx-auto max-w-7xl px-6 py-20 lg:px-12">
-        <div className="mb-10 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
-            Paquetes de viaje
-          </p>
-          <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-            Organiza tu oferta para que el cliente compre más fácil
-          </h2>
-          <p className="mt-4 text-slate-600">
-            Presenta viajes cortos, experiencias premium o planes personalizados
-            con una estructura clara y elegante.
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-            <p className="text-sm uppercase tracking-[0.2em] text-amber-300">
-              Escapadas
-            </p>
-            <h3 className="mt-3 text-2xl font-semibold">Viajes cortos</h3>
-            <p className="mt-3 text-white/75">
-              Perfectos para clientes que quieren desconectarse unos días.
-            </p>
-          </div>
-
-          <div className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-black/5">
-            <p className="text-sm uppercase tracking-[0.2em] text-amber-700">
-              Internacional
-            </p>
-            <h3 className="mt-3 text-2xl font-semibold">Experiencias premium</h3>
-            <p className="mt-3 text-slate-600">
-              Opciones para viajeros que buscan comodidad y mejor experiencia.
-            </p>
-          </div>
-
-          <div className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-black/5">
-            <p className="text-sm uppercase tracking-[0.2em] text-amber-700">
-              Flexible
-            </p>
-            <h3 className="mt-3 text-2xl font-semibold">Plan personalizado</h3>
-            <p className="mt-3 text-slate-600">
-              Crea propuestas según fechas, presupuesto y destino.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-950 text-white">
+      <section id="mas-destinos" className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-12">
-          <div className="flex flex-col items-start justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/5 p-8 md:flex-row md:items-center">
-            <div>
-              <p className="text-sm uppercase tracking-[0.2em] text-amber-300">
-                Contacto directo
-              </p>
-              <h2 className="mt-2 text-3xl font-bold">
-                Convierte visitas en clientes reales
-              </h2>
-              <p className="mt-3 max-w-2xl text-white/75">
-                El objetivo es que el usuario vea tu oferta, entienda tu valor y
-                te escriba de inmediato por WhatsApp.
-              </p>
-            </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">
+              Más destinos
+            </p>
+            <h2 className="mt-3 text-3xl font-bold md:text-4xl">
+              Descubre más paquetes turísticos
+            </h2>
+            <p className="mt-4 text-slate-600">
+              Explora nuevas rutas, próximos paquetes y más experiencias
+              internacionales.
+            </p>
 
-            <a
-              href="https://wa.me/573212620948"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
-            >
-              Escribir ahora
-            </a>
+            <div className="mt-8">
+              <Link
+                href="/destinos"
+                className="inline-flex rounded-2xl bg-slate-950 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
+              >
+                Ver más destinos
+              </Link>
+            </div>
           </div>
         </div>
       </section>
-
-      <a
-        href="https://wa.me/573212620948"
-        target="_blank"
-        rel="noreferrer"
-        className="fixed bottom-6 right-6 z-50 rounded-full bg-green-500 px-5 py-3 text-sm font-bold text-white shadow-2xl"
-      >
-        WhatsApp
-      </a>
 
       <footer className="bg-[#f8f6f2]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-12">
