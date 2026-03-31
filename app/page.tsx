@@ -144,8 +144,8 @@ export default function Home() {
               <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", minHeight: 0, overflow: "hidden" }}>
                 {[
                   { href: "/europa", src: "/destinos/europa.png", alt: "Europa", label: "Europa" },
-                  { href: "/mexico", src: "/destinos/mexico.png", alt: "México", label: "México" },
-                  { href: "/china", src: "/destinos/china.png", alt: "China", label: "China" },
+                  { href: "/america", src: "/destinos/america.png", alt: "America", label: "America" },
+                  { href: "/asia", src: "/destinos/asia.png", alt: "Asia", label: "Asia" },
                 ].map((dest) => (
                   <Link key={dest.label} href={dest.href} style={{
                     display: "flex", flexDirection: "column", alignItems: "center",
@@ -314,7 +314,7 @@ export default function Home() {
       <footer style={{ background: "#f8f6f2" }}>
         <div style={{ maxWidth: "80rem", margin: "0 auto", padding: "2rem 1.5rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "0.5rem", fontSize: "0.875rem", color: "#64748b" }}>
           <p>© 2026 Wonderlust by Villamor S.A.S. Todos los derechos reservados.</p>
-          <p>Diseño web moderno para viajes, visas y ventas.</p>
+          <p>Para quien llegó hasta aquí: el mundo no cabe en una pantalla. Sal a verlo. </p>
         </div>
       </footer>
     </main>

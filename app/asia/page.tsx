@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ChinaPage() {
+export default function AsiaPage() {
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-slate-900">
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-12">
