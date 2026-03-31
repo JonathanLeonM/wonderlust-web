@@ -83,7 +83,7 @@ export default function EuropaPage() {
             objectFit: "cover", objectPosition: "center",
           }}
         >
-          <source src="/videos/paris.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/dmponcqpb/video/upload/Paris_ihlvbr.mp4" type="video/mp4" />
         </video>
 
         {/* Overlay oscuro con degradado */}
