@@ -127,7 +127,7 @@ export default function EuropaChicPage() {
 
       {/* ── HERO IMAGEN ── */}
       <section style={{ position: "relative", height: "80vh", overflow: "hidden" }}>
-        <Image src="/paquetes/europa/europa-chic-hero.png" alt="Europa Chic - Paquete turístico" fill style={{ objectFit: "cover", objectPosition: "center" }} priority />
+        <Image src="/paquetes/europa/europa-chic-hero1.png" alt="Europa Chic - Paquete turístico" fill style={{ objectFit: "cover", objectPosition: "center" }} priority />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.65) 100%)" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2rem clamp(1.5rem, 5vw, 4rem)" }}>
           <Link href="/europa" style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.75rem" }}>
