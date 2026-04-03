@@ -193,7 +193,7 @@ export default function Home() {
 
         {/* Fondo */}
         <div style={{ position: "absolute", inset: 0 }}>
-          <Image src="/hero/FondoHero.png" alt="Agencia de viajes Wonderlust" fill priority quality={90} sizes="100vw" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
+          <Image src="/hero/fondoHero.png" alt="Agencia de viajes Wonderlust" fill priority quality={90} sizes="100vw" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
         </div>
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0.25) 40%, rgba(2,6,23,0.7) 100%)" }} />
 
