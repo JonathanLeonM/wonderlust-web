@@ -23,7 +23,7 @@ export default function TailandiaFestivalLinternasPage() {
               Volver a ofertas
             </Link>
             <a
-              href="https://wa.me/573212620948"
+              href="https://wa.me/573144327782"
               target="_blank"
               rel="noreferrer"
               className="rounded-full bg-slate-950 px-5 py-2 text-sm font-semibold text-white transition hover:scale-[1.03]"
@@ -60,7 +60,7 @@ export default function TailandiaFestivalLinternasPage() {
 
           <div className="mt-8 flex flex-wrap gap-4">
             <a
-              href="https://wa.me/573212620948"
+              href="https://wa.me/573144327782"
               target="_blank"
               rel="noreferrer"
               className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
@@ -153,7 +153,7 @@ export default function TailandiaFestivalLinternasPage() {
               </p>
 
               <a
-                href="https://wa.me/573212620948"
+                href="https://wa.me/573144327782"
                 target="_blank"
                 rel="noreferrer"
                 className="mt-6 inline-flex rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"

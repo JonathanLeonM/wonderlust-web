@@ -71,7 +71,7 @@ export default function OfertasPage() {
               Inicio
             </Link>
             <a
-              href="https://wa.me/573212620948"
+              href="https://wa.me/573144327782"
               target="_blank"
               rel="noreferrer"
               className="rounded-full bg-slate-950 px-5 py-2 text-sm font-semibold text-white transition hover:scale-[1.03]"
@@ -271,7 +271,7 @@ export default function OfertasPage() {
                     </Link>
 
                     <a
-                      href="https://wa.me/573212620948"
+                      href="https://wa.me/573144327782"
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex rounded-2xl border border-slate-300 px-5 py-3 font-semibold text-slate-900 transition hover:bg-slate-100"
@@ -306,7 +306,7 @@ export default function OfertasPage() {
                   </Link>
 
                   <a
-                    href="https://wa.me/573212620948"
+                    href="https://wa.me/573144327782"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex rounded-2xl border border-slate-300 px-5 py-3 font-semibold text-slate-900 transition hover:bg-slate-100"

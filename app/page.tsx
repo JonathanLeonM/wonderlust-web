@@ -10,7 +10,7 @@ const slides = [
     type: "destinos",
     eyebrow: "DESTINOS",
     title: "El mundo te espera",
-    text: "Descubre Europa, América y Asia con paquetes diseñados para vivir experiencias únicas. Cada destino, una historia que contar.",
+    text: "Descubre Europa, América, Asia y el Caribe con paquetes diseñados para vivir experiencias únicas. Cada destino, una historia que contar.",
     cta: { label: "Ver destinos", href: "/destinos" },
   },
   {
@@ -43,9 +43,11 @@ const slides = [
 ];
 
 const destinos = [
-  { label: "Europa", src: "/destinos/europa.png", href: "/europa" },
-  { label: "América", src: "/destinos/america.png", href: "/america" },
-  { label: "Asia", src: "/destinos/asia.png", href: "/asia" },
+  { label: "Europa",   src: "/destinos/europa.png",   href: "/europa" },
+  { label: "Caribe",   src: "/destinos/caribe.png",   href: "/caribe" },
+  { label: "América",  src: "/destinos/america.png",  href: "/america" },
+  { label: "Asia",     src: "/destinos/asia.png",     href: "/asia" },
+
 ];
 
 export default function Home() {
@@ -71,7 +73,6 @@ export default function Home() {
     setTimeout(() => { setCurrent(next); setVisible(true); }, 300);
   };
 
-  // Ocultar WhatsApp tras 4s de inactividad
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     const show = () => {
@@ -221,7 +222,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Vitrinas */}
+              {/* Vitrinas — ahora 4 destinos */}
               <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
                 {destinos.map((dest, i) => (
                   <Link key={dest.label} href={dest.href}

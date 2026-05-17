@@ -14,6 +14,15 @@ const paquetes = [
     incluye: ["Tiquetes aéreos con impuestos", "Hoteles categoría turista", "Desayunos diarios", "Guía acompañante"],
     img: "/paquetes/europa/europa-chic.png",
   },
+  {
+    slug: "euro-leyendas",
+    nombre: "Euro Leyendas",
+    dias: "18 días / 16 noches",
+    precio: "Desde USD 3.371",
+    ciudades: "París, Brujas, Ámsterdam, Colonia, Praga, Innsbruck, Venecia, Florencia, Roma, Barcelona, Madrid y más",
+    incluye: ["Tiquetes aéreos Air Europa", "Hoteles categoría turista", "Desayunos diarios", "Crucero por el Rhin"],
+    img: "/paquetes/europa/euro-leyendas-flyer.png",
+  },
 ];
 
 export default function EuropaPage() {
@@ -100,7 +109,7 @@ export default function EuropaPage() {
         <div style={{ height: "1px", background: "linear-gradient(90deg, transparent, rgba(251,191,36,0.35), transparent)" }} />
       </header>
 
-      {/* ── HERO VIDEO — altura reducida para mostrar paquetes ── */}
+      {/* ── HERO VIDEO ── */}
       <section style={{ position: "relative", height: "75vh", overflow: "hidden" }}>
         <video autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}>
           <source src="https://res.cloudinary.com/dmponcqpb/video/upload/Paris_ihlvbr.mp4" type="video/mp4" />
@@ -120,7 +129,7 @@ export default function EuropaPage() {
 
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1.5rem" }}>
             <a href="#paquetes" style={{ backgroundImage: "linear-gradient(135deg, #f59e0b, #fcd34d, #f59e0b)", backgroundColor: "#f59e0b", color: "#0f172a", fontWeight: 700, fontSize: "clamp(0.85rem, 1.5vw, 1rem)", padding: "0.75rem 2rem", borderRadius: "9999px", textDecoration: "none", boxShadow: "0 0 28px rgba(245,158,11,0.5)" }}>Ver paquetes ↓</a>
-            <a href="https://wa.me/573212620948" target="_blank" rel="noreferrer" style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", color: "white", fontWeight: 600, fontSize: "clamp(0.85rem, 1.5vw, 1rem)", padding: "0.75rem 2rem", borderRadius: "9999px", textDecoration: "none", backdropFilter: "blur(8px)" }}>Cotizar ahora</a>
+            <a href="https://wa.me/573144327782" target="_blank" rel="noreferrer" style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", color: "white", fontWeight: 600, fontSize: "clamp(0.85rem, 1.5vw, 1rem)", padding: "0.75rem 2rem", borderRadius: "9999px", textDecoration: "none", backdropFilter: "blur(8px)" }}>Cotizar ahora</a>
           </div>
         </div>
 
@@ -199,7 +208,7 @@ export default function EuropaPage() {
       </footer>
 
       {/* ── WHATSAPP FLOTANTE ── */}
-      <a href="https://wa.me/573212620948" target="_blank" rel="noreferrer" style={{ position: "fixed", bottom: "1.75rem", right: "1.75rem", zIndex: 100, width: "60px", height: "60px", borderRadius: "50%", background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(37,211,102,0.5)", transition: "transform 0.2s, box-shadow 0.2s, opacity 0.4s", opacity: showWA ? 1 : 0, pointerEvents: showWA ? "auto" : "none", textDecoration: "none" }}
+      <a href="https://wa.me/573144327782" target="_blank" rel="noreferrer" style={{ position: "fixed", bottom: "1.75rem", right: "1.75rem", zIndex: 100, width: "60px", height: "60px", borderRadius: "50%", background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(37,211,102,0.5)", transition: "transform 0.2s, box-shadow 0.2s, opacity 0.4s", opacity: showWA ? 1 : 0, pointerEvents: showWA ? "auto" : "none", textDecoration: "none" }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 32px rgba(37,211,102,0.65)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(37,211,102,0.5)"; }}>
         <svg width="30" height="30" viewBox="0 0 24 24" fill="white">

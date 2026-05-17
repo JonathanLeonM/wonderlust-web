@@ -213,7 +213,7 @@ export default function EuropaChicPage() {
 
             <p style={{ fontSize: "0.72rem", color: "#94a3b8", marginBottom: "1.25rem", textAlign: "center" }}>* Tarifas por persona en acomodación doble</p>
 
-            <a href={`https://wa.me/573212620948?text=Hola! Me interesa el paquete Europa Chic - ${salidas[salida].fecha}`} target="_blank" rel="noreferrer" style={{
+            <a href={`https://wa.me/573144327782?text=Hola! Me interesa el paquete Europa Chic - ${salidas[salida].fecha}`} target="_blank" rel="noreferrer" style={{
               display: "block", textAlign: "center", background: "linear-gradient(135deg, #f59e0b, #fcd34d)",
               color: "#0f172a", fontWeight: 700, fontSize: "1rem", padding: "0.9rem",
               borderRadius: "0.85rem", textDecoration: "none", boxShadow: "0 0 20px rgba(245,158,11,0.3)",
@@ -237,7 +237,7 @@ export default function EuropaChicPage() {
       </footer>
 
       {/* ── WHATSAPP FLOTANTE ── */}
-      <a href="https://wa.me/573212620948" target="_blank" rel="noreferrer" style={{ position: "fixed", bottom: "1.75rem", right: "1.75rem", zIndex: 100, width: "60px", height: "60px", borderRadius: "50%", background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(37,211,102,0.5)", transition: "transform 0.2s, box-shadow 0.2s, opacity 0.4s", opacity: showWA ? 1 : 0, pointerEvents: showWA ? "auto" : "none", textDecoration: "none" }}
+      <a href="https://wa.me/573144327782" target="_blank" rel="noreferrer" style={{ position: "fixed", bottom: "1.75rem", right: "1.75rem", zIndex: 100, width: "60px", height: "60px", borderRadius: "50%", background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(37,211,102,0.5)", transition: "transform 0.2s, box-shadow 0.2s, opacity 0.4s", opacity: showWA ? 1 : 0, pointerEvents: showWA ? "auto" : "none", textDecoration: "none" }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 32px rgba(37,211,102,0.65)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(37,211,102,0.5)"; }}>
         <svg width="30" height="30" viewBox="0 0 24 24" fill="white">

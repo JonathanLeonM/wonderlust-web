@@ -44,7 +44,7 @@ export default function VisaCostaRicaPage() {
 
           <div className="mt-8 flex flex-wrap gap-4">
             <a
-              href="https://wa.me/573212620948"
+              href="https://wa.me/573144327782"
               target="_blank"
               rel="noreferrer"
               className="rounded-2xl bg-amber-400 px-6 py-3 font-semibold text-slate-950"
