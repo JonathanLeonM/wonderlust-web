@@ -43,11 +43,10 @@ const slides = [
 ];
 
 const destinos = [
-  { label: "Europa",   src: "/destinos/europa.png",   href: "/europa" },
-  { label: "Caribe",   src: "/destinos/caribe_1.png",   href: "/caribe" },
-  { label: "América",  src: "/destinos/america.png",  href: "/america" },
-  { label: "Asia",     src: "/destinos/asia.png",     href: "/asia" },
-
+  { label: "Europa",  src: "/destinos/europa.png",    href: "/europa" },
+  { label: "Caribe",  src: "/destinos/caribe_1.png",  href: "/caribe" },
+  { label: "América", src: "/destinos/america.png",   href: "/america" },
+  { label: "Asia",    src: "/destinos/asia.png",      href: "/asia" },
 ];
 
 export default function Home() {
@@ -56,6 +55,14 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);
   const [showWA, setShowWA] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -108,64 +115,101 @@ export default function Home() {
         <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #f59e0b, #fcd34d, #f59e0b, transparent)" }} />
 
         <div style={{
-          display: "grid", gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center", padding: "0.75rem clamp(1.5rem, 4vw, 3.5rem)", gap: "1rem",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr auto" : "1fr auto 1fr",
+          alignItems: "center",
+          padding: isMobile ? "0.4rem 1rem" : "0.75rem clamp(1.5rem, 4vw, 3.5rem)",
+          gap: "0.5rem",
         }}>
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.85rem" }}>
+          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: isMobile ? "0.4rem" : "0.85rem" }}>
             <div style={{
-              width: "clamp(54px, 7vw, 80px)", height: "clamp(54px, 7vw, 80px)",
+              width: isMobile ? "40px" : "clamp(54px, 7vw, 80px)",
+              height: isMobile ? "40px" : "clamp(54px, 7vw, 80px)",
               borderRadius: "50%", border: "1.5px solid rgba(251,191,36,0.8)",
               boxShadow: "0 0 20px rgba(251,191,36,0.4)", flexShrink: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
               background: "radial-gradient(circle, rgba(15,23,42,0.95), rgba(2,6,23,0.98))",
               position: "relative",
             }}>
-              <div style={{ position: "relative", width: "clamp(38px, 5vw, 58px)", height: "clamp(38px, 5vw, 58px)" }}>
+              <div style={{ position: "relative", width: isMobile ? "28px" : "clamp(38px, 5vw, 58px)", height: isMobile ? "28px" : "clamp(38px, 5vw, 58px)" }}>
                 <Image src="/logo-wonderlust.png" alt="Wonderlust - Agencia de viajes Colombia" fill className="object-contain scale-[1.55]" />
               </div>
             </div>
             <div>
               <div style={{
-                fontSize: "clamp(1rem, 2vw, 1.4rem)", fontWeight: 800, letterSpacing: "0.22em",
+                fontSize: isMobile ? "0.8rem" : "clamp(1rem, 2vw, 1.4rem)",
+                fontWeight: 800, letterSpacing: isMobile ? "0.12em" : "0.22em",
                 backgroundImage: "linear-gradient(135deg, #fde68a, #f59e0b, #fcd34d, #d97706)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
                 backgroundClip: "text", backgroundColor: "transparent",
               }}>WONDERLUST</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "5px", margin: "2px 0" }}>
-                <div style={{ height: "1px", width: "18px", background: "rgba(251,191,36,0.6)" }} />
-                <span style={{ fontSize: "0.5rem", color: "rgba(253,211,77,0.8)" }}>✦</span>
-                <div style={{ height: "1px", width: "18px", background: "rgba(251,191,36,0.6)" }} />
-              </div>
-              <div style={{ fontSize: "clamp(0.5rem, 0.9vw, 0.62rem)", letterSpacing: "0.2em", color: "rgba(253,211,77,0.65)", textTransform: "uppercase" }}>
-                by Villamor S.A.S
-              </div>
+              {!isMobile && (
+                <>
+                  <div style={{ display: "flex", alignItems: "center", gap: "5px", margin: "2px 0" }}>
+                    <div style={{ height: "1px", width: "18px", background: "rgba(251,191,36,0.6)" }} />
+                    <span style={{ fontSize: "0.5rem", color: "rgba(253,211,77,0.8)" }}>✦</span>
+                    <div style={{ height: "1px", width: "18px", background: "rgba(251,191,36,0.6)" }} />
+                  </div>
+                  <div style={{ fontSize: "clamp(0.5rem, 0.9vw, 0.62rem)", letterSpacing: "0.2em", color: "rgba(253,211,77,0.65)", textTransform: "uppercase" }}>
+                    by Villamor S.A.S
+                  </div>
+                </>
+              )}
+              {isMobile && (
+                <div style={{ fontSize: "0.42rem", letterSpacing: "0.1em", color: "rgba(253,211,77,0.65)", textTransform: "uppercase" }}>
+                  by Villamor S.A.S
+                </div>
+              )}
             </div>
           </Link>
 
-          {/* Nav centro */}
-          <nav style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            {[["/#explorar", "Inicio"], ["/destinos", "Destinos"], ["/visas", "Visas"]].map(([href, label], i) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                {i > 0 && <span style={{ color: "rgba(251,191,36,0.35)", fontSize: "1rem" }}>|</span>}
-                <Link href={href} style={{
-                  fontSize: "clamp(1rem, 1.6vw, 1.25rem)", fontWeight: 600, letterSpacing: "0.1em",
-                  textTransform: "uppercase", color: "rgba(255,255,255,0.9)",
-                  textDecoration: "none", whiteSpace: "nowrap", transition: "color 0.2s",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#fcd34d")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}>
-                  {label}
-                </Link>
-              </div>
-            ))}
-          </nav>
+          {/* Nav centro — solo desktop */}
+          {!isMobile && (
+            <nav style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              {[["/#explorar", "Inicio"], ["/destinos", "Destinos"], ["/visas", "Visas"]].map(([href, label], i) => (
+                <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  {i > 0 && <span style={{ color: "rgba(251,191,36,0.35)", fontSize: "1rem" }}>|</span>}
+                  <Link href={href} style={{
+                    fontSize: "clamp(1rem, 1.6vw, 1.25rem)", fontWeight: 600, letterSpacing: "0.1em",
+                    textTransform: "uppercase", color: "rgba(255,255,255,0.9)",
+                    textDecoration: "none", whiteSpace: "nowrap", transition: "color 0.2s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#fcd34d")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}>
+                    {label}
+                  </Link>
+                </div>
+              ))}
+            </nav>
+          )}
 
-          {/* Casita */}
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {/* Derecha */}
+          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.5rem" }}>
+            {/* Links compactos móvil */}
+            {isMobile && (
+              <nav style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                {[["/destinos", "Destinos"], ["/visas", "Visas"]].map(([href, label], i) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                    {i > 0 && <span style={{ color: "rgba(251,191,36,0.4)", fontSize: "0.65rem" }}>|</span>}
+                    <Link href={href} style={{
+                      fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.04em",
+                      textTransform: "uppercase", color: "rgba(255,255,255,0.9)",
+                      textDecoration: "none", whiteSpace: "nowrap",
+                    }}>
+                      {label}
+                    </Link>
+                  </div>
+                ))}
+              </nav>
+            )}
+
+            {/* Casita */}
             <Link href="/" title="Inicio" style={{
               display: "flex", alignItems: "center", justifyContent: "center",
-              width: "48px", height: "48px", borderRadius: "50%",
+              width: isMobile ? "32px" : "48px",
+              height: isMobile ? "32px" : "48px",
+              borderRadius: "50%",
               border: "1.5px solid rgba(251,191,36,0.4)", color: "rgba(255,255,255,0.85)",
               textDecoration: "none", transition: "all 0.2s",
             }}
@@ -179,7 +223,7 @@ export default function Home() {
               (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.85)";
               (e.currentTarget as HTMLElement).style.background = "transparent";
             }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width={isMobile ? "18" : "32"} height={isMobile ? "18" : "32"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
                 <path d="M9 21V12h6v9"/>
               </svg>
@@ -191,14 +235,11 @@ export default function Home() {
 
       {/* ── HERO ── */}
       <section id="explorar" style={{ position: "relative", height: "100svh", overflow: "hidden" }}>
-
-        {/* Fondo */}
         <div style={{ position: "absolute", inset: 0 }}>
           <Image src="/hero/fondoHero.png" alt="Agencia de viajes Wonderlust" fill priority quality={90} sizes="100vw" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
         </div>
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0.25) 40%, rgba(2,6,23,0.7) 100%)" }} />
 
-        {/* Contenido */}
         <div style={{
           position: "relative", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between",
@@ -208,21 +249,21 @@ export default function Home() {
 
           {/* SLIDE DESTINOS */}
           {slide.type === "destinos" && (
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", paddingTop: "clamp(5.5rem, 10vh, 8rem)" }}>
-              {/* Título */}
-              <div style={{ textAlign: "center", padding: "0 1rem 1.5rem" }}>
-                <p style={{ fontSize: "0.7rem", letterSpacing: "0.4em", textTransform: "uppercase", color: "#fcd34d", marginBottom: "0.5rem" }}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", paddingTop: isMobile ? "4rem" : "clamp(5.5rem, 10vh, 8rem)" }}>
+              <div style={{ textAlign: "center", padding: "0 1rem 1rem" }}>
+                <p style={{ fontSize: "0.7rem", letterSpacing: "0.4em", textTransform: "uppercase", color: "#fcd34d", marginBottom: "0.4rem" }}>
                   {slide.eyebrow}
                 </p>
-                <h1 style={{ fontSize: "clamp(2rem, 4.5vw, 3.75rem)", fontWeight: 900, lineHeight: 1.1, textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>
+                <h1 style={{ fontSize: isMobile ? "1.7rem" : "clamp(2rem, 4.5vw, 3.75rem)", fontWeight: 900, lineHeight: 1.1, textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>
                   {slide.title}
                 </h1>
-                <p style={{ fontSize: "clamp(0.9rem, 1.4vw, 1.1rem)", color: "rgba(255,255,255,0.8)", marginTop: "0.6rem", textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>
-                  {slide.text}
-                </p>
+                {!isMobile && (
+                  <p style={{ fontSize: "clamp(0.9rem, 1.4vw, 1.1rem)", color: "rgba(255,255,255,0.8)", marginTop: "0.6rem", textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>
+                    {slide.text}
+                  </p>
+                )}
               </div>
 
-              {/* Vitrinas — ahora 4 destinos */}
               <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
                 {destinos.map((dest, i) => (
                   <Link key={dest.label} href={dest.href}
@@ -244,19 +285,18 @@ export default function Home() {
                     }} />
                     <div style={{
                       position: "relative", zIndex: 2, textAlign: "center",
-                      paddingBottom: "1rem",
+                      paddingBottom: isMobile ? "0.4rem" : "1rem",
                       background: "linear-gradient(0deg, rgba(2,6,23,0.7) 0%, transparent 100%)",
                       width: "100%", paddingTop: "3rem",
                     }}>
                       <p style={{ fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(253,211,77,0.85)" }}>Destino</p>
-                      <h3 style={{ fontSize: "clamp(1.1rem, 2vw, 1.6rem)", fontWeight: 700, marginTop: "0.2rem" }}>{dest.label}</h3>
+                      <h3 style={{ fontSize: isMobile ? "0.8rem" : "clamp(1.1rem, 2vw, 1.6rem)", fontWeight: 700, marginTop: "0.2rem" }}>{dest.label}</h3>
                     </div>
                   </Link>
                 ))}
               </div>
 
-              {/* Botón */}
-              <div style={{ textAlign: "center", padding: "1rem 0 0.5rem" }}>
+              <div style={{ textAlign: "center", padding: "0.75rem 0 0.5rem" }}>
                 <Link href={slide.cta.href} style={{
                   display: "inline-block", background: "linear-gradient(135deg, #f59e0b, #fcd34d)",
                   color: "#0f172a", fontWeight: 700, fontSize: "0.95rem", letterSpacing: "0.05em",
@@ -272,34 +312,39 @@ export default function Home() {
           {/* SLIDES VISAS / SELE / SIM */}
           {slide.type !== "destinos" && (
             <div style={{
-              flex: 1, display: "flex", alignItems: "center",
-              padding: "clamp(5.5rem, 10vh, 8rem) clamp(2rem, 6vw, 6rem) 2rem",
+              flex: 1, display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "center" : "center",
+              justifyContent: isMobile ? "center" : "flex-start",
+              padding: isMobile
+                ? "4.5rem 1.25rem 1rem"
+                : "clamp(5.5rem, 10vh, 8rem) clamp(2rem, 6vw, 6rem) 2rem",
               maxWidth: "1320px", margin: "0 auto", width: "100%",
-              gap: "3rem",
+              gap: isMobile ? "1rem" : "3rem",
             }}>
-              {/* Texto izquierda */}
               <div style={{
                 flex: 1, minWidth: 0,
-                background: "rgba(2,6,23,0.35)",
+                background: "rgba(2,6,23,0.5)",
                 backdropFilter: "blur(12px)",
                 border: "1px solid rgba(255,255,255,0.07)",
                 borderRadius: "1.5rem",
-                padding: "2.5rem",
+                padding: isMobile ? "1.25rem" : "2.5rem",
+                width: "100%",
               }}>
-                <p style={{ fontSize: "0.75rem", letterSpacing: "0.4em", textTransform: "uppercase", color: "#fcd34d", marginBottom: "1rem" }}>
+                <p style={{ fontSize: "0.75rem", letterSpacing: "0.4em", textTransform: "uppercase", color: "#fcd34d", marginBottom: "0.6rem" }}>
                   {slide.eyebrow}
                 </p>
-                <h1 style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 900, lineHeight: 1.15, textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>
+                <h1 style={{ fontSize: isMobile ? "1.4rem" : "clamp(2rem, 4vw, 3.5rem)", fontWeight: 900, lineHeight: 1.2, textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>
                   {slide.title}
                 </h1>
-                <p style={{ marginTop: "1.25rem", fontSize: "clamp(1rem, 1.4vw, 1.2rem)", lineHeight: 1.7, color: "rgba(255,255,255,0.85)", maxWidth: "36rem" }}>
+                <p style={{ marginTop: "0.75rem", fontSize: isMobile ? "0.88rem" : "clamp(1rem, 1.4vw, 1.2rem)", lineHeight: 1.6, color: "rgba(255,255,255,0.85)", maxWidth: "36rem" }}>
                   {slide.text}
                 </p>
-                <div style={{ marginTop: "2rem" }}>
+                <div style={{ marginTop: "1.25rem" }}>
                   <a href={slide.cta.href} target={slide.cta.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" style={{
                     display: "inline-block", background: "linear-gradient(135deg, #f59e0b, #fcd34d)",
-                    color: "#0f172a", fontWeight: 700, fontSize: "0.95rem", letterSpacing: "0.05em",
-                    padding: "0.85rem 2.25rem", borderRadius: "9999px", textDecoration: "none",
+                    color: "#0f172a", fontWeight: 700, fontSize: isMobile ? "0.85rem" : "0.95rem", letterSpacing: "0.05em",
+                    padding: isMobile ? "0.65rem 1.5rem" : "0.85rem 2.25rem", borderRadius: "9999px", textDecoration: "none",
                     boxShadow: "0 0 28px rgba(245,158,11,0.45)",
                   }}>
                     {slide.cta.label}
@@ -307,12 +352,15 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Imagen derecha */}
               {slide.img && (
-                <div style={{ flex: "0 0 auto", width: "clamp(280px, 38vw, 520px)" }}>
+                <div style={{
+                  flexShrink: 0,
+                  width: isMobile ? "55%" : "clamp(280px, 38vw, 520px)",
+                }}>
                   <img src={slide.img} alt={slide.title} style={{
                     width: "100%", height: "auto", objectFit: "contain",
-                    maxHeight: "65vh", borderRadius: "1.5rem",
+                    maxHeight: isMobile ? "180px" : "65vh",
+                    borderRadius: "1.5rem",
                     filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.6))",
                   }} />
                 </div>
