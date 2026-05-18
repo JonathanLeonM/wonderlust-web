@@ -44,7 +44,7 @@ const slides = [
 
 const destinos = [
   { label: "Europa",   src: "/destinos/europa.png",   href: "/europa" },
-  { label: "Caribe",   src: "/destinos/caribe.png",   href: "/caribe" },
+  { label: "Caribe",   src: "/destinos/caribe_1.png",   href: "/caribe" },
   { label: "América",  src: "/destinos/america.png",  href: "/america" },
   { label: "Asia",     src: "/destinos/asia.png",     href: "/asia" },
 
