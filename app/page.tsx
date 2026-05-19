@@ -28,7 +28,7 @@ const slides = [
     eyebrow: "APOYA LA SELE",
     title: "Vívelo en el estadio",
     text: "Tal vez estemos viendo los últimos grandes capítulos de una generación que nos hizo soñar. No te lo pierdas.",
-    cta: { label: "Desde 3.699 USD", href: "https://wa.me/573212620948" },
+    cta: { label: "Desde 3.699 USD", href: "https://wa.me/573144327782" },
     img: "/hero/sele.png",
   },
   {
@@ -37,7 +37,7 @@ const slides = [
     eyebrow: "SIM INTERNACIONAL",
     title: "No te desconectes mientras viajas",
     text: "Conectividad real en más de 190 países. Llega preparado, evita costos de roaming y mantente siempre conectado.",
-    cta: { label: "Conoce la SIM que te sirve", href: "https://wa.me/573212620948" },
+    cta: { label: "Conoce la SIM que te sirve", href: "https://wa.me/573144327782" },
     img: "/hero/sim.png",
   },
 ];
@@ -406,7 +406,7 @@ export default function Home() {
       </footer>
 
       {/* ── WHATSAPP FLOTANTE ── */}
-      <a href="https://wa.me/573212620948" target="_blank" rel="noreferrer" style={{
+      <a href="https://wa.me/573144327782" target="_blank" rel="noreferrer" style={{
         position: "fixed", bottom: "1.75rem", right: "1.75rem", zIndex: 100,
         width: "60px", height: "60px", borderRadius: "50%",
         background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center",
