@@ -59,10 +59,18 @@ export default function Home() {
       {/* HERO */}
       <section id="top" style={{
         position: "relative", minHeight: "88vh", display: "flex", flexDirection: "column", justifyContent: "flex-end",
-        backgroundImage: "linear-gradient(90deg,rgba(24,15,9,.85) 0%,rgba(24,15,9,.5) 48%,rgba(24,15,9,.12) 100%),linear-gradient(180deg,rgba(24,15,9,.15) 0%,transparent 30%,rgba(24,15,9,.35) 100%),url('/europa-pano.png')",
-        backgroundSize: "cover", backgroundPosition: "center", color: "#fdf7ec",
+        overflow: "hidden", color: "#fdf7ec",
       }}>
-        <div style={{ maxWidth: 1220, width: "100%", margin: "0 auto", padding: "clamp(40px,8vh,90px) clamp(20px,5vw,46px) clamp(30px,5vh,50px)", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <video autoPlay loop muted playsInline poster="/europa-pano.png" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0,
+        }}>
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 1,
+          backgroundImage: "linear-gradient(90deg,rgba(24,15,9,.85) 0%,rgba(24,15,9,.5) 48%,rgba(24,15,9,.12) 100%),linear-gradient(180deg,rgba(24,15,9,.15) 0%,transparent 30%,rgba(24,15,9,.35) 100%)",
+        }} />
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 1220, width: "100%", margin: "0 auto", padding: "clamp(40px,8vh,90px) clamp(20px,5vw,46px) clamp(30px,5vh,50px)", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ maxWidth: 660 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 22 }}>
               <span style={{ height: 1, width: 38, background: "#e7c8a0" }} />
