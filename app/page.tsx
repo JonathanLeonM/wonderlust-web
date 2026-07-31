@@ -1,5 +1,6 @@
 "use client";
 
+
 import Link from "next/link";
 
 const WA = "https://wa.me/573134883629";
