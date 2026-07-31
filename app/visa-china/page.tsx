@@ -103,10 +103,14 @@ const FIELDS: FieldDef[] = [
   { step: 3, type: "text", key: "declaracionAdicional", label: "¿Hay algo más que quieras declarar?", textarea: true, required: true },
 
   { step: 4, type: "choice", key: "ocupacion", label: "Ocupación", options: ["Empresario", "Jubilado", "Empleado de empresa", "Artista", "Estudiante", "Personal militar", "Trabajador por cuenta propia", "Otro"], revealOn: "Otro", revealKey: "ocupacionOtro", required: true },
-  { step: 4, type: "text", key: "experienciaLaboral", label: "Experiencia laboral (últimos 5 años)", textarea: true, placeholder: "Empresa, cargo, fechas, dirección, teléfono y supervisor", required: true },
-  { step: 4, type: "choice", key: "visaChinaAprobada", label: "¿Le han aprobado alguna vez la visa a China?", options: ["Sí", "No"], required: true },
-  { step: 4, type: "text", key: "lugarEmisionVisa", label: "Lugar de emisión (si ya se la aprobaron antes)", required: false },
-  { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], required: true },
+  { step: 4, type: "text", key: "expEmpresa", label: "Empresa (últimos 5 años)", required: true },
+  { step: 4, type: "text", key: "expCargo", label: "Cargo", required: true },
+  { step: 4, type: "text", key: "expFechas", label: "Fechas (desde – hasta)", required: true },
+  { step: 4, type: "text", key: "expDireccion", label: "Dirección de la empresa", required: true },
+  { step: 4, type: "text", key: "expTelefono", label: "Teléfono de la empresa", inputType: "tel", numeric: true, required: true },
+  { step: 4, type: "text", key: "expSupervisor", label: "Nombre del supervisor", required: true },
+  { step: 4, type: "choice", key: "visaChinaAprobada", label: "¿Le han aprobado alguna vez la visa a China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "lugarEmisionVisa", revealLabel: "Lugar de emisión", required: true },
+  { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "hijosDetalle", revealLabel: "Nombres y fechas de nacimiento de tus hijos", required: true },
 ];
 
 const STEP_LABELS = ["Datos", "Familia", "Emergencia", "Antecedentes", "Ocupación", "Revisión"];
@@ -191,9 +195,18 @@ export default function VisaChinaForm() {
   const submitForm = () => {
     setSubmitting(true);
     const payload = { ...data, _enviado: new Date().toISOString() };
-    fetch(SHEETS_WEBHOOK_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) })
-      .then(() => { setSubmitting(false); setSubmitted(true); })
-      .catch(() => { setSubmitting(false); setSubmitted(true); });
+    const done = () => { setSubmitting(false); setSubmitted(true); };
+    // XMLHttpRequest (not fetch): Apps Script /exec responds with a 302 redirect, and
+    // fetch's no-cors mode silently follows it by converting the POST into a GET, which
+    // drops the body — so the sheet never receives the data. XHR preserves the POST through it.
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", SHEETS_WEBHOOK_URL, true);
+      xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+      xhr.onload = done;
+      xhr.onerror = done;
+      xhr.send(JSON.stringify(payload));
+    } catch (e) { done(); }
   };
 
   const renderField = (f: FieldDef) => {
