@@ -20,9 +20,10 @@ const CardIcon = ({ size = 16 }: { size?: number }) => (
 );
 
 const paquetes = [
-  { titulo: "Europa Fantástica", img: "/paquetes/europa-fantastica.png", sub: "Atención personalizada · París · Roma · Barcelona", precio: "USD 3.319", destacado: true },
-  { titulo: "Euro Leyendas", img: "/paquetes/euro-leyendas.png", sub: "Atención personalizada · Londres · Ámsterdam · Praga", precio: "USD 2.890", destacado: false },
-  { titulo: "Europa Chic", img: "/paquetes/europa-chic.png", sub: "Atención personalizada · París · Venecia · Roma", precio: "USD 2.450", destacado: false },
+  { titulo: "Europa Fantástica", img: "/paquetes/europa-fantastica.png", sub: "Atención personalizada · París · Roma · Barcelona", precio: "USD 3.319", destacado: true, href: WA },
+  { titulo: "Euro Leyendas", img: "/paquetes/euro-leyendas.png", sub: "Atención personalizada · Londres · Ámsterdam · Praga", precio: "USD 2.890", destacado: false, href: WA },
+  { titulo: "Europa Chic", img: "/paquetes/europa-chic.png", sub: "Atención personalizada · París · Venecia · Roma", precio: "USD 2.450", destacado: false, href: WA },
+  { titulo: "Canadá en Familia", img: "/paquetes/canada-panoramica.png", sub: "Atención personalizada · Toronto · Niágara · Quebec · Montreal", precio: "USD 2.345", destacado: false, href: "/paquetes/canada" },
 ];
 
 const paisesCompactos = [
@@ -86,7 +87,7 @@ export default function Home() {
               <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#128c4a", color: "#fff", fontSize: "clamp(14px,1.7vw,16px)", fontWeight: 700, padding: "16px clamp(22px,3vw,32px)", borderRadius: 34, boxShadow: "0 14px 32px rgba(0,0,0,.32)", textDecoration: "none" }}>
                 <WhatsIcon size={20} />Planea tu viaje por WhatsApp
               </a>
-              <a href="#paquetes" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1.5px solid rgba(253,247,236,.55)", color: "#fdf7ec", fontSize: "clamp(13px,1.5vw,15px)", fontWeight: 600, padding: "15px clamp(20px,2.6vw,28px)", borderRadius: 34, textDecoration: "none" }}>Ver paquetes de Europa</a>
+              <a href="#paquetes" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1.5px solid rgba(253,247,236,.55)", color: "#fdf7ec", fontSize: "clamp(13px,1.5vw,15px)", fontWeight: 600, padding: "15px clamp(20px,2.6vw,28px)", borderRadius: 34, textDecoration: "none" }}>Ver paquetes de viaje</a>
             </div>
           </div>
         </div>
@@ -191,9 +192,6 @@ export default function Home() {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 9, flexWrap: "wrap", marginTop: "auto" }}>
-                    {p.pais === "China" && (
-                      <Link href="/visa-china" style={{ display: "inline-flex", alignItems: "center", color: "#14514f", fontSize: 12.5, fontWeight: 700, padding: "10px 6px", textDecoration: "none" }}>Formulario →</Link>
-                    )}
                     <a href={WOMPI_US} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#bd5a34", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "10px 18px", borderRadius: 22, textDecoration: "none" }}>
                       <CardIcon size={15} />Pagar ya
                     </a>
@@ -213,37 +211,49 @@ export default function Home() {
       <section id="paquetes" style={{ background: "#efe4d2", padding: "clamp(52px,8vw,80px) 0" }}>
         <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)" }}>
           <div style={{ textAlign: "center", marginBottom: "clamp(30px,4vw,46px)" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#bd5a34", marginBottom: 14 }}>PAQUETES A EUROPA · SALIDAS DESDE BOGOTÁ</div>
-            <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(28px,4vw,44px)", lineHeight: 1.08, margin: 0, color: "#14514f" }}>Circuitos para vivir Europa, no solo verla.</h2>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#bd5a34", marginBottom: 14 }}>PAQUETES · SALIDAS DESDE BOGOTÁ</div>
+            <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(28px,4vw,44px)", lineHeight: 1.08, margin: 0, color: "#14514f" }}>Paquetes para vivir el mundo, no solo recorrerlo.</h2>
             <p style={{ fontSize: "clamp(14px,1.6vw,16px)", color: "#7c6a58", margin: "14px auto 0", maxWidth: 560, lineHeight: 1.6 }}>Vuelos, hoteles seleccionados, traslados y tours con guías en español. Todo incluido y sin letra pequeña.</p>
           </div>
-          <div style={{ display: "flex", gap: "clamp(16px,2.4vw,24px)", flexWrap: "wrap" }}>
-            {paquetes.map((p) => (
-              <div key={p.titulo} style={{ flex: "1 1 300px", background: "#fdf9f0", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 34px rgba(58,44,34,.1)" }}>
-                <div style={{ position: "relative", height: 170 }}>
-                  <img src={p.img} alt={p.titulo} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  {p.destacado && (
-                    <span style={{ position: "absolute", top: 12, left: 12, background: "#bd5a34", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", padding: "5px 11px", borderRadius: 20 }}>MÁS VENDIDO</span>
-                  )}
-                </div>
-                <div style={{ padding: "clamp(20px,2.4vw,26px)" }}>
-                  <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.4vw,26px)", color: "#14514f" }}>{p.titulo}</div>
-                  <div style={{ fontSize: 12.5, color: "#9a8a76", margin: "7px 0 14px" }}>{p.sub}</div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 18 }}>
-                    <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>✈ Vuelos</span>
-                    <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🏨 Hoteles</span>
-                    <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🎟 Tours</span>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "clamp(16px,2.4vw,24px)" }}>
+            {paquetes.map((p) => {
+              const isInternal = p.href.startsWith("/");
+              const cardInner = (
+                <>
+                  <div style={{ position: "relative", height: 170 }}>
+                    <img src={p.img} alt={p.titulo} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    {p.destacado && (
+                      <span style={{ position: "absolute", top: 12, left: 12, background: "#bd5a34", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", padding: "5px 11px", borderRadius: 20 }}>MÁS VENDIDO</span>
+                    )}
                   </div>
-                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderTop: "1px solid rgba(58,44,34,.1)", paddingTop: 16 }}>
-                    <div>
-                      <span style={{ fontSize: 11, color: "#9a8a76" }}>Desde</span><br />
-                      <span style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.6vw,27px)", color: "#bd5a34" }}>{p.precio}</span>
+                  <div style={{ padding: "clamp(20px,2.4vw,26px)" }}>
+                    <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.4vw,26px)", color: "#14514f" }}>{p.titulo}</div>
+                    <div style={{ fontSize: 12.5, color: "#9a8a76", margin: "7px 0 14px" }}>{p.sub}</div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 18 }}>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>✈ Vuelos</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🏨 Hoteles</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🎟 Tours</span>
                     </div>
-                    <a href={WA} target="_blank" rel="noreferrer" style={{ background: "#14514f", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "11px 20px", borderRadius: 24, textDecoration: "none" }}>Ver itinerario</a>
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderTop: "1px solid rgba(58,44,34,.1)", paddingTop: 16 }}>
+                      <div>
+                        <span style={{ fontSize: 11, color: "#9a8a76" }}>Desde</span><br />
+                        <span style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.6vw,27px)", color: "#bd5a34" }}>{p.precio}</span>
+                      </div>
+                      {isInternal ? (
+                        <Link href={p.href} style={{ background: "#14514f", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "11px 20px", borderRadius: 24, textDecoration: "none" }}>Ver itinerario</Link>
+                      ) : (
+                        <a href={p.href} target="_blank" rel="noreferrer" style={{ background: "#14514f", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "11px 20px", borderRadius: 24, textDecoration: "none" }}>Ver itinerario</a>
+                      )}
+                    </div>
                   </div>
+                </>
+              );
+              return (
+                <div key={p.titulo} style={{ background: "#fdf9f0", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 34px rgba(58,44,34,.1)" }}>
+                  {cardInner}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div style={{ textAlign: "center", marginTop: "clamp(28px,3.5vw,40px)" }}>
             <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-block", color: "#14514f", fontSize: 14, fontWeight: 700, borderBottom: "2px solid #e0a94a", paddingBottom: 3, textDecoration: "none" }}>¿Buscas otro destino? Armamos tu viaje a la medida →</a>
@@ -309,13 +319,13 @@ export default function Home() {
               <img src="/logo-wonderlust.png" alt="" style={{ width: 38, height: 38, objectFit: "contain" }} />
               <span style={{ fontFamily: "'Marcellus',serif", fontSize: 19, letterSpacing: ".16em", color: "#e7c8a0" }}>WONDERLUST</span>
             </div>
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: "#a8c0bc", margin: 0 }}>Agencia de viajes en Bogotá. Paquetes a Europa y consultoría de visas a USA y Canadá, con acompañamiento de principio a fin.</p>
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: "#a8c0bc", margin: 0 }}>Agencia de viajes en Bogotá. Paquetes a Europa y Canadá, y consultoría de visas a USA y Canadá, con acompañamiento de principio a fin.</p>
           </div>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".2em", color: "#e7c8a0", marginBottom: 14 }}>EXPLORA</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5 }}>
               <a href="#visas" style={{ color: "#c5ddd9", textDecoration: "none" }}>Visas USA y Canadá</a>
-              <a href="#paquetes" style={{ color: "#c5ddd9", textDecoration: "none" }}>Paquetes a Europa</a>
+              <a href="#paquetes" style={{ color: "#c5ddd9", textDecoration: "none" }}>Paquetes de viaje</a>
               <a href="#viajeros" style={{ color: "#c5ddd9", textDecoration: "none" }}>Historias de viajeros</a>
             </div>
           </div>
