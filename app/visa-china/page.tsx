@@ -77,10 +77,10 @@ const FIELDS: FieldDef[] = [
   { step: 1, type: "text", key: "direccion", label: "Dirección de residencia actual", required: true },
   { step: 1, type: "text", key: "telefono", label: "Número de teléfono", inputType: "tel", numeric: true, required: true },
   { step: 1, type: "text", key: "padreNombre", label: "Nombre y apellido del padre", shortLabel: "Nombre y apellido", required: true },
-  { step: 1, type: "text", key: "padreNacionalidad", label: "Nacionalidad del padre", shortLabel: "Nacionalidad", required: true },
+  { step: 1, type: "text", key: "padreNacionalidad", label: "Nacionalidad del padre", shortLabel: "Nacionalidad", placeholder: "Ej. Colombiana", required: true },
   { step: 1, type: "text", key: "padreFecha", label: "Fecha de nacimiento del padre", shortLabel: "Fecha de nacimiento", inputType: "date", required: true },
   { step: 1, type: "text", key: "madreNombre", label: "Nombre y apellido de la madre", shortLabel: "Nombre y apellido", required: true },
-  { step: 1, type: "text", key: "madreNacionalidad", label: "Nacionalidad de la madre", shortLabel: "Nacionalidad", required: true },
+  { step: 1, type: "text", key: "madreNacionalidad", label: "Nacionalidad de la madre", shortLabel: "Nacionalidad", placeholder: "Ej. Colombiana", required: true },
   { step: 1, type: "text", key: "madreFecha", label: "Fecha de nacimiento de la madre", shortLabel: "Fecha de nacimiento", inputType: "date", required: true },
 
   { step: 2, type: "choice", key: "parientesChina", label: "¿Tiene parientes (aparte de sus padres) en China?", options: ["Sí", "No"], required: true },
