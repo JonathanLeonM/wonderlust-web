@@ -6,38 +6,38 @@ const SHEETS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyyjjr2jBzJy
 
 const COLOMBIA_GEO: Record<string, string[]> = {
   "Amazonas": ["Leticia", "Puerto Nariño"],
-  "Antioquia": ["Medellín", "Envigado", "Itagüí", "Bello", "Rionegro", "Apartadó", "Turbo"],
-  "Arauca": ["Arauca", "Saravena", "Tame"],
-  "Atlántico": ["Barranquilla", "Soledad", "Malambo", "Puerto Colombia"],
-  "Bogotá D.C.": ["Bogotá"],
-  "Bolívar": ["Cartagena", "Magangué", "Turbaco", "El Carmen de Bolívar"],
-  "Boyacá": ["Tunja", "Duitama", "Sogamoso", "Chiquinquirá"],
-  "Caldas": ["Manizales", "La Dorada", "Chinchiná", "Villamaría"],
-  "Caquetá": ["Florencia", "San Vicente del Caguán"],
-  "Casanare": ["Yopal", "Aguazul", "Villanueva"],
-  "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
-  "Cesar": ["Valledupar", "Aguachica", "Codazzi"],
-  "Chocó": ["Quibdó", "Istmina"],
-  "Córdoba": ["Montería", "Cereté", "Lorica", "Sahagún"],
-  "Cundinamarca": ["Soacha", "Fusagasugá", "Zipaquirá", "Chía", "Facatativá", "Girardot"],
+  "Antioquia": ["Abejorral", "Abriaquí", "Alejandría", "Amagá", "Amalfi", "Andes", "Angelópolis", "Angostura", "Anorí", "Anzá", "Apartadó", "Arboletes", "Argelia", "Armenia", "Barbosa", "Bello", "Belmira", "Betania", "Betulia", "Briceño", "Buriticá", "Cáceres", "Caicedo", "Caldas", "Campamento", "Cañasgordas", "Caracolí", "Caramanta", "Carepa", "Carolina del Príncipe", "Caucasia", "Chigorodó", "Cisneros", "Ciudad Bolívar", "Cocorná", "Concepción", "Concordia", "Copacabana", "Dabeiba", "Donmatías", "Ebéjico", "El Bagre", "El Carmen de Viboral", "El Peñol", "El Retiro", "El Santuario", "Entrerríos", "Envigado", "Fredonia", "Frontino", "Giraldo", "Girardota", "Gómez Plata", "Granada", "Guadalupe", "Guarne", "Guatapé", "Heliconia", "Hispania", "Itagüí", "Ituango", "Jardín", "Jericó", "La Ceja", "La Estrella", "La Pintada", "La Unión", "Liborina", "Maceo", "Marinilla", "Medellín", "Montebello", "Murindó", "Mutatá", "Nariño", "Nechí", "Necoclí", "Olaya", "Peque", "Pueblorrico", "Puerto Berrío", "Puerto Nare", "Puerto Triunfo", "Remedios", "Rionegro", "Sabanalarga", "Sabaneta", "Salgar", "San Andrés de Cuerquia", "San Carlos", "San Francisco", "San Jerónimo", "San José de la Montaña", "San Juan de Urabá", "San Luis", "San Pedro de Urabá", "San Pedro de los Milagros", "San Rafael", "San Roque", "San Vicente", "Santa Bárbara", "Santa Fe de Antioquia", "Santa Rosa de Osos", "Santo Domingo", "Segovia", "Sonsón", "Sopetrán", "Támesis", "Tarazá", "Tarso", "Titiribí", "Toledo", "Turbo", "Uramita", "Urrao", "Valdivia", "Valparaíso", "Vegachí", "Venecia", "Vigía del Fuerte", "Yalí", "Yarumal", "Yolombó", "Yondó", "Zaragoza"],
+  "Arauca": ["Arauca", "Arauquita", "Cravo Norte", "Fortul", "Puerto Rondón", "Saravena", "Tame"],
+  "Atlántico": ["Baranoa", "Barranquilla", "Campo de la Cruz", "Candelaria", "Galapa", "Juan de Acosta", "Luruaco", "Malambo", "Manatí", "Palmar de Varela", "Piojó", "Polonuevo", "Ponedera", "Puerto Colombia", "Repelón", "Sabanagrande", "Sabanalarga", "Santa Lucía", "Santo Tomás", "Soledad", "Suán", "Tubará", "Usiacurí"],
+  "Bolívar": ["Achí", "Altos del Rosario", "Arenal", "Arjona", "Arroyohondo", "Barranco de Loba", "Brazuelo de Papayal", "Calamar", "Cantagallo", "Cartagena de Indias", "Cicuco", "Clemencia", "Córdoba", "El Carmen de Bolívar", "El Guamo", "El Peñón", "Hatillo de Loba", "Magangué", "Mahates", "Margarita", "María la Baja", "Mompós", "Montecristo", "Morales", "Norosí", "Pinillos", "Regidor", "Río Viejo", "San Cristóbal", "San Estanislao", "San Fernando", "San Jacinto del Cauca", "San Jacinto", "San Juan Nepomuceno", "San Martín de Loba", "San Pablo", "Santa Catalina", "Santa Rosa", "Santa Rosa del Sur", "Simití", "Soplaviento", "Talaigua Nuevo", "Tiquisio", "Turbaco", "Turbaná", "Villanueva", "Zambrano"],
+  "Boyacá": ["Almeida", "Aquitania", "Arcabuco", "Belén", "Berbeo", "Betéitiva", "Boavita", "Boyacá", "Briceño", "Buenavista", "Busbanzá", "Caldas", "Campohermoso", "Cerinza", "Chinavita", "Chiquinquirá", "Chíquiza", "Chiscas", "Chita", "Chitaraque", "Chivatá", "Chivor", "Ciénega", "Cómbita", "Coper", "Corrales", "Covarachía", "Cubará", "Cucaita", "Cuítiva", "Duitama", "El Cocuy", "El Espino", "Firavitoba", "Floresta", "Gachantivá", "Gámeza", "Garagoa", "Guacamayas", "Guateque", "Guayatá", "Güicán", "Iza", "Jenesano", "Jericó", "La Capilla", "La Uvita", "La Victoria", "Labranzagrande", "Macanal", "Maripí", "Miraflores", "Mongua", "Monguí", "Moniquirá", "Motavita", "Muzo", "Nobsa", "Nuevo Colón", "Oicatá", "Otanche", "Pachavita", "Páez", "Paipa", "Pajarito", "Panqueba", "Pauna", "Paya", "Paz del Río", "Pesca", "Pisba", "Puerto Boyacá", "Quípama", "Ramiriquí", "Ráquira", "Rondón", "Saboyá", "Sáchica", "Samacá", "San Eduardo", "San José de Pare", "San Luis de Gaceno", "San Mateo", "San Miguel de Sema", "San Pablo de Borbur", "Santa María", "Santa Rosa de Viterbo", "Santa Sofía", "Santana", "Sativanorte", "Sativasur", "Siachoque", "Soatá", "Socha", "Socotá", "Sogamoso", "Somondoco", "Sora", "Soracá", "Sotaquirá", "Susacón", "Sutamarchán", "Sutatenza", "Tasco", "Tenza", "Tibaná", "Tibasosa", "Tinjacá", "Tipacoque", "Toca", "Togüí", "Tópaga", "Tota", "Tunja", "Tununguá", "Turmequé", "Tuta", "Tutazá", "Úmbita", "Ventaquemada", "Villa de Leyva", "Viracachá", "Zetaquira"],
+  "Caldas": ["Aguadas", "Anserma", "Aranzazu", "Belalcázar", "Chinchiná", "Filadelfia", "La Dorada", "La Merced", "Manizales", "Manzanares", "Marmato", "Marquetalia", "Marulanda", "Neira", "Norcasia", "Pácora", "Palestina", "Pensilvania", "Riosucio", "Risaralda", "Salamina", "Samaná", "San José", "Supía", "Victoria", "Villamaría", "Viterbo"],
+  "Caquetá": ["Albania", "Belén de los Andaquíes", "Cartagena del Chairá", "Curillo", "El Doncello", "El Paujil", "Florencia", "La Montañita", "Milán", "Morelia", "Puerto Rico", "San José del Fragua", "San Vicente del Caguán", "Solano", "Solita", "Valparaíso"],
+  "Casanare": ["Aguazul", "Chámeza", "Hato Corozal", "La Salina", "Maní", "Monterrey", "Nunchía", "Orocué", "Paz de Ariporo", "Pore", "Recetor", "Sabanalarga", "Sácama", "San Luis de Palenque", "Támara", "Tauramena", "Trinidad", "Villanueva", "Yopal"],
+  "Cauca": ["Almaguer", "Argelia", "Balboa", "Bolívar", "Buenos Aires", "Cajibío", "Caldono", "Caloto", "Corinto", "El Tambo", "Florencia", "Guachené", "Guapí", "Inzá", "Jambaló", "La Sierra", "La Vega", "López de Micay", "Mercaderes", "Miranda", "Morales", "Padilla", "Páez", "Patía", "Piamonte", "Piendamó", "Popayán", "Puerto Tejada", "Puracé", "Rosas", "San Sebastián", "Santa Rosa", "Santander de Quilichao", "Silvia", "Sotará", "Suárez", "Sucre", "Timbío", "Timbiquí", "Toribío", "Totoró", "Villa Rica"],
+  "Cesar": ["Aguachica", "Agustín Codazzi", "Astrea", "Becerril", "Bosconia", "Chimichagua", "Chiriguaná", "Curumaní", "El Copey", "El Paso", "Gamarra", "González", "La Gloria", "La Jagua de Ibirico", "La Paz", "Manaure Balcón del Cesar", "Pailitas", "Pelaya", "Pueblo Bello", "Río de Oro", "San Alberto", "San Diego", "San Martín", "Tamalameque", "Valledupar"],
+  "Chocó": ["Acandí", "Alto Baudó", "Bagadó", "Bahía Solano", "Bajo Baudó", "Bojayá", "Cantón de San Pablo", "Cértegui", "Condoto", "El Atrato", "El Carmen de Atrato", "El Carmen del Darién", "Istmina", "Juradó", "Litoral de San Juan", "Lloró", "Medio Atrato", "Medio Baudó", "Medio San Juan", "Nóvita", "Nuquí", "Quibdó", "Río Iró", "Río Quito", "Riosucio", "San José del Palmar", "Sipí", "Tadó", "Unión Panamericana", "Unguía"],
+  "Cundinamarca": ["Agua de Dios", "Albán", "Anapoima", "Anolaima", "Apulo", "Arbeláez", "Beltrán", "Bituima", "Bojacá", "Cabrera", "Cachipay", "Cajicá", "Caparrapí", "Cáqueza", "Carmen de Carupa", "Chaguaní", "Chía", "Chipaque", "Choachí", "Chocontá", "Cogua", "Cota", "Cucunubá", "El Colegio", "El Peñón", "El Rosal", "Facatativá", "Fómeque", "Fosca", "Funza", "Fúquene", "Fusagasugá", "Gachalá", "Gachancipá", "Gachetá", "Gama", "Girardot", "Granada", "Guachetá", "Guaduas", "Guasca", "Guataquí", "Guatavita", "Guayabal de Síquima", "Guayabetal", "Gutiérrez", "Jerusalén", "Junín", "La Calera", "La Mesa", "La Palma", "La Peña", "La Vega", "Lenguazaque", "Machetá", "Madrid", "Manta", "Medina", "Mosquera", "Nariño", "Nemocón", "Nilo", "Nimaima", "Nocaima", "Pacho", "Paime", "Pandi", "Paratebueno", "Pasca", "Puerto Salgar", "Pulí", "Quebradanegra", "Quetame", "Quipile", "Ricaurte", "San Antonio del Tequendama", "San Bernardo", "San Cayetano", "San Francisco", "San Juan de Rioseco", "Sasaima", "Sesquilé", "Sibaté", "Silvania", "Simijaca", "Soacha", "Sopó", "Subachoque", "Suesca", "Supatá", "Susa", "Sutatausa", "Tabio", "Tausa", "Tena", "Tenjo", "Tibacuy", "Tibirita", "Tocaima", "Tocancipá", "Topaipí", "Ubalá", "Ubaque", "Ubaté", "Une", "Útica", "Venecia", "Vergara", "Vianí", "Villagómez", "Villapinzón", "Villeta", "Viotá", "Yacopí", "Zipacón", "Zipaquirá"],
+  "Córdoba": ["Ayapel", "Buenavista", "Canalete", "Cereté", "Chimá", "Chinú", "Ciénaga de Oro", "Cotorra", "La Apartada", "Lorica", "Los Córdobas", "Momil", "Montelíbano", "Montería", "Moñitos", "Planeta Rica", "Pueblo Nuevo", "Puerto Escondido", "Puerto Libertador", "Purísima", "Sahagún", "San Andrés de Sotavento", "San Antero", "San Bernardo del Viento", "San Carlos", "San José de Uré", "San Pelayo", "Tierralta", "Tuchín", "Valencia"],
   "Guainía": ["Inírida"],
-  "Guaviare": ["San José del Guaviare"],
-  "Huila": ["Neiva", "Pitalito", "Garzón"],
-  "La Guajira": ["Riohacha", "Maicao", "Uribia"],
-  "Magdalena": ["Santa Marta", "Ciénaga", "Fundación"],
-  "Meta": ["Villavicencio", "Acacías", "Granada"],
-  "Nariño": ["Pasto", "Tumaco", "Ipiales"],
-  "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona"],
-  "Putumayo": ["Mocoa", "Puerto Asís"],
-  "Quindío": ["Armenia", "Calarcá", "Montenegro"],
-  "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal"],
-  "San Andrés y Providencia": ["San Andrés", "Providencia"],
-  "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta", "Barrancabermeja"],
-  "Sucre": ["Sincelejo", "Corozal"],
-  "Tolima": ["Ibagué", "Espinal", "Melgar"],
-  "Valle del Cauca": ["Cali", "Palmira", "Buenaventura", "Tuluá", "Cartago", "Buga"],
-  "Vaupés": ["Mitú"],
-  "Vichada": ["Puerto Carreño"],
+  "Guaviare": ["Calamar", "El Retorno", "Miraflores", "San José del Guaviare"],
+  "Huila": ["Acevedo", "Agrado", "Aipe", "Algeciras", "Altamira", "Baraya", "Campoalegre", "Colombia", "El Pital", "Elías", "Garzón", "Gigante", "Guadalupe", "Hobo", "Íquira", "Isnos", "La Argentina", "La Plata", "Nátaga", "Neiva", "Oporapa", "Paicol", "Palermo", "Palestina", "Pitalito", "Rivera", "Saladoblanco", "San Agustín", "Santa María", "Suaza", "Tarqui", "Tello", "Teruel", "Tesalia", "Timaná", "Villavieja", "Yaguará"],
+  "La Guajira": ["Albania", "Barrancas", "Dibulla", "Distracción", "El Molino", "Fonseca", "Hatonuevo", "La Jagua del Pilar", "Maicao", "Manaure", "Riohacha", "San Juan del Cesar", "Uribia", "Urumita", "Villanueva"],
+  "Magdalena": ["Algarrobo", "Aracataca", "Ariguaní", "Cerro de San Antonio", "Chibolo", "Ciénaga", "Concordia", "El Banco", "El Piñón", "El Retén", "Fundación", "Guamal", "Nueva Granada", "Pedraza", "Pijiño del Carmen", "Pivijay", "Plato", "Pueblo Viejo", "Remolino", "Sabanas de San Ángel", "Salamina", "San Sebastián de Buenavista", "San Zenón", "Santa Ana", "Santa Bárbara de Pinto", "Santa Marta", "Sitionuevo", "Tenerife", "Zapayán", "Zona Bananera"],
+  "Meta": ["Acacías", "Barranca de Upía", "Cabuyaro", "Castilla la Nueva", "Cubarral", "Cumaral", "El Calvario", "El Castillo", "El Dorado", "Fuente de Oro", "Granada", "Guamal", "La Macarena", "La Uribe", "Lejanías", "Mapiripán", "Mesetas", "Puerto Concordia", "Puerto Gaitán", "Puerto Lleras", "Puerto López", "Puerto Rico", "Restrepo", "San Carlos de Guaroa", "San Juan de Arama", "San Juanito", "San Martín", "Villavicencio", "Vista Hermosa"],
+  "Nariño": ["Aldana", "Ancuyá", "Arboleda", "Barbacoas", "Belén", "Buesaco", "Chachagüí", "Colón", "Consacá", "Contadero", "Córdoba", "Cuaspud", "Cumbal", "Cumbitara", "El Charco", "El Peñol", "El Rosario", "El Tablón", "El Tambo", "Francisco Pizarro", "Funes", "Guachucal", "Guaitarilla", "Gualmatán", "Iles", "Imués", "Ipiales", "La Cruz", "La Florida", "La Llanada", "La Tola", "La Unión", "Leiva", "Linares", "Los Andes", "Magüí Payán", "Mallama", "Mosquera", "Nariño", "Olaya Herrera", "Ospina", "Pasto", "Policarpa", "Potosí", "Providencia", "Puerres", "Pupiales", "Ricaurte", "Roberto Payán", "Samaniego", "San Bernardo", "San José de Albán", "San Lorenzo", "San Pablo", "San Pedro de Cartago", "Sandoná", "Santa Bárbara", "Santacruz", "Sapuyes", "Taminango", "Tangua", "Tumaco", "Túquerres", "Yacuanquer"],
+  "Norte de Santander": ["Ábrego", "Arboledas", "Bochalema", "Bucarasica", "Cáchira", "Cácota", "Chinácota", "Chitagá", "Convención", "Cúcuta", "Cucutilla", "Duranía", "El Carmen", "El Tarra", "El Zulia", "Gramalote", "Hacarí", "Herrán", "La Esperanza", "La Playa de Belén", "Labateca", "Los Patios", "Lourdes", "Mutiscua", "Ocaña", "Pamplona", "Pamplonita", "Puerto Santander", "Ragonvalia", "Salazar de Las Palmas", "San Calixto", "San Cayetano", "Santiago", "Santo Domingo de Silos", "Sardinata", "Teorama", "Tibú", "Toledo", "Villa Caro", "Villa del Rosario"],
+  "Putumayo": ["Colón", "Mocoa", "Orito", "Puerto Asís", "Puerto Caicedo", "Puerto Guzmán", "Puerto Leguízamo", "San Francisco", "San Miguel", "Santiago", "Sibundoy", "Valle del Guamuez", "Villagarzón"],
+  "Quindío": ["Armenia", "Buenavista", "Calarcá", "Circasia", "Córdoba", "Filandia", "Génova", "La Tebaida", "Montenegro", "Pijao", "Quimbaya", "Salento"],
+  "Risaralda": ["Apía", "Balboa", "Belén de Umbría", "Dosquebradas", "Guática", "La Celia", "La Virginia", "Marsella", "Mistrató", "Pereira", "Pueblo Rico", "Quinchía", "Santa Rosa de Cabal", "Santuario"],
+  "San Andrés y Providencia": ["Providencia y Santa Catalina Islas", "San Andrés"],
+  "Santander": ["Aguada", "Albania", "Aratoca", "Barbosa", "Barichara", "Barrancabermeja", "Betulia", "Bolívar", "Bucaramanga", "Cabrera", "California", "Capitanejo", "Carcasí", "Cepitá", "Cerrito", "Charalá", "Charta", "Chima", "Chipatá", "Cimitarra", "Concepción", "Confines", "Contratación", "Coromoro", "Curití", "El Carmen de Chucurí", "El Guacamayo", "El Peñón", "El Playón", "El Socorro", "Encino", "Enciso", "Florián", "Floridablanca", "Galán", "Gámbita", "Girón", "Guaca", "Guadalupe", "Guapotá", "Guavatá", "Güepsa", "Hato", "Jesús María", "Jordán", "La Belleza", "La Paz", "Landázuri", "Lebrija", "Los Santos", "Macaravita", "Málaga", "Matanza", "Mogotes", "Molagavita", "Ocamonte", "Oiba", "Onzaga", "Palmar", "Palmas del Socorro", "Páramo", "Piedecuesta", "Pinchote", "Puente Nacional", "Puerto Parra", "Puerto Wilches", "Rionegro", "Sabana de Torres", "San Andrés", "San Benito", "San Gil", "San Joaquín", "San José de Miranda", "San Miguel", "San Vicente de Chucurí", "Santa Bárbara", "Santa Helena del Opón", "Simacota", "Suaita", "Sucre", "Suratá", "Tona", "Valle de San José", "Vélez", "Vetas", "Villanueva", "Zapatoca"],
+  "Sucre": ["Buenavista", "Caimito", "Chalán", "Coloso", "Corozal", "Coveñas", "El Roble", "Galeras", "Guaranda", "La Unión", "Los Palmitos", "Majagual", "Morroa", "Ovejas", "Sampués", "San Antonio de Palmito", "San Benito Abad", "San Juan de Betulia", "San Marcos", "San Onofre", "San Pedro", "Sincé", "Sincelejo", "Sucre", "Tolú", "Tolú Viejo"],
+  "Tolima": ["Alpujarra", "Alvarado", "Ambalema", "Anzoátegui", "Armero", "Ataco", "Cajamarca", "Carmen de Apicalá", "Casabianca", "Chaparral", "Coello", "Coyaima", "Cunday", "Dolores", "El Espinal", "Falán", "Flandes", "Fresno", "Guamo", "Herveo", "Honda", "Ibagué", "Icononzo", "Lérida", "Líbano", "Mariquita", "Melgar", "Murillo", "Natagaima", "Ortega", "Palocabildo", "Piedras", "Planadas", "Prado", "Purificación", "Rioblanco", "Roncesvalles", "Rovira", "Saldaña", "San Antonio", "San Luis", "Santa Isabel", "Suárez", "Valle de San Juan", "Venadillo", "Villahermosa", "Villarrica"],
+  "Valle del Cauca": ["Alcalá", "Andalucía", "Ansermanuevo", "Argelia", "Bolívar", "Buenaventura", "Buga", "Bugalagrande", "Caicedonia", "Cali", "Calima", "Candelaria", "Cartago", "Dagua", "El Águila", "El Cairo", "El Cerrito", "El Dovio", "Florida", "Ginebra", "Guacarí", "Jamundí", "La Cumbre", "La Unión", "La Victoria", "Obando", "Palmira", "Pradera", "Restrepo", "Riofrío", "Roldanillo", "San Pedro", "Sevilla", "Toro", "Trujillo", "Tuluá", "Ulloa", "Versalles", "Vijes", "Yotoco", "Yumbo", "Zarzal"],
+  "Vaupés": ["Carurú", "Mitú", "Taraira"],
+  "Vichada": ["Cumaribo", "La Primavera", "Puerto Carreño", "Santa Rosalía"],
+  "Bogotá D.C.": ["Bogotá"],
 };
 const EMAIL_DOMAINS = ["gmail.com", "hotmail.com", "outlook.com", "yahoo.com", "icloud.com"];
 const COUNTRIES = ["Colombia", "México", "Perú", "Ecuador", "Venezuela", "Chile", "Argentina", "España", "Estados Unidos", "Otro"];
@@ -59,6 +59,7 @@ type FieldDef = {
   revealKey?: string;
   revealLabel?: string;
   revealCountries?: boolean;
+  default?: string;
   required: boolean;
 };
 
@@ -68,14 +69,13 @@ const FIELDS: FieldDef[] = [
   { step: 0, type: "text", key: "cedula", label: "Número de cédula", numeric: true, required: true },
   { step: 0, type: "text", key: "fechaNacimiento", label: "Fecha de nacimiento", inputType: "date", required: true },
   { step: 0, type: "choice", key: "estadoCivil", label: "Estado civil", options: ["Casado", "Soltero", "Viudo", "Separado", "Otro"], revealOn: "Otro", revealKey: "estadoCivilOtro", required: true },
-  { step: 0, type: "text", key: "nacionalidad", label: "Nacionalidad", required: true },
+  { step: 0, type: "text", key: "nacionalidad", label: "Nacionalidad", default: "Colombiano", required: true },
   { step: 0, type: "choice", key: "otraNacionalidad", label: "¿Tiene otra nacionalidad?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "otraNacionalidadCual", revealLabel: "¿Cuál?", required: true },
   { step: 0, type: "choice", key: "educacion", label: "Nivel más alto de educación", options: ["Escuela secundaria", "Pregrado", "Posgrado", "Doctorado", "Otro"], revealOn: "Otro", revealKey: "educacionOtro", required: true },
   { step: 0, type: "text", key: "institucion", label: "Institución donde se graduó", required: true },
 
   { step: 1, type: "text", key: "direccion", label: "Dirección de residencia actual", required: true },
   { step: 1, type: "text", key: "telefono", label: "Número de teléfono", inputType: "tel", numeric: true, required: true },
-  { step: 1, type: "text", key: "correoElectronico", label: "Correo electrónico (confirmación)", inputType: "email", email: true, required: true },
   { step: 1, type: "text", key: "padreNombre", label: "Nombre y apellido del padre", shortLabel: "Nombre y apellido", required: true },
   { step: 1, type: "text", key: "padreNacionalidad", label: "Nacionalidad del padre", shortLabel: "Nacionalidad", required: true },
   { step: 1, type: "text", key: "padreFecha", label: "Fecha de nacimiento del padre", shortLabel: "Fecha de nacimiento", inputType: "date", required: true },
@@ -110,16 +110,20 @@ const FIELDS: FieldDef[] = [
   { step: 4, type: "text", key: "expTelefono", label: "Teléfono de la empresa", inputType: "tel", numeric: true, required: true },
   { step: 4, type: "text", key: "expSupervisor", label: "Nombre del supervisor", required: true },
   { step: 4, type: "choice", key: "visaChinaAprobada", label: "¿Le han aprobado alguna vez la visa a China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "lugarEmisionVisa", revealLabel: "Lugar de emisión", required: true },
-  { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "hijosDetalle", revealLabel: "Nombres y fechas de nacimiento de tus hijos", required: true },
+  { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], required: true },
 ];
 
 const STEP_LABELS = ["Datos", "Familia", "Emergencia", "Antecedentes", "Ocupación", "Revisión"];
 
+type Hijo = { nombre: string; fecha: string; nacionalidad: string };
 type FormData = Record<string, any>;
 
 function defaultData(): FormData {
   const d: FormData = {};
-  FIELDS.forEach((f) => { if (f.type === "choice" && f.options?.includes("No")) d[f.key] = "No"; });
+  FIELDS.forEach((f) => {
+    if (f.type === "choice" && f.options?.includes("No")) d[f.key] = "No";
+    if (f.default) d[f.key] = f.default;
+  });
   d.paisNacimiento = "Colombia";
   d.paisResidencia = "Colombia";
   return d;
@@ -148,6 +152,7 @@ export default function VisaChinaForm() {
   const [submitted, setSubmitted] = useState(false);
   const [revealBuffers, setRevealBuffers] = useState<Record<string, string>>({});
   const [paisVisitadoInput, setPaisVisitadoInput] = useState("");
+  const [activeSuggestField, setActiveSuggestField] = useState<string | null>(null);
 
   const setField = (key: string, val: any) => { setData((d) => ({ ...d, [key]: val })); setShowError(false); };
 
@@ -164,24 +169,22 @@ export default function VisaChinaForm() {
 
   const isStepValid = (stepIndex: number) => {
     const stepFields = FIELDS.filter((f) => f.step === stepIndex);
-    if (stepFields.some((f) => showErrorCheck(f))) return false;
+    if (stepFields.some((f) => isFieldInvalid(f))) return false;
     if (stepIndex === 0 && (!data.paisNacimiento || !data.departamentoNacimiento || !data.ciudadNacimiento)) return false;
     if (stepIndex === 1 && (!data.paisResidencia || !data.departamentoResidencia || !data.ciudadResidencia)) return false;
-    if (stepIndex === 4 && (!data.paisesVisitadosList || !data.paisesVisitadosList.length)) return false;
-    return true;
-    function showErrorCheck(f: FieldDef) {
-      if (!f.required) return false;
-      if (!data[f.key] || !String(data[f.key]).trim()) return true;
-      if (f.revealOn && data[f.key] === f.revealOn) {
-        if (f.revealCountries) return !data[f.revealKey!] || !data[f.revealKey!].length;
-        return !data[f.revealKey!] || !String(data[f.revealKey!]).trim();
+    if (stepIndex === 4) {
+      if (!data.paisesVisitadosList || !data.paisesVisitadosList.length) return false;
+      if (data.tieneHijos === "Sí") {
+        const list: Hijo[] = data.hijosList || [];
+        if (!list.length) return false;
+        if (list.some((h) => !h.nombre || !h.nombre.trim() || !h.fecha)) return false;
       }
-      return false;
     }
+    return true;
   };
 
-  const goNext = () => { if (!isStepValid(step)) { setShowError(true); return; } setStep((s) => Math.min(5, s + 1)); setShowError(false); };
-  const goBack = () => { setStep((s) => Math.max(0, s - 1)); setShowError(false); };
+  const goNext = () => { if (!isStepValid(step)) { setShowError(true); return; } setStep((s) => Math.min(5, s + 1)); setShowError(false); window.scrollTo(0, 0); };
+  const goBack = () => { setStep((s) => Math.max(0, s - 1)); setShowError(false); window.scrollTo(0, 0); };
 
   const addChip = (revealKey: string, val: string) => {
     const v = val.trim();
@@ -191,6 +194,17 @@ export default function VisaChinaForm() {
     setRevealBuffers((b) => ({ ...b, [revealKey]: "" }));
   };
   const removeChip = (revealKey: string, val: string) => setField(revealKey, (data[revealKey] || []).filter((x: string) => x !== val));
+
+  const addHijo = () => setData((d) => {
+    const list: Hijo[] = d.hijosList || [];
+    if (list.length >= 6) return d;
+    return { ...d, hijosList: [...list, { nombre: "", fecha: "", nacionalidad: "" }] };
+  });
+  const removeHijo = (idx: number) => setData((d) => ({ ...d, hijosList: (d.hijosList || []).filter((_: Hijo, i: number) => i !== idx) }));
+  const updateHijoField = (idx: number, key: keyof Hijo, val: string) => {
+    setData((d) => ({ ...d, hijosList: (d.hijosList || []).map((h: Hijo, i: number) => i === idx ? { ...h, [key]: val } : h) }));
+    setShowError(false);
+  };
 
   const submitForm = () => {
     setSubmitting(true);
@@ -213,6 +227,8 @@ export default function VisaChinaForm() {
     const invalid = showError && isFieldInvalid(f);
     const isChoice = f.type === "choice";
     const span = f.textarea || isChoice ? "1 / -1" : "auto";
+    const suggestions = f.email ? emailSuggestions(data[f.key] || "") : [];
+    const showSuggest = f.email && activeSuggestField === f.key && suggestions.length > 0;
     return (
       <div key={f.key} style={{ gridColumn: span, display: "flex", flexDirection: "column", gap: 6 }}>
         <label style={labelStyle(invalid)}>{f.shortLabel || f.label}{f.required ? " *" : ""}</label>
@@ -220,22 +236,25 @@ export default function VisaChinaForm() {
           <textarea value={data[f.key] || ""} onChange={(e) => setField(f.key, e.target.value)} placeholder={f.placeholder || ""} rows={3} style={{ ...inputStyle(invalid), height: "auto", resize: "vertical" }} />
         )}
         {!isChoice && !f.textarea && (
-          <>
+          <div style={{ position: "relative" }}>
             <input
               type={f.inputType || "text"}
               inputMode={f.numeric ? "numeric" : undefined}
-              list={f.email ? `dl-${f.key}` : undefined}
               value={data[f.key] || ""}
               onChange={(e) => setField(f.key, f.numeric ? e.target.value.replace(/\D/g, "") : e.target.value)}
+              onFocus={() => f.email && setActiveSuggestField(f.key)}
+              onBlur={() => f.email && setTimeout(() => setActiveSuggestField((cur) => cur === f.key ? null : cur), 150)}
               placeholder={f.placeholder || ""}
               style={inputStyle(invalid)}
             />
-            {f.email && (
-              <datalist id={`dl-${f.key}`}>
-                {emailSuggestions(data[f.key] || "").map((opt) => <option key={opt} value={opt} />)}
-              </datalist>
+            {showSuggest && (
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#fff", border: "1px solid rgba(58,44,34,.15)", borderRadius: 10, boxShadow: "0 8px 24px rgba(58,44,34,.14)", zIndex: 30, overflow: "hidden" }}>
+                {suggestions.map((opt) => (
+                  <div key={opt} onMouseDown={() => { setField(f.key, opt); setActiveSuggestField(null); }} style={{ padding: "10px 13px", fontSize: 13.5, cursor: "pointer", borderBottom: "1px solid rgba(58,44,34,.06)" }}>{opt}</div>
+                ))}
+              </div>
             )}
-          </>
+          </div>
         )}
         {isChoice && (
           <>
@@ -264,16 +283,15 @@ export default function VisaChinaForm() {
                 </div>
                 <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
                   <input
-                    list={`dl-${f.revealKey}`}
                     value={revealBuffers[f.revealKey!] || ""}
                     onChange={(e) => setRevealBuffers((b) => ({ ...b, [f.revealKey!]: e.target.value }))}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addChip(f.revealKey!, revealBuffers[f.revealKey!] || ""); } }}
+                    onBlur={() => setTimeout(() => addChip(f.revealKey!, revealBuffers[f.revealKey!] || ""), 150)}
                     placeholder={f.revealLabel}
                     style={{ ...inputStyle(false), flex: 1 }}
                   />
                   <button type="button" onClick={() => setField(f.revealKey!, ["Ninguno"])} style={{ padding: "0 16px", borderRadius: 10, border: "1.5px solid rgba(58,44,34,.2)", background: "#fff", color: colors.ink, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Ninguno</button>
                 </div>
-                <datalist id={`dl-${f.revealKey}`}>{WORLD_COUNTRIES.map((c) => <option key={c} value={c} />)}</datalist>
               </div>
             )}
           </>
@@ -283,7 +301,7 @@ export default function VisaChinaForm() {
     );
   };
 
-  // Location block (nacimiento / residencia), same UX: País → Departamento → Ciudad, Colombia-aware
+  // Bloque de ubicación (nacimiento / residencia): País → Departamento → Ciudad (Colombia con listas, resto texto libre; ciudad siempre texto libre)
   const LocationBlock = ({ prefix, title }: { prefix: "Nacimiento" | "Residencia"; title: string }) => {
     const paisKey = prefix === "Nacimiento" ? "paisNacimiento" : "paisResidencia";
     const deptoKey = prefix === "Nacimiento" ? "departamentoNacimiento" : "departamentoResidencia";
@@ -318,14 +336,8 @@ export default function VisaChinaForm() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <label style={labelStyle(ciudadInvalid)}>Ciudad de {title} *</label>
-          {isColombia ? (
-            <select value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} style={inputStyle(ciudadInvalid)}>
-              <option value="">Selecciona…</option>
-              {(COLOMBIA_GEO[depto] || []).map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          ) : (
-            <input value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} placeholder="Ciudad" style={inputStyle(ciudadInvalid)} />
-          )}
+          <input list={`dl-ciudad-${prefix}`} value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} placeholder="Escribe tu ciudad" style={inputStyle(ciudadInvalid)} />
+          <datalist id={`dl-ciudad-${prefix}`}>{(isColombia && COLOMBIA_GEO[depto] ? COLOMBIA_GEO[depto] : []).map((c) => <option key={c} value={c} />)}</datalist>
           {ciudadInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
         </div>
       </>
@@ -336,13 +348,15 @@ export default function VisaChinaForm() {
 
   const paisesVisitadosList: string[] = data.paisesVisitadosList || [];
   const paisesVisitadosInvalid = showError && !paisesVisitadosList.length;
+  const hijosList: Hijo[] = data.hijosList || [];
+  const showHijos = data.tieneHijos === "Sí";
+  const hijosInvalid = showError && showHijos && !hijosList.length;
 
   const reviewFields = FIELDS.map((f) => {
     let val = data[f.key];
     if (f.revealOn && val === f.revealOn && data[f.revealKey!]) val = val + " — " + (Array.isArray(data[f.revealKey!]) ? data[f.revealKey!].join(", ") : data[f.revealKey!]);
     return { label: f.label, value: val || "" };
   }).filter((r) => r.value);
-  // insert location + países visitados at sensible positions
   const fechaNacIdx = reviewFields.findIndex((r) => r.label === "Fecha de nacimiento");
   reviewFields.splice(fechaNacIdx + 1, 0,
     { label: "País de nacimiento", value: data.paisNacimiento || "" },
@@ -356,6 +370,9 @@ export default function VisaChinaForm() {
     { label: "Ciudad", value: data.ciudadResidencia || "" }
   );
   if (paisesVisitadosList.length) reviewFields.push({ label: "Países visitados en los últimos 2 años", value: paisesVisitadosList.join(", ") });
+  hijosList.forEach((h, i) => {
+    if (h.nombre || h.fecha || h.nacionalidad) reviewFields.push({ label: `Hijo ${i + 1}`, value: [h.nombre, h.nacionalidad, h.fecha].filter(Boolean).join(" — ") });
+  });
 
   return (
     <div style={{ minHeight: "100vh", padding: "clamp(20px,5vw,56px) 16px", display: "flex", justifyContent: "center", background: colors.bg, color: colors.ink, fontFamily: "'Karla',system-ui,sans-serif" }}>
@@ -449,13 +466,48 @@ export default function VisaChinaForm() {
                   value={paisVisitadoInput}
                   onChange={(e) => setPaisVisitadoInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); const v = paisVisitadoInput.trim(); if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); setPaisVisitadoInput(""); } }}
-                  placeholder="Escribe un país y presiona Enter"
+                  onBlur={() => setTimeout(() => { const v = paisVisitadoInput.trim(); if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); setPaisVisitadoInput(""); }, 150)}
+                  placeholder="Escribe un país y presiona Enter, o toca fuera del campo"
                   style={inputStyle(paisesVisitadosInvalid)}
                 />
                 <datalist id="dl-paises-visitados">{WORLD_COUNTRIES.map((c) => <option key={c} value={c} />)}</datalist>
                 {paisesVisitadosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un país</span>}
               </div>
               <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4).map(renderField)}</div>
+              {showHijos && (
+                <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 14 }}>
+                  {hijosList.map((h, i) => {
+                    const nombreInvalid = showError && !h.nombre.trim();
+                    const fechaInvalid = showError && !h.fecha;
+                    return (
+                      <div key={i} style={{ background: colors.bg, borderRadius: 14, padding: "18px 20px", position: "relative" }}>
+                        <button type="button" onClick={() => removeHijo(i)} aria-label="Quitar hijo" style={{ position: "absolute", top: 14, right: 16, width: 24, height: 24, borderRadius: "50%", border: "none", background: "rgba(58,44,34,.12)", color: colors.ink, fontSize: 12, cursor: "pointer" }}>✕</button>
+                        <div style={{ fontFamily: "'Marcellus',serif", fontSize: 14.5, color: colors.terracotta, letterSpacing: ".06em", marginBottom: 14 }}>HIJO {i + 1}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14 }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(nombreInvalid)}>Nombre completo *</label>
+                            <input value={h.nombre} onChange={(e) => updateHijoField(i, "nombre", e.target.value)} style={inputStyle(nombreInvalid)} />
+                            {nombreInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(fechaInvalid)}>Fecha de nacimiento *</label>
+                            <input type="date" value={h.fecha} onChange={(e) => updateHijoField(i, "fecha", e.target.value)} style={inputStyle(fechaInvalid)} />
+                            {fechaInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(false)}>Nacionalidad</label>
+                            <input value={h.nacionalidad} onChange={(e) => updateHijoField(i, "nacionalidad", e.target.value)} style={inputStyle(false)} />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {hijosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un hijo</span>}
+                  {hijosList.length < 6 && (
+                    <button type="button" onClick={addHijo} style={{ alignSelf: "flex-start", padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${colors.teal}`, background: "transparent", color: colors.teal, fontSize: 13.5, fontWeight: 700, cursor: "pointer" }}>+ Agregar hijo</button>
+                  )}
+                </div>
+              )}
             </>
           )}
 
@@ -464,8 +516,8 @@ export default function VisaChinaForm() {
               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 19, color: colors.teal, marginBottom: 4 }}>Revisa y envía</div>
               <div style={{ fontSize: 13, color: colors.muted, marginBottom: 20 }}>Verifica tus respuestas antes de enviar tu formulario.</div>
               <div style={{ background: colors.bg, borderRadius: 14, padding: "16px 18px", maxHeight: 340, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
-                {reviewFields.map((r) => (
-                  <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 14, fontSize: 13, borderBottom: "1px solid rgba(58,44,34,.08)", paddingBottom: 8 }}>
+                {reviewFields.map((r, i) => (
+                  <div key={r.label + i} style={{ display: "flex", justifyContent: "space-between", gap: 14, fontSize: 13, borderBottom: "1px solid rgba(58,44,34,.08)", paddingBottom: 8 }}>
                     <span style={{ color: colors.muted, flexShrink: 0, maxWidth: "55%" }}>{r.label}</span>
                     <span style={{ fontWeight: 600, textAlign: "right" }}>{r.value}</span>
                   </div>
