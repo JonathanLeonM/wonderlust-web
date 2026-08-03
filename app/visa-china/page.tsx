@@ -153,6 +153,13 @@ export default function VisaChinaForm() {
   const [revealBuffers, setRevealBuffers] = useState<Record<string, string>>({});
   const [paisVisitadoInput, setPaisVisitadoInput] = useState("");
   const [activeSuggestField, setActiveSuggestField] = useState<string | null>(null);
+  const [activeCityField, setActiveCityField] = useState<string | null>(null);
+
+  const citySuggestions = (options: string[], value: string) => {
+    const v = (value || "").trim().toLowerCase();
+    const list = v ? options.filter((c) => c.toLowerCase().includes(v)) : options;
+    return list.slice(0, 30);
+  };
 
   const setField = (key: string, val: any) => { setData((d) => ({ ...d, [key]: val })); setShowError(false); };
 
@@ -336,8 +343,23 @@ export default function VisaChinaForm() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <label style={labelStyle(ciudadInvalid)}>Ciudad de {title} *</label>
-          <input list={`dl-ciudad-${prefix}`} value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} placeholder="Escribe tu ciudad" style={inputStyle(ciudadInvalid)} />
-          <datalist id={`dl-ciudad-${prefix}`}>{(isColombia && COLOMBIA_GEO[depto] ? COLOMBIA_GEO[depto] : []).map((c) => <option key={c} value={c} />)}</datalist>
+          <div style={{ position: "relative" }}>
+            <input
+              value={data[ciudadKey] || ""}
+              onChange={(e) => setField(ciudadKey, e.target.value)}
+              onFocus={() => setActiveCityField(prefix)}
+              onBlur={() => setTimeout(() => setActiveCityField((cur) => cur === prefix ? null : cur), 150)}
+              placeholder="Escribe tu ciudad"
+              style={inputStyle(ciudadInvalid)}
+            />
+            {activeCityField === prefix && isColombia && !!(COLOMBIA_GEO[depto] || []).length && (
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, maxHeight: 220, overflowY: "auto", background: "#fff", border: "1px solid rgba(58,44,34,.15)", borderRadius: 10, boxShadow: "0 8px 24px rgba(58,44,34,.14)", zIndex: 30 }}>
+                {citySuggestions(COLOMBIA_GEO[depto] || [], data[ciudadKey] || "").map((c) => (
+                  <div key={c} onMouseDown={() => { setField(ciudadKey, c); setActiveCityField(null); }} style={{ padding: "10px 13px", fontSize: 13.5, cursor: "pointer", borderBottom: "1px solid rgba(58,44,34,.06)" }}>{c}</div>
+                ))}
+              </div>
+            )}
+          </div>
           {ciudadInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
         </div>
       </>
