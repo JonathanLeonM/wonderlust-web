@@ -153,14 +153,6 @@ export default function VisaChinaForm() {
   const [revealBuffers, setRevealBuffers] = useState<Record<string, string>>({});
   const [paisVisitadoInput, setPaisVisitadoInput] = useState("");
   const [activeSuggestField, setActiveSuggestField] = useState<string | null>(null);
-  const [activeCityField, setActiveCityField] = useState<string | null>(null);
-
-  const citySuggestions = (options: string[], value: string) => {
-    const v = (value || "").trim().toLowerCase();
-    const list = v ? options.filter((c) => c.toLowerCase().includes(v)) : options;
-    return list.slice(0, 30);
-  };
-
   const setField = (key: string, val: any) => { setData((d) => ({ ...d, [key]: val })); setShowError(false); };
 
   const isFieldInvalid = (f: FieldDef) => {
@@ -343,23 +335,14 @@ export default function VisaChinaForm() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <label style={labelStyle(ciudadInvalid)}>Ciudad de {title} *</label>
-          <div style={{ position: "relative" }}>
-            <input
-              value={data[ciudadKey] || ""}
-              onChange={(e) => setField(ciudadKey, e.target.value)}
-              onFocus={() => setActiveCityField(prefix)}
-              onBlur={() => setTimeout(() => setActiveCityField((cur) => cur === prefix ? null : cur), 150)}
-              placeholder="Escribe tu ciudad"
-              style={inputStyle(ciudadInvalid)}
-            />
-            {activeCityField === prefix && isColombia && !!(COLOMBIA_GEO[depto] || []).length && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, maxHeight: 220, overflowY: "auto", background: "#fff", border: "1px solid rgba(58,44,34,.15)", borderRadius: 10, boxShadow: "0 8px 24px rgba(58,44,34,.14)", zIndex: 30 }}>
-                {citySuggestions(COLOMBIA_GEO[depto] || [], data[ciudadKey] || "").map((c) => (
-                  <div key={c} onMouseDown={() => { setField(ciudadKey, c); setActiveCityField(null); }} style={{ padding: "10px 13px", fontSize: 13.5, cursor: "pointer", borderBottom: "1px solid rgba(58,44,34,.06)" }}>{c}</div>
-                ))}
-              </div>
-            )}
-          </div>
+          {isColombia ? (
+            <select value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} style={inputStyle(ciudadInvalid)}>
+              <option value="">Selecciona…</option>
+              {(COLOMBIA_GEO[depto] || []).map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          ) : (
+            <input value={data[ciudadKey] || ""} onChange={(e) => setField(ciudadKey, e.target.value)} placeholder="Escribe tu ciudad" style={inputStyle(ciudadInvalid)} />
+          )}
           {ciudadInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
         </div>
       </>
@@ -405,19 +388,16 @@ export default function VisaChinaForm() {
           <p style={{ fontSize: 14.5, color: colors.muted, margin: "10px auto 0", maxWidth: 480, lineHeight: 1.55 }}>Completa tus datos con calma — puedes ir y volver entre pasos. Al final tu formulario queda registrado con nosotros para iniciar tu trámite.</p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 26 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 0, marginBottom: 34, borderBottom: "1px solid rgba(58,44,34,.16)" }}>
           {STEP_LABELS.map((label, i) => (
-            <div key={label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: i < step ? "pointer" : "default" }} onClick={() => i < step && setStep(i)}>
-              <div style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, border: `1.5px solid ${colors.teal}`, background: i <= step ? colors.teal : colors.card, color: i <= step ? colors.cream : colors.teal }}>{i + 1}</div>
-              <div style={{ fontSize: 10, letterSpacing: ".04em", color: i === step ? colors.teal : colors.faint, textAlign: "center" }}>{label}</div>
+            <div key={label} style={{ flex: 1, textAlign: "center", paddingBottom: 11, cursor: i < step ? "pointer" : "default", borderBottom: `2px solid ${i <= step ? colors.teal : "transparent"}`, marginBottom: -1, transition: "border-color .25s ease" }} onClick={() => i < step && setStep(i)}>
+              <div style={{ fontFamily: "'Marcellus',serif", fontSize: 16, color: i <= step ? colors.teal : colors.faint, marginBottom: 4 }}>{i + 1}</div>
+              <div style={{ fontSize: 9.5, letterSpacing: ".09em", color: i === step ? colors.teal : colors.faint, textAlign: "center", textTransform: "uppercase" }}>{label}</div>
             </div>
           ))}
         </div>
-        <div style={{ height: 3, background: "rgba(58,44,34,.1)", borderRadius: 2, marginBottom: 30, overflow: "hidden" }}>
-          <div style={{ height: "100%", background: colors.terracotta, borderRadius: 2, transition: "width .35s ease", width: `${(step / 5) * 100}%` }} />
-        </div>
 
-        <div style={{ background: colors.card, borderRadius: 20, padding: "clamp(22px,4vw,38px)", boxShadow: "0 10px 40px rgba(58,44,34,.08)", border: "1px solid rgba(58,44,34,.07)" }}>
+        <div style={{ background: colors.card, borderRadius: "2px 30px 2px 30px", padding: "clamp(22px,4vw,38px)", border: "1px solid rgba(58,44,34,.16)", boxShadow: "0 1px 0 rgba(58,44,34,.05)" }}>
           {step === 0 && (
             <>
               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 19, color: colors.teal, marginBottom: 4 }}>Datos personales</div>
@@ -545,11 +525,11 @@ export default function VisaChinaForm() {
                   </div>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start", background: "#fff", border: "1px solid rgba(224,169,74,.4)", borderRadius: 12, padding: "14px 16px", marginBottom: 22 }}>
-                <span style={{ fontSize: 18 }}>📎</span>
+              <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "#fff", border: "1px solid rgba(58,44,34,.14)", padding: "14px 16px", marginBottom: 22 }}>
+                <div style={{ width: 3, alignSelf: "stretch", background: "#e0a94a", flexShrink: 0 }} />
                 <div style={{ fontSize: 13, lineHeight: 1.5 }}>No olvides tener a la mano la <strong>foto de tu pasaporte</strong>: te la pediremos en el siguiente paso de tu trámite.</div>
               </div>
-              <button type="button" onClick={submitForm} disabled={submitting} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: colors.teal, color: colors.cream, fontSize: 15.5, fontWeight: 700, padding: 16, border: "none", borderRadius: 12, cursor: "pointer" }}>
+              <button type="button" onClick={submitForm} disabled={submitting} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: colors.teal, color: colors.cream, fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", padding: 16, border: "none", borderRadius: "2px 14px 2px 14px", cursor: "pointer" }}>
                 Enviar formulario
               </button>
             </>
@@ -557,7 +537,9 @@ export default function VisaChinaForm() {
 
           {submitted && (
             <div style={{ textAlign: "center", padding: "30px 10px" }}>
-              <div style={{ fontSize: 40, marginBottom: 14 }}>✅</div>
+              <div style={{ width: 62, height: 62, borderRadius: "50%", border: `2px solid ${colors.teal}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", transform: "rotate(-8deg)" }}>
+                <span style={{ fontFamily: "'Marcellus',serif", fontSize: 26, color: colors.teal, transform: "rotate(8deg)" }}>✓</span>
+              </div>
               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 22, color: colors.teal, marginBottom: 10 }}>¡Formulario recibido!</div>
               <div style={{ fontSize: 14, color: colors.muted, lineHeight: 1.6, maxWidth: 420, margin: "0 auto" }}>Ya guardamos tus datos de forma privada. Nuestro equipo se pondrá en contacto contigo para continuar con tu trámite de Visa China.</div>
             </div>
@@ -567,8 +549,8 @@ export default function VisaChinaForm() {
 
           {!submitted && (
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 28, paddingTop: 22, borderTop: "1px solid rgba(58,44,34,.08)" }}>
-              {step === 0 ? <span /> : <button type="button" onClick={goBack} style={{ padding: "13px 24px", borderRadius: 10, border: "1.5px solid rgba(58,44,34,.25)", background: "transparent", color: colors.ink, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>Atrás</button>}
-              {step !== 5 && <button type="button" onClick={goNext} style={{ padding: "13px 30px", borderRadius: 10, border: "none", background: colors.teal, color: colors.cream, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Siguiente</button>}
+              {step === 0 ? <span /> : <button type="button" onClick={goBack} style={{ padding: "13px 6px", border: "none", background: "transparent", color: colors.muted, fontSize: 14, fontWeight: 600, cursor: "pointer", letterSpacing: ".02em" }}>← Atrás</button>}
+              {step !== 5 && <button type="button" onClick={goNext} style={{ padding: "13px 28px", borderRadius: "2px 12px 2px 12px", border: "none", background: colors.teal, color: colors.cream, fontSize: 14, fontWeight: 700, letterSpacing: ".03em", cursor: "pointer" }}>Siguiente →</button>}
             </div>
           )}
         </div>
