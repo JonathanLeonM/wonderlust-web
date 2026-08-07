@@ -281,14 +281,10 @@ export default function VisaChinaForm() {
                   ))}
                 </div>
                 <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                  <input
-                    value={revealBuffers[f.revealKey!] || ""}
-                    onChange={(e) => setRevealBuffers((b) => ({ ...b, [f.revealKey!]: e.target.value }))}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addChip(f.revealKey!, revealBuffers[f.revealKey!] || ""); } }}
-                    onBlur={() => setTimeout(() => addChip(f.revealKey!, revealBuffers[f.revealKey!] || ""), 150)}
-                    placeholder={f.revealLabel}
-                    style={{ ...inputStyle(false), flex: 1 }}
-                  />
+                  <select value="" onChange={(e) => { const v = e.target.value; if (v) addChip(f.revealKey!, v); }} style={{ ...inputStyle(false), flex: 1 }}>
+                    <option value="">+ Agregar país…</option>
+                    {WORLD_COUNTRIES.filter((c) => !(data[f.revealKey!] || []).includes(c)).map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
                   <button type="button" onClick={() => setField(f.revealKey!, ["Ninguno"])} style={{ padding: "0 16px", borderRadius: 10, border: "1.5px solid rgba(58,44,34,.2)", background: "#fff", color: colors.ink, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Ninguno</button>
                 </div>
               </div>
@@ -463,16 +459,10 @@ export default function VisaChinaForm() {
                     </div>
                   ))}
                 </div>
-                <input
-                  list="dl-paises-visitados"
-                  value={paisVisitadoInput}
-                  onChange={(e) => setPaisVisitadoInput(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); const v = paisVisitadoInput.trim(); if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); setPaisVisitadoInput(""); } }}
-                  onBlur={() => setTimeout(() => { const v = paisVisitadoInput.trim(); if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); setPaisVisitadoInput(""); }, 150)}
-                  placeholder="Escribe un país y presiona Enter, o toca fuera del campo"
-                  style={inputStyle(paisesVisitadosInvalid)}
-                />
-                <datalist id="dl-paises-visitados">{WORLD_COUNTRIES.map((c) => <option key={c} value={c} />)}</datalist>
+                <select value="" onChange={(e) => { const v = e.target.value; if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); }} style={inputStyle(paisesVisitadosInvalid)}>
+                  <option value="">+ Agregar país…</option>
+                  {WORLD_COUNTRIES.filter((c) => !paisesVisitadosList.includes(c)).map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
                 {paisesVisitadosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un país</span>}
               </div>
               <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4).map(renderField)}</div>
