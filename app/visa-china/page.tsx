@@ -205,9 +205,38 @@ export default function VisaChinaForm() {
     setShowError(false);
   };
 
+  const buildOrderedPayload = () => {
+    // Fixed key order + readable Spanish titles, so every row lands in the same
+    // columns regardless of the order the user filled fields in.
+    const out: Record<string, any> = {};
+    out['Fecha de envío'] = new Date().toISOString();
+    FIELDS.forEach((f: any) => {
+      const val = data[f.key] || '';
+      out[f.label] = val;
+      if (f.revealOn && val === f.revealOn && f.revealKey) {
+        const revLabel = f.label + ' — ' + (f.revealLabel || 'detalle');
+        out[revLabel] = f.revealCountries ? (data[f.revealKey] || []).join(', ') : (data[f.revealKey] || '');
+      }
+      if (f.key === 'direccion') {
+        out['País de residencia'] = data.paisResidencia || '';
+        out['Departamento / Estado de residencia'] = data.departamentoResidencia || '';
+        out['Ciudad de residencia'] = data.ciudadResidencia || '';
+      }
+      if (f.key === 'fechaNacimiento') {
+        out['País de nacimiento'] = data.paisNacimiento || '';
+        out['Departamento / Estado de nacimiento'] = data.departamentoNacimiento || '';
+        out['Ciudad de nacimiento'] = data.ciudadNacimiento || '';
+      }
+    });
+    out['Países visitados en los últimos 2 años'] = (data.paisesVisitadosList || []).join(', ');
+    const hijosList = data.hijosList || [];
+    out['Hijos'] = hijosList.map((h: any) => [h.nombre, h.nacionalidad, h.fecha].filter(Boolean).join(' — ')).join('; ');
+    return out;
+  };
+
   const submitForm = () => {
     setSubmitting(true);
-    const payload = { ...data, _enviado: new Date().toISOString() };
+    const payload = buildOrderedPayload();
     const done = () => { setSubmitting(false); setSubmitted(true); };
     // XMLHttpRequest (not fetch): Apps Script /exec responds with a 302 redirect, and
     // fetch's no-cors mode silently follows it by converting the POST into a GET, which
