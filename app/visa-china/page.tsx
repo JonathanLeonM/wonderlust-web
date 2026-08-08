@@ -362,7 +362,7 @@ export default function VisaChinaForm() {
                 );
               })}
             </div>
-            {f.revealOn && data[f.key] === f.revealOn && !f.revealCountries && !f.revealMonthYear && (
+            {f.revealOn && data[f.key] === f.revealOn && !f.revealCountries && !f.revealMonthYear && !f.revealMonthYearList && (
               <div style={{ marginTop: 6 }}>
                 <div style={{ fontSize: 11.5, fontWeight: 700, color: "#6b5c4a", marginBottom: 4, textTransform: "uppercase", letterSpacing: ".02em" }}>{f.revealLabel || "Especifica cuál"}</div>
                 <input value={data[f.revealKey!] || ""} onChange={(e) => setField(f.revealKey!, e.target.value)} placeholder={f.revealLabel || "Especifica cuál"} style={{ ...inputStyle(showError && !String(data[f.revealKey!] || "").trim()), width: "100%" }} />
