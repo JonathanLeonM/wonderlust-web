@@ -59,6 +59,7 @@ type FieldDef = {
   revealKey?: string;
   revealLabel?: string;
   revealCountries?: boolean;
+  revealMonthYear?: boolean;
   default?: string;
   required: boolean;
 };
@@ -89,7 +90,7 @@ const FIELDS: FieldDef[] = [
   { step: 2, type: "text", key: "contactoTelefono", label: "Teléfono del contacto de emergencia", inputType: "tel", numeric: true, required: true },
   { step: 2, type: "text", key: "contactoCorreo", label: "Correo del contacto de emergencia", inputType: "email", email: true, required: true },
   { step: 2, type: "choice", key: "quienPaga", label: "¿Quién pagará el viaje?", options: ["Yo", "Empresa", "Otro"], revealOn: "Otro", revealKey: "quienPagaOtro", required: true },
-  { step: 2, type: "choice", key: "haEstadoChina", label: "¿Alguna vez ha estado en China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "haEstadoChinaFechas", revealLabel: "¿En qué fechas?", required: true },
+  { step: 2, type: "choice", key: "haEstadoChina", label: "¿Alguna vez ha estado en China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "haEstadoChinaFechas", revealLabel: "¿En qué fechas?", revealMonthYear: true, required: true },
 
   { step: 3, type: "choice", key: "otrasVisasVigentes", label: "¿Posee alguna visa válida emitida por otros países?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "otrasVisasVigentesPaises", revealLabel: "Escribe un país y presiona Enter", revealCountries: true, required: true },
   { step: 3, type: "choice", key: "visaNegada", label: "¿Alguna vez le han negado la visa a China?", options: ["Sí", "No"], required: true },
@@ -187,6 +188,7 @@ export default function VisaChinaForm() {
     const empty = !data[f.key] || !String(data[f.key]).trim();
     if (empty) return true;
     if (f.revealOn && data[f.key] === f.revealOn) {
+      if (f.revealMonthYear) return !data[f.revealKey+'Mes'] || !data[f.revealKey+'Anio'];
       if (f.revealCountries) return !data[f.revealKey!] || !data[f.revealKey!].length;
       return !data[f.revealKey!] || !String(data[f.revealKey!]).trim();
     }
@@ -245,9 +247,10 @@ export default function VisaChinaForm() {
     FIELDS.forEach((f: any) => {
       const val = data[f.key] || '';
       out[f.label] = val;
-      if (f.revealOn && val === f.revealOn && f.revealKey) {
+      if (f.revealKey) {
         const revLabel = f.label + ' — ' + (f.revealLabel || 'detalle');
-        out[revLabel] = f.revealCountries ? (data[f.revealKey] || []).join(', ') : (data[f.revealKey] || '');
+        const active = f.revealOn && val === f.revealOn;
+        out[revLabel] = !active ? '' : f.revealMonthYear ? [data[f.revealKey+'Mes'], data[f.revealKey+'Anio']].filter(Boolean).join(' ') : f.revealCountries ? (data[f.revealKey] || []).join(', ') : (data[f.revealKey] || '');
       }
       if (f.key === 'direccion') {
         out['País de residencia'] = data.paisResidencia || '';
@@ -262,18 +265,25 @@ export default function VisaChinaForm() {
     });
     out['Países visitados en los últimos 2 años'] = (data.paisesVisitadosList || []).join(', ');
     const experienciasList: Experiencia[] = data.experienciasList || [];
-    experienciasList.forEach((e, i) => {
+    for (let i = 0; i < 5; i++) {
+      const e = experienciasList[i];
       const n = i + 1;
-      const fechas = e.actual ? (e.mesInicio + ' ' + e.anioInicio + ' – Actualmente') : (e.mesInicio + ' ' + e.anioInicio + ' – ' + e.mesFin + ' ' + e.anioFin);
-      out['Experiencia ' + n + ' — Empresa'] = e.empresa || '';
-      out['Experiencia ' + n + ' — Cargo'] = e.cargo || '';
+      const fechas = e ? (e.actual ? (e.mesInicio + ' ' + e.anioInicio + ' – Actualmente') : (e.mesInicio + ' ' + e.anioInicio + ' – ' + e.mesFin + ' ' + e.anioFin)) : '';
+      out['Experiencia ' + n + ' — Empresa'] = e ? (e.empresa || '') : '';
+      out['Experiencia ' + n + ' — Cargo'] = e ? (e.cargo || '') : '';
       out['Experiencia ' + n + ' — Fechas'] = fechas.trim();
-      out['Experiencia ' + n + ' — Dirección'] = e.direccion || '';
-      out['Experiencia ' + n + ' — Teléfono'] = e.telefono || '';
-      out['Experiencia ' + n + ' — Supervisor'] = e.supervisor || '';
-    });
+      out['Experiencia ' + n + ' — Dirección'] = e ? (e.direccion || '') : '';
+      out['Experiencia ' + n + ' — Teléfono'] = e ? (e.telefono || '') : '';
+      out['Experiencia ' + n + ' — Supervisor'] = e ? (e.supervisor || '') : '';
+    }
     const hijosList = data.hijosList || [];
-    out['Hijos'] = hijosList.map((h: any) => [h.nombre, h.nacionalidad, h.fecha].filter(Boolean).join(' — ')).join('; ');
+    for (let i = 0; i < 6; i++) {
+      const h = hijosList[i];
+      const n = i + 1;
+      out['Hijo ' + n + ' — Nombre'] = h ? (h.nombre || '') : '';
+      out['Hijo ' + n + ' — Nacionalidad'] = h ? (h.nacionalidad || '') : '';
+      out['Hijo ' + n + ' — Fecha de nacimiento'] = h ? (h.fecha || '') : '';
+    }
     return out;
   };
 
@@ -339,10 +349,25 @@ export default function VisaChinaForm() {
                 );
               })}
             </div>
-            {f.revealOn && data[f.key] === f.revealOn && !f.revealCountries && (
+            {f.revealOn && data[f.key] === f.revealOn && !f.revealCountries && !f.revealMonthYear && (
               <div style={{ marginTop: 6 }}>
                 <div style={{ fontSize: 11.5, fontWeight: 700, color: "#6b5c4a", marginBottom: 4, textTransform: "uppercase", letterSpacing: ".02em" }}>{f.revealLabel || "Especifica cuál"}</div>
                 <input value={data[f.revealKey!] || ""} onChange={(e) => setField(f.revealKey!, e.target.value)} placeholder={f.revealLabel || "Especifica cuál"} style={{ ...inputStyle(showError && !String(data[f.revealKey!] || "").trim()), width: "100%" }} />
+              </div>
+            )}
+            {f.revealOn && data[f.key] === f.revealOn && f.revealMonthYear && (
+              <div style={{ marginTop: 6 }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#6b5c4a", marginBottom: 4, textTransform: "uppercase", letterSpacing: ".02em" }}>{f.revealLabel}</div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <select value={data[f.revealKey+'Mes'] || ""} onChange={(e) => setField(f.revealKey+'Mes', e.target.value)} style={{ ...inputStyle(showError && !data[f.revealKey+'Mes']), flex: 1 }}>
+                    <option value="">Mes</option>
+                    {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <select value={data[f.revealKey+'Anio'] || ""} onChange={(e) => setField(f.revealKey+'Anio', e.target.value)} style={{ ...inputStyle(showError && !data[f.revealKey+'Anio']), flex: 1 }}>
+                    <option value="">Año</option>
+                    {yearsList().map((y) => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
               </div>
             )}
             {f.revealOn && data[f.key] === f.revealOn && f.revealCountries && (
@@ -433,7 +458,8 @@ export default function VisaChinaForm() {
 
   const reviewFields = FIELDS.map((f) => {
     let val = data[f.key];
-    if (f.revealOn && val === f.revealOn && data[f.revealKey!]) val = val + " — " + (Array.isArray(data[f.revealKey!]) ? data[f.revealKey!].join(", ") : data[f.revealKey!]);
+    if (f.revealOn && val === f.revealOn && f.revealMonthYear && data[f.revealKey+'Mes']) val = val + " — " + data[f.revealKey+'Mes'] + " " + data[f.revealKey+'Anio'];
+    else if (f.revealOn && val === f.revealOn && data[f.revealKey!]) val = val + " — " + (Array.isArray(data[f.revealKey!]) ? data[f.revealKey!].join(", ") : data[f.revealKey!]);
     return { label: f.label, value: val || "" };
   }).filter((r) => r.value);
   const fechaNacIdx = reviewFields.findIndex((r) => r.label === "Fecha de nacimiento");
@@ -558,7 +584,7 @@ export default function VisaChinaForm() {
                         <button type="button" onClick={() => removeExperiencia(i)} aria-label="Quitar experiencia" style={{ position: "absolute", top: 14, right: 16, width: 24, height: 24, borderRadius: "50%", border: "none", background: "rgba(58,44,34,.12)", color: colors.ink, fontSize: 12, cursor: "pointer" }}>✕</button>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                           <div style={{ fontFamily: "'Marcellus',serif", fontSize: 14.5, color: colors.terracotta, letterSpacing: ".06em" }}>EXPERIENCIA {i + 1}</div>
-                          <button type="button" onClick={() => autofillExperienciaHGW(i)} style={{ padding: "5px 14px", borderRadius: 999, border: `1.5px solid ${colors.teal}`, background: "#fff", color: colors.teal, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Autocompletar HGW</button>
+                          <button type="button" onClick={() => autofillExperienciaHGW(i)} style={{ padding: "5px 14px", borderRadius: 999, border: `1.5px solid ${colors.teal}`, background: "#fff", color: colors.teal, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>HGW</button>
                         </div>
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14 }}>
                           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
