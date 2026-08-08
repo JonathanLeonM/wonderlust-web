@@ -60,6 +60,7 @@ type FieldDef = {
   revealLabel?: string;
   revealCountries?: boolean;
   revealMonthYear?: boolean;
+  revealMonthYearList?: boolean;
   default?: string;
   required: boolean;
 };
@@ -90,7 +91,7 @@ const FIELDS: FieldDef[] = [
   { step: 2, type: "text", key: "contactoTelefono", label: "Teléfono del contacto de emergencia", inputType: "tel", numeric: true, required: true },
   { step: 2, type: "text", key: "contactoCorreo", label: "Correo del contacto de emergencia", inputType: "email", email: true, required: true },
   { step: 2, type: "choice", key: "quienPaga", label: "¿Quién pagará el viaje?", options: ["Yo", "Empresa", "Otro"], revealOn: "Otro", revealKey: "quienPagaOtro", required: true },
-  { step: 2, type: "choice", key: "haEstadoChina", label: "¿Alguna vez ha estado en China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "haEstadoChinaFechas", revealLabel: "¿En qué fechas?", revealMonthYear: true, required: true },
+  { step: 2, type: "choice", key: "haEstadoChina", label: "¿Alguna vez ha estado en China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "haEstadoChinaFechas", revealLabel: "¿En qué fechas?", revealMonthYearList: true, required: true },
 
   { step: 3, type: "choice", key: "otrasVisasVigentes", label: "¿Posee alguna visa válida emitida por otros países?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "otrasVisasVigentesPaises", revealLabel: "Escribe un país y presiona Enter", revealCountries: true, required: true },
   { step: 3, type: "choice", key: "visaNegada", label: "¿Alguna vez le han negado la visa a China?", options: ["Sí", "No"], required: true },
@@ -103,7 +104,7 @@ const FIELDS: FieldDef[] = [
   { step: 3, type: "choice", key: "organizacionBenefica", label: "¿Trabaja para alguna organización profesional, social o benéfica?", options: ["Sí", "No"], required: true },
   { step: 3, type: "text", key: "declaracionAdicional", label: "¿Hay algo más que quieras declarar?", textarea: true, required: true },
 
-  { step: 4, type: "choice", key: "ocupacion", label: "Ocupación", options: ["Empresario", "Jubilado", "Empleado de empresa", "Artista", "Estudiante", "Personal militar", "Trabajador por cuenta propia", "Otro"], revealOn: "Otro", revealKey: "ocupacionOtro", required: true },
+  { step: 4, type: "choice", key: "ocupacion", label: "Ocupación", options: ["Empresario", "Jubilado", "Empleado de empresa", "Artista", "Estudiante", "Personal militar", "Trabajador por cuenta propia", "Otro", "HGW"], revealOn: "Otro", revealKey: "ocupacionOtro", required: true },
   { step: 4, type: "choice", key: "visaChinaAprobada", label: "¿Le han aprobado alguna vez la visa a China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "lugarEmisionVisa", revealLabel: "Lugar de emisión", required: true },
   { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], required: true },
 ];
@@ -157,9 +158,20 @@ export default function VisaChinaForm() {
   const setField = (key: string, val: any) => {
     setData((d) => {
       const next = { ...d, [key]: val };
-      if (key === 'ocupacion' && val === 'Empleado de empresa' && !(d.experienciasList || []).length) next.experienciasList = [emptyExperiencia()];
+      if (key === 'ocupacion' && (val === 'Empleado de empresa' || val === 'HGW') && !(d.experienciasList || []).length) next.experienciasList = [val === 'HGW' ? { ...HGW_DEFAULTS } : emptyExperiencia()];
+      if (key === 'haEstadoChina' && val === 'Sí' && !(d.haEstadoChinaFechas || []).length) next.haEstadoChinaFechas = [{ mes: '', anio: '' }];
       return next;
     });
+    setShowError(false);
+  };
+  const addRevealDate = (revealKey: string) => setData((d) => {
+    const list = d[revealKey] || [];
+    if (list.length >= 6) return d;
+    return { ...d, [revealKey]: [...list, { mes: '', anio: '' }] };
+  });
+  const removeRevealDate = (revealKey: string, idx: number) => setData((d) => ({ ...d, [revealKey]: (d[revealKey] || []).filter((_: any, i: number) => i !== idx) }));
+  const updateRevealDate = (revealKey: string, idx: number, key: string, val: string) => {
+    setData((d) => ({ ...d, [revealKey]: (d[revealKey] || []).map((v: any, i: number) => i === idx ? { ...v, [key]: val } : v) }));
     setShowError(false);
   };
   const addExperiencia = () => setData((d) => {
@@ -188,6 +200,7 @@ export default function VisaChinaForm() {
     const empty = !data[f.key] || !String(data[f.key]).trim();
     if (empty) return true;
     if (f.revealOn && data[f.key] === f.revealOn) {
+      if (f.revealMonthYearList) { const list = data[f.revealKey!] || []; return !list.length || list.some((v: any) => !v.mes || !v.anio); }
       if (f.revealMonthYear) return !data[f.revealKey+'Mes'] || !data[f.revealKey+'Anio'];
       if (f.revealCountries) return !data[f.revealKey!] || !data[f.revealKey!].length;
       return !data[f.revealKey!] || !String(data[f.revealKey!]).trim();
@@ -202,7 +215,7 @@ export default function VisaChinaForm() {
     if (stepIndex === 1 && (!data.paisResidencia || !data.departamentoResidencia || !data.ciudadResidencia)) return false;
     if (stepIndex === 4) {
       if (!data.paisesVisitadosList || !data.paisesVisitadosList.length) return false;
-      if (data.ocupacion === "Empleado de empresa") {
+      if (data.ocupacion === "Empleado de empresa" || data.ocupacion === "HGW") {
         const list: Experiencia[] = data.experienciasList || [];
         if (!list.length) return false;
         if (list.some((e) => !e.empresa || !e.cargo || !e.mesInicio || !e.anioInicio || (!e.actual && (!e.mesFin || !e.anioFin)) || !e.direccion || !e.telefono || !e.supervisor)) return false;
@@ -250,7 +263,7 @@ export default function VisaChinaForm() {
       if (f.revealKey) {
         const revLabel = f.label + ' — ' + (f.revealLabel || 'detalle');
         const active = f.revealOn && val === f.revealOn;
-        out[revLabel] = !active ? '' : f.revealMonthYear ? [data[f.revealKey+'Mes'], data[f.revealKey+'Anio']].filter(Boolean).join(' ') : f.revealCountries ? (data[f.revealKey] || []).join(', ') : (data[f.revealKey] || '');
+        out[revLabel] = !active ? '' : f.revealMonthYearList ? (data[f.revealKey] || []).map((v: any) => v.mes + ' ' + v.anio).join(', ') : f.revealMonthYear ? [data[f.revealKey+'Mes'], data[f.revealKey+'Anio']].filter(Boolean).join(' ') : f.revealCountries ? (data[f.revealKey] || []).join(', ') : (data[f.revealKey] || '');
       }
       if (f.key === 'direccion') {
         out['País de residencia'] = data.paisResidencia || '';
@@ -370,6 +383,27 @@ export default function VisaChinaForm() {
                 </div>
               </div>
             )}
+            {f.revealOn && data[f.key] === f.revealOn && f.revealMonthYearList && (
+              <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#6b5c4a", textTransform: "uppercase", letterSpacing: ".02em" }}>{f.revealLabel}</div>
+                {(data[f.revealKey!] || []).map((v: any, ri: number) => (
+                  <div key={ri} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <select value={v.mes} onChange={(e) => updateRevealDate(f.revealKey!, ri, "mes", e.target.value)} style={{ ...inputStyle(showError && !v.mes), flex: 1 }}>
+                      <option value="">Mes</option>
+                      {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    <select value={v.anio} onChange={(e) => updateRevealDate(f.revealKey!, ri, "anio", e.target.value)} style={{ ...inputStyle(showError && !v.anio), flex: 1 }}>
+                      <option value="">Año</option>
+                      {yearsList().map((y) => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                    <button type="button" onClick={() => removeRevealDate(f.revealKey!, ri)} aria-label="Quitar fecha" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", border: "none", background: "rgba(58,44,34,.12)", color: colors.ink, fontSize: 13, cursor: "pointer" }}>✕</button>
+                  </div>
+                ))}
+                {(data[f.revealKey!] || []).length < 6 && (
+                  <button type="button" onClick={() => addRevealDate(f.revealKey!)} style={{ alignSelf: "flex-start", padding: "7px 16px", borderRadius: 10, border: `1.5px solid ${colors.teal}`, background: "transparent", color: colors.teal, fontSize: 12.5, fontWeight: 700, cursor: "pointer" }}>+ Agregar fecha</button>
+                )}
+              </div>
+            )}
             {f.revealOn && data[f.key] === f.revealOn && f.revealCountries && (
               <div style={{ marginTop: 6 }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -450,7 +484,7 @@ export default function VisaChinaForm() {
   const paisesVisitadosList: string[] = data.paisesVisitadosList || [];
   const paisesVisitadosInvalid = showError && !paisesVisitadosList.length;
   const experienciasList: Experiencia[] = data.experienciasList || [];
-  const showExperiencias = data.ocupacion === "Empleado de empresa";
+  const showExperiencias = data.ocupacion === "Empleado de empresa" || data.ocupacion === "HGW";
   const experienciasInvalid = showError && showExperiencias && !experienciasList.length;
   const hijosList: Hijo[] = data.hijosList || [];
   const showHijos = data.tieneHijos === "Sí";
@@ -458,7 +492,8 @@ export default function VisaChinaForm() {
 
   const reviewFields = FIELDS.map((f) => {
     let val = data[f.key];
-    if (f.revealOn && val === f.revealOn && f.revealMonthYear && data[f.revealKey+'Mes']) val = val + " — " + data[f.revealKey+'Mes'] + " " + data[f.revealKey+'Anio'];
+    if (f.revealOn && val === f.revealOn && f.revealMonthYearList) val = val + " — " + (data[f.revealKey!] || []).map((v: any) => v.mes + " " + v.anio).join(", ");
+    else if (f.revealOn && val === f.revealOn && f.revealMonthYear && data[f.revealKey+'Mes']) val = val + " — " + data[f.revealKey+'Mes'] + " " + data[f.revealKey+'Anio'];
     else if (f.revealOn && val === f.revealOn && data[f.revealKey!]) val = val + " — " + (Array.isArray(data[f.revealKey!]) ? data[f.revealKey!].join(", ") : data[f.revealKey!]);
     return { label: f.label, value: val || "" };
   }).filter((r) => r.value);
