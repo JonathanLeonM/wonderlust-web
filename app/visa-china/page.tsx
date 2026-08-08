@@ -41,7 +41,7 @@ const COLOMBIA_GEO: Record<string, string[]> = {
 };
 const EMAIL_DOMAINS = ["gmail.com", "hotmail.com", "outlook.com", "yahoo.com", "icloud.com"];
 const COUNTRIES = ["Colombia", "México", "Perú", "Ecuador", "Venezuela", "Chile", "Argentina", "España", "Estados Unidos", "Otro"];
-const WORLD_COUNTRIES = ["Colombia", "México", "Perú", "Ecuador", "Venezuela", "Chile", "Argentina", "Bolivia", "Paraguay", "Uruguay", "Brasil", "España", "Estados Unidos", "Canadá", "Panamá", "Costa Rica", "República Dominicana", "Cuba", "Puerto Rico", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Francia", "Italia", "Alemania", "Reino Unido", "Portugal", "Países Bajos", "Suiza", "China", "Japón", "Corea del Sur", "Tailandia", "Singapur", "India", "Emiratos Árabes Unidos", "Turquía", "Rusia", "Australia", "Nueva Zelanda", "Marruecos", "Egipto"];
+const WORLD_COUNTRIES = ['Afganistán','Albania','Alemania','Andorra','Angola','Antigua y Barbuda','Arabia Saudita','Argelia','Argentina','Armenia','Aruba','Australia','Austria','Azerbaiyán','Bahamas','Baréin','Bangladés','Barbados','Bélgica','Belice','Benín','Bielorrusia','Birmania (Myanmar)','Bolivia','Bosnia y Herzegovina','Botsuana','Brasil','Brunéi','Bulgaria','Burkina Faso','Burundi','Bután','Cabo Verde','Camboya','Camerún','Canadá','Catar','Chad','Chile','China','Chipre','Ciudad del Vaticano','Colombia','Comoras','Corea del Norte','Corea del Sur','Costa de Marfil','Costa Rica','Croacia','Cuba','Curazao','Dinamarca','Dominica','Ecuador','Egipto','El Salvador','Emiratos Árabes Unidos','Eritrea','Eslovaquia','Eslovenia','España','Estados Unidos','Estonia','Esuatini','Etiopía','Filipinas','Finlandia','Fiyi','Francia','Gabón','Gambia','Georgia','Ghana','Granada','Grecia','Groenlandia','Guatemala','Guyana','Guinea','Guinea-Bisáu','Guinea Ecuatorial','Haití','Honduras','Hong Kong','Hungría','India','Indonesia','Irak','Irán','Irlanda','Islandia','Islas Caimán','Islas Salomón','Israel','Italia','Jamaica','Japón','Jordania','Kazajistán','Kenia','Kirguistán','Kiribati','Kosovo','Kuwait','Laos','Lesoto','Letonia','Líbano','Liberia','Libia','Liechtenstein','Lituania','Luxemburgo','Macao','Macedonia del Norte','Madagascar','Malasia','Malaui','Maldivas','Malí','Malta','Marruecos','Marshall, Islas','Mauricio','Mauritania','México','Micronesia','Moldavia','Mónaco','Mongolia','Montenegro','Mozambique','Namibia','Nauru','Nepal','Nicaragua','Níger','Nigeria','Noruega','Nueva Zelanda','Omán','Países Bajos','Pakistán','Palaos','Palestina','Panamá','Papúa Nueva Guinea','Paraguay','Perú','Polonia','Portugal','Puerto Rico','Reino Unido','República Centroafricana','República Checa','República Democrática del Congo','República Dominicana','República del Congo','Ruanda','Rumanía','Rusia','Samoa','San Cristóbal y Nieves','San Marino','San Vicente y las Granadinas','Santa Lucía','Santo Tomé y Príncipe','Senegal','Serbia','Seychelles','Sierra Leona','Singapur','Siria','Somalia','Sri Lanka','Sudáfrica','Sudán','Sudán del Sur','Suecia','Suiza','Surinam','Tailandia','Taiwán','Tanzania','Tayikistán','Timor Oriental','Togo','Tonga','Trinidad y Tobago','Túnez','Turkmenistán','Turquía','Tuvalu','Ucrania','Uganda','Uruguay','Uzbekistán','Vanuatu','Venezuela','Vietnam','Yemen','Yibuti','Zambia','Zimbabue'];
 
 type FieldDef = {
   step: number;
@@ -103,12 +103,6 @@ const FIELDS: FieldDef[] = [
   { step: 3, type: "text", key: "declaracionAdicional", label: "¿Hay algo más que quieras declarar?", textarea: true, required: true },
 
   { step: 4, type: "choice", key: "ocupacion", label: "Ocupación", options: ["Empresario", "Jubilado", "Empleado de empresa", "Artista", "Estudiante", "Personal militar", "Trabajador por cuenta propia", "Otro"], revealOn: "Otro", revealKey: "ocupacionOtro", required: true },
-  { step: 4, type: "text", key: "expEmpresa", label: "Empresa (últimos 5 años)", required: true },
-  { step: 4, type: "text", key: "expCargo", label: "Cargo", required: true },
-  { step: 4, type: "text", key: "expFechas", label: "Fechas (desde – hasta)", required: true },
-  { step: 4, type: "text", key: "expDireccion", label: "Dirección de la empresa", required: true },
-  { step: 4, type: "text", key: "expTelefono", label: "Teléfono de la empresa", inputType: "tel", numeric: true, required: true },
-  { step: 4, type: "text", key: "expSupervisor", label: "Nombre del supervisor", required: true },
   { step: 4, type: "choice", key: "visaChinaAprobada", label: "¿Le han aprobado alguna vez la visa a China?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "lugarEmisionVisa", revealLabel: "Lugar de emisión", required: true },
   { step: 4, type: "choice", key: "tieneHijos", label: "¿Tiene hijos?", options: ["Sí", "No"], required: true },
 ];
@@ -116,7 +110,13 @@ const FIELDS: FieldDef[] = [
 const STEP_LABELS = ["Datos", "Familia", "Emergencia", "Antecedentes", "Ocupación", "Revisión"];
 
 type Hijo = { nombre: string; fecha: string; nacionalidad: string };
+type Experiencia = { empresa: string; cargo: string; mesInicio: string; anioInicio: string; mesFin: string; anioFin: string; actual: boolean; direccion: string; telefono: string; supervisor: string };
 type FormData = Record<string, any>;
+const MONTHS = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+function currentMonthYear() { const d = new Date(); return { mes: MONTHS[d.getMonth()], anio: String(d.getFullYear()) }; }
+function yearsList() { const y = new Date().getFullYear(); const out: string[] = []; for (let i = y; i >= y - 60; i--) out.push(String(i)); return out; }
+const HGW_DEFAULTS = { empresa: 'HGW', cargo: 'Distribuidor Independiente', mesInicio: 'ENE', anioInicio: '2020', actual: true, direccion: 'CL 119 #14-42', telefono: '(+57) 777 77 77', supervisor: 'Nohora Santos Vigoya' };
+const emptyExperiencia = (): Experiencia => ({ empresa: '', cargo: '', mesInicio: '', anioInicio: '', mesFin: '', anioFin: '', actual: false, direccion: '', telefono: '', supervisor: '' });
 
 function defaultData(): FormData {
   const d: FormData = {};
@@ -153,7 +153,34 @@ export default function VisaChinaForm() {
   const [revealBuffers, setRevealBuffers] = useState<Record<string, string>>({});
   const [paisVisitadoInput, setPaisVisitadoInput] = useState("");
   const [activeSuggestField, setActiveSuggestField] = useState<string | null>(null);
-  const setField = (key: string, val: any) => { setData((d) => ({ ...d, [key]: val })); setShowError(false); };
+  const setField = (key: string, val: any) => {
+    setData((d) => {
+      const next = { ...d, [key]: val };
+      if (key === 'ocupacion' && val === 'Empleado de empresa' && !(d.experienciasList || []).length) next.experienciasList = [emptyExperiencia()];
+      return next;
+    });
+    setShowError(false);
+  };
+  const addExperiencia = () => setData((d) => {
+    const list: Experiencia[] = d.experienciasList || [];
+    if (list.length >= 5) return d;
+    return { ...d, experienciasList: [...list, emptyExperiencia()] };
+  });
+  const removeExperiencia = (idx: number) => setData((d) => ({ ...d, experienciasList: (d.experienciasList || []).filter((_: Experiencia, i: number) => i !== idx) }));
+  const updateExperienciaField = (idx: number, key: keyof Experiencia, val: any) => {
+    setData((d) => ({ ...d, experienciasList: (d.experienciasList || []).map((e: Experiencia, i: number) => i === idx ? { ...e, [key]: val } : e) }));
+    setShowError(false);
+  };
+  const toggleExperienciaActual = (idx: number) => setData((d) => {
+    const cur = currentMonthYear();
+    const list = (d.experienciasList || []).map((e: Experiencia, i: number) => {
+      if (i !== idx) return e;
+      const actual = !e.actual;
+      return { ...e, actual, mesFin: actual ? cur.mes : e.mesFin, anioFin: actual ? cur.anio : e.anioFin };
+    });
+    return { ...d, experienciasList: list };
+  });
+  const autofillExperienciaHGW = (idx: number) => setData((d) => ({ ...d, experienciasList: (d.experienciasList || []).map((e: Experiencia, i: number) => i === idx ? { ...e, ...HGW_DEFAULTS } : e) }));
 
   const isFieldInvalid = (f: FieldDef) => {
     if (!f.required) return false;
@@ -173,6 +200,11 @@ export default function VisaChinaForm() {
     if (stepIndex === 1 && (!data.paisResidencia || !data.departamentoResidencia || !data.ciudadResidencia)) return false;
     if (stepIndex === 4) {
       if (!data.paisesVisitadosList || !data.paisesVisitadosList.length) return false;
+      if (data.ocupacion === "Empleado de empresa") {
+        const list: Experiencia[] = data.experienciasList || [];
+        if (!list.length) return false;
+        if (list.some((e) => !e.empresa || !e.cargo || !e.mesInicio || !e.anioInicio || (!e.actual && (!e.mesFin || !e.anioFin)) || !e.direccion || !e.telefono || !e.supervisor)) return false;
+      }
       if (data.tieneHijos === "Sí") {
         const list: Hijo[] = data.hijosList || [];
         if (!list.length) return false;
@@ -229,6 +261,17 @@ export default function VisaChinaForm() {
       }
     });
     out['Países visitados en los últimos 2 años'] = (data.paisesVisitadosList || []).join(', ');
+    const experienciasList: Experiencia[] = data.experienciasList || [];
+    experienciasList.forEach((e, i) => {
+      const n = i + 1;
+      const fechas = e.actual ? (e.mesInicio + ' ' + e.anioInicio + ' – Actualmente') : (e.mesInicio + ' ' + e.anioInicio + ' – ' + e.mesFin + ' ' + e.anioFin);
+      out['Experiencia ' + n + ' — Empresa'] = e.empresa || '';
+      out['Experiencia ' + n + ' — Cargo'] = e.cargo || '';
+      out['Experiencia ' + n + ' — Fechas'] = fechas.trim();
+      out['Experiencia ' + n + ' — Dirección'] = e.direccion || '';
+      out['Experiencia ' + n + ' — Teléfono'] = e.telefono || '';
+      out['Experiencia ' + n + ' — Supervisor'] = e.supervisor || '';
+    });
     const hijosList = data.hijosList || [];
     out['Hijos'] = hijosList.map((h: any) => [h.nombre, h.nacionalidad, h.fecha].filter(Boolean).join(' — ')).join('; ');
     return out;
@@ -297,7 +340,10 @@ export default function VisaChinaForm() {
               })}
             </div>
             {f.revealOn && data[f.key] === f.revealOn && !f.revealCountries && (
-              <input value={data[f.revealKey!] || ""} onChange={(e) => setField(f.revealKey!, e.target.value)} placeholder={f.revealLabel || "Especifica cuál"} style={{ ...inputStyle(showError && !String(data[f.revealKey!] || "").trim()), marginTop: 6 }} />
+              <div style={{ marginTop: 6 }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#6b5c4a", marginBottom: 4, textTransform: "uppercase", letterSpacing: ".02em" }}>{f.revealLabel || "Especifica cuál"}</div>
+                <input value={data[f.revealKey!] || ""} onChange={(e) => setField(f.revealKey!, e.target.value)} placeholder={f.revealLabel || "Especifica cuál"} style={{ ...inputStyle(showError && !String(data[f.revealKey!] || "").trim()), width: "100%" }} />
+              </div>
             )}
             {f.revealOn && data[f.key] === f.revealOn && f.revealCountries && (
               <div style={{ marginTop: 6 }}>
@@ -378,6 +424,9 @@ export default function VisaChinaForm() {
 
   const paisesVisitadosList: string[] = data.paisesVisitadosList || [];
   const paisesVisitadosInvalid = showError && !paisesVisitadosList.length;
+  const experienciasList: Experiencia[] = data.experienciasList || [];
+  const showExperiencias = data.ocupacion === "Empleado de empresa";
+  const experienciasInvalid = showError && showExperiencias && !experienciasList.length;
   const hijosList: Hijo[] = data.hijosList || [];
   const showHijos = data.tieneHijos === "Sí";
   const hijosInvalid = showError && showHijos && !hijosList.length;
@@ -400,6 +449,10 @@ export default function VisaChinaForm() {
     { label: "Ciudad", value: data.ciudadResidencia || "" }
   );
   if (paisesVisitadosList.length) reviewFields.push({ label: "Países visitados en los últimos 2 años", value: paisesVisitadosList.join(", ") });
+  experienciasList.forEach((e, i) => {
+    const fechas = e.actual ? (e.mesInicio + " " + e.anioInicio + " – Actualmente") : (e.mesInicio + " " + e.anioInicio + " – " + e.mesFin + " " + e.anioFin);
+    if (e.empresa || e.cargo) reviewFields.push({ label: `Experiencia ${i + 1}`, value: [e.empresa, e.cargo, fechas.trim()].filter(Boolean).join(" — ") });
+  });
   hijosList.forEach((h, i) => {
     if (h.nombre || h.fecha || h.nacionalidad) reviewFields.push({ label: `Hijo ${i + 1}`, value: [h.nombre, h.nacionalidad, h.fecha].filter(Boolean).join(" — ") });
   });
@@ -495,6 +548,86 @@ export default function VisaChinaForm() {
                 {paisesVisitadosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un país</span>}
               </div>
               <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4).map(renderField)}</div>
+              {showExperiencias && (
+                <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 14 }}>
+                  {experienciasList.map((e, i) => {
+                    const req = (v: any) => showError && !v;
+                    const bd = (v: any) => inputStyle(req(v));
+                    return (
+                      <div key={i} style={{ background: colors.bg, borderRadius: 14, padding: "18px 20px", position: "relative" }}>
+                        <button type="button" onClick={() => removeExperiencia(i)} aria-label="Quitar experiencia" style={{ position: "absolute", top: 14, right: 16, width: 24, height: 24, borderRadius: "50%", border: "none", background: "rgba(58,44,34,.12)", color: colors.ink, fontSize: 12, cursor: "pointer" }}>✕</button>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                          <div style={{ fontFamily: "'Marcellus',serif", fontSize: 14.5, color: colors.terracotta, letterSpacing: ".06em" }}>EXPERIENCIA {i + 1}</div>
+                          <button type="button" onClick={() => autofillExperienciaHGW(i)} style={{ padding: "5px 14px", borderRadius: 999, border: `1.5px solid ${colors.teal}`, background: "#fff", color: colors.teal, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Autocompletar HGW</button>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14 }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.empresa))}>Empresa *</label>
+                            <input value={e.empresa} onChange={(ev) => updateExperienciaField(i, "empresa", ev.target.value)} style={bd(e.empresa)} />
+                            {req(e.empresa) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.cargo))}>Cargo *</label>
+                            <input value={e.cargo} onChange={(ev) => updateExperienciaField(i, "cargo", ev.target.value)} style={bd(e.cargo)} />
+                            {req(e.cargo) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.mesInicio))}>Desde *</label>
+                            <div style={{ display: "flex", gap: 8 }}>
+                              <select value={e.mesInicio} onChange={(ev) => updateExperienciaField(i, "mesInicio", ev.target.value)} style={{ ...bd(e.mesInicio), flex: 1 }}>
+                                <option value="">Mes</option>
+                                {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select value={e.anioInicio} onChange={(ev) => updateExperienciaField(i, "anioInicio", ev.target.value)} style={{ ...bd(e.anioInicio), flex: 1 }}>
+                                <option value="">Año</option>
+                                {yearsList().map((y) => <option key={y} value={y}>{y}</option>)}
+                              </select>
+                            </div>
+                            {req(e.mesInicio) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(!e.actual && req(e.mesFin))}>Hasta</label>
+                            <div style={{ display: "flex", gap: 8 }}>
+                              <select value={e.mesFin} onChange={(ev) => updateExperienciaField(i, "mesFin", ev.target.value)} disabled={e.actual} style={{ ...bd(!e.actual && e.mesFin), flex: 1, background: e.actual ? "#efe6d6" : "#fff" }}>
+                                <option value="">Mes</option>
+                                {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                              </select>
+                              <select value={e.anioFin} onChange={(ev) => updateExperienciaField(i, "anioFin", ev.target.value)} disabled={e.actual} style={{ ...bd(!e.actual && e.anioFin), flex: 1, background: e.actual ? "#efe6d6" : "#fff" }}>
+                                <option value="">Año</option>
+                                {yearsList().map((y) => <option key={y} value={y}>{y}</option>)}
+                              </select>
+                            </div>
+                            <label style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 2, fontSize: 12.5, color: colors.ink, cursor: "pointer" }}>
+                              <input type="checkbox" checked={e.actual} onChange={() => toggleExperienciaActual(i)} style={{ width: 15, height: 15 }} />
+                              Actualmente
+                            </label>
+                            {!e.actual && req(e.mesFin) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.direccion))}>Dirección de la empresa *</label>
+                            <input value={e.direccion} onChange={(ev) => updateExperienciaField(i, "direccion", ev.target.value)} style={bd(e.direccion)} />
+                            {req(e.direccion) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.telefono))}>Teléfono de la empresa *</label>
+                            <input value={e.telefono} onChange={(ev) => updateExperienciaField(i, "telefono", ev.target.value)} style={bd(e.telefono)} />
+                            {req(e.telefono) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <label style={labelStyle(req(e.supervisor))}>Nombre del supervisor *</label>
+                            <input value={e.supervisor} onChange={(ev) => updateExperienciaField(i, "supervisor", ev.target.value)} style={bd(e.supervisor)} />
+                            {req(e.supervisor) && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Campo obligatorio</span>}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {experienciasInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos una experiencia laboral</span>}
+                  {experienciasList.length < 5 && (
+                    <button type="button" onClick={addExperiencia} style={{ alignSelf: "flex-start", padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${colors.teal}`, background: "transparent", color: colors.teal, fontSize: 13.5, fontWeight: 700, cursor: "pointer" }}>+ Agregar experiencia laboral</button>
+                  )}
+                </div>
+              )}
               {showHijos && (
                 <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 14 }}>
                   {hijosList.map((h, i) => {
