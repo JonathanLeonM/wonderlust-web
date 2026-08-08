@@ -608,7 +608,7 @@ export default function VisaChinaForm() {
                 </select>
                 {paisesVisitadosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un país</span>}
               </div>
-              <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4).map(renderField)}</div>
+              <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4 && f.key === "ocupacion").map(renderField)}</div>
               {showExperiencias && (
                 <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 14 }}>
                   {experienciasList.map((e, i) => {
@@ -689,6 +689,7 @@ export default function VisaChinaForm() {
                   )}
                 </div>
               )}
+              <div style={{ ...gridStyle, marginTop: 22 }}>{FIELDS.filter((f) => f.step === 4 && f.key !== "ocupacion").map(renderField)}</div>
               {showHijos && (
                 <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 14 }}>
                   {hijosList.map((h, i) => {
