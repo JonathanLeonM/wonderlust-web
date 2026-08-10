@@ -119,6 +119,7 @@ type FormData = Record<string, any>;
 const MONTHS = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
 function currentMonthYear() { const d = new Date(); return { mes: MONTHS[d.getMonth()], anio: String(d.getFullYear()) }; }
 function yearsList() { const y = new Date().getFullYear(); const out: string[] = []; for (let i = y; i >= y - 60; i--) out.push(String(i)); return out; }
+const CONSENT_TEXT = 'Autorizo a Wonderlust el tratamiento de mis datos personales conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas que las modifiquen, con la finalidad de gestionar mi trámite de visa. Podré ejercer mis derechos de conocer, actualizar, rectificar y suprimir mis datos en cualquier momento.';
 const HGW_DEFAULTS = { empresa: 'HGW', cargo: 'Distribuidor Independiente', mesInicio: 'ENE', anioInicio: '2020', actual: true, direccion: 'CL 119 #14-42', telefono: '(+57) 777 77 77', supervisor: 'Nohora Santos Vigoya' };
 const emptyExperiencia = (): Experiencia => ({ empresa: '', cargo: '', mesInicio: '', anioInicio: '', mesFin: '', anioFin: '', actual: false, direccion: '', telefono: '', supervisor: '' });
 
@@ -305,6 +306,8 @@ export default function VisaChinaForm() {
     }
     out['Fecha de nacimiento del esposo/a'] = data.fechaNacimientoConyuge || '';
     out['Autorización tratamiento de datos (Ley 1581 de 2012)'] = consentChecked ? 'Sí' : 'No';
+    out['Texto de la autorización aceptada'] = consentChecked ? CONSENT_TEXT : '';
+    out['Navegador/dispositivo (user agent)'] = typeof navigator !== 'undefined' ? navigator.userAgent : '';
     return out;
   };
 
