@@ -157,6 +157,8 @@ export default function VisaChinaForm() {
   const [revealBuffers, setRevealBuffers] = useState<Record<string, string>>({});
   const [paisVisitadoInput, setPaisVisitadoInput] = useState("");
   const [activeSuggestField, setActiveSuggestField] = useState<string | null>(null);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const setField = (key: string, val: any) => {
     setData((d) => {
       const next = { ...d, [key]: val };
@@ -302,10 +304,12 @@ export default function VisaChinaForm() {
       out['Hijo ' + n + ' — Fecha de nacimiento'] = h ? (h.fecha || '') : '';
     }
     out['Fecha de nacimiento del esposo/a'] = data.fechaNacimientoConyuge || '';
+    out['Autorización tratamiento de datos (Ley 1581 de 2012)'] = consentChecked ? 'Sí' : 'No';
     return out;
   };
 
   const submitForm = () => {
+    if (!consentChecked) { setConsentError(true); return; }
     setSubmitting(true);
     const payload = buildOrderedPayload();
     const done = () => { setSubmitting(false); setSubmitted(true); };
@@ -748,6 +752,11 @@ export default function VisaChinaForm() {
                 <div style={{ width: 3, alignSelf: "stretch", background: "#e0a94a", flexShrink: 0 }} />
                 <div style={{ fontSize: 13, lineHeight: 1.5 }}>No olvides tener a la mano la <strong>foto de tu pasaporte</strong>: te la pediremos en el siguiente paso de tu trámite.</div>
               </div>
+              <label style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 22, cursor: "pointer" }}>
+                <input type="checkbox" checked={consentChecked} onChange={() => { setConsentChecked((v) => !v); setConsentError(false); }} style={{ width: 17, height: 17, marginTop: 1, flexShrink: 0 }} />
+                <span style={{ fontSize: 12.5, lineHeight: 1.5, color: consentError ? colors.terracotta : colors.ink }}>Autorizo a Wonderlust el tratamiento de mis datos personales conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas que las modifiquen, con la finalidad de gestionar mi trámite de visa. Podré ejercer mis derechos de conocer, actualizar, rectificar y suprimir mis datos en cualquier momento.</span>
+              </label>
+              {consentError && <div style={{ marginTop: -14, marginBottom: 16 }}><span style={{ fontSize: 11.5, color: colors.terracotta }}>Debes aceptar el tratamiento de datos para continuar</span></div>}
               <button type="button" onClick={submitForm} disabled={submitting} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: colors.teal, color: colors.cream, fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", padding: 16, border: "none", borderRadius: "2px 14px 2px 14px", cursor: "pointer" }}>
                 Enviar formulario
               </button>
