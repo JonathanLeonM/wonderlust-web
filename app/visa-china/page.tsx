@@ -614,10 +614,13 @@ export default function VisaChinaForm() {
                     </div>
                   ))}
                 </div>
-                <select value="" onChange={(e) => { const v = e.target.value; if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); }} style={inputStyle(paisesVisitadosInvalid)}>
-                  <option value="">+ Agregar país…</option>
-                  {WORLD_COUNTRIES.filter((c) => !paisesVisitadosList.includes(c)).map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <select value="" onChange={(e) => { const v = e.target.value; if (v && !paisesVisitadosList.includes(v)) setField("paisesVisitadosList", [...paisesVisitadosList, v]); }} style={{ ...inputStyle(paisesVisitadosInvalid), flex: 1 }}>
+                    <option value="">+ Agregar país…</option>
+                    {WORLD_COUNTRIES.filter((c) => !paisesVisitadosList.includes(c)).map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  <button type="button" onClick={() => setField("paisesVisitadosList", ["Ninguno"])} style={{ padding: "0 16px", borderRadius: 10, border: "1.5px solid rgba(58,44,34,.2)", background: "#fff", color: colors.ink, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Ninguno</button>
+                </div>
                 {paisesVisitadosInvalid && <span style={{ fontSize: 11.5, color: colors.terracotta }}>Agrega al menos un país</span>}
               </div>
               <div style={gridStyle}>{FIELDS.filter((f) => f.step === 4 && f.key === "ocupacion").map(renderField)}</div>
