@@ -63,6 +63,7 @@ type FieldDef = {
   revealMonthYearList?: boolean;
   default?: string;
   required: boolean;
+  showIf?: (data: any) => boolean;
 };
 
 const FIELDS: FieldDef[] = [
@@ -71,6 +72,7 @@ const FIELDS: FieldDef[] = [
   { step: 0, type: "text", key: "cedula", label: "Número de cédula", numeric: true, required: true },
   { step: 0, type: "text", key: "fechaNacimiento", label: "Fecha de nacimiento", inputType: "date", required: true },
   { step: 0, type: "choice", key: "estadoCivil", label: "Estado civil", options: ["Casado", "Soltero", "Viudo", "Separado", "Otro"], revealOn: "Otro", revealKey: "estadoCivilOtro", required: true },
+  { step: 0, type: "text", key: "fechaNacimientoConyuge", label: "Fecha de nacimiento del esposo/a", inputType: "date", required: true, showIf: (d: any) => d.estadoCivil === "Casado" },
   { step: 0, type: "text", key: "nacionalidad", label: "Nacionalidad", default: "Colombiano", required: true },
   { step: 0, type: "choice", key: "otraNacionalidad", label: "¿Tiene otra nacionalidad?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "otraNacionalidadCual", revealLabel: "¿Cuál?", required: true },
   { step: 0, type: "choice", key: "educacion", label: "Nivel más alto de educación", options: ["Escuela secundaria", "Pregrado", "Posgrado", "Doctorado", "Otro"], revealOn: "Otro", revealKey: "educacionOtro", required: true },
@@ -196,6 +198,7 @@ export default function VisaChinaForm() {
   const autofillExperienciaHGW = (idx: number) => setData((d) => ({ ...d, experienciasList: (d.experienciasList || []).map((e: Experiencia, i: number) => i === idx ? { ...e, ...HGW_DEFAULTS } : e) }));
 
   const isFieldInvalid = (f: FieldDef) => {
+    if (f.showIf && !f.showIf(data)) return false;
     if (!f.required) return false;
     const empty = !data[f.key] || !String(data[f.key]).trim();
     if (empty) return true;
@@ -209,7 +212,7 @@ export default function VisaChinaForm() {
   };
 
   const isStepValid = (stepIndex: number) => {
-    const stepFields = FIELDS.filter((f) => f.step === stepIndex);
+    const stepFields = FIELDS.filter((f) => f.step === stepIndex && (!f.showIf || f.showIf(data)));
     if (stepFields.some((f) => isFieldInvalid(f))) return false;
     if (stepIndex === 0 && (!data.paisNacimiento || !data.departamentoNacimiento || !data.ciudadNacimiento)) return false;
     if (stepIndex === 1 && (!data.paisResidencia || !data.departamentoResidencia || !data.ciudadResidencia)) return false;
@@ -258,6 +261,7 @@ export default function VisaChinaForm() {
     const out: Record<string, any> = {};
     out['Fecha de envío'] = new Date().toISOString();
     FIELDS.forEach((f: any) => {
+      if (f.key === 'fechaNacimientoConyuge') return;
       const val = data[f.key] || '';
       out[f.label] = val;
       if (f.revealKey) {
@@ -297,6 +301,7 @@ export default function VisaChinaForm() {
       out['Hijo ' + n + ' — Nacionalidad'] = h ? (h.nacionalidad || '') : '';
       out['Hijo ' + n + ' — Fecha de nacimiento'] = h ? (h.fecha || '') : '';
     }
+    out['Fecha de nacimiento del esposo/a'] = data.fechaNacimientoConyuge || '';
     return out;
   };
 
@@ -542,9 +547,9 @@ export default function VisaChinaForm() {
               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 19, color: colors.teal, marginBottom: 4 }}>Datos personales</div>
               <div style={{ fontSize: 13, color: colors.muted, marginBottom: 22 }}>Tal como aparecen en tu pasaporte.</div>
               <div style={gridStyle}>
-                {FIELDS.filter((f) => f.step === 0).slice(0, 4).map(renderField)}
+                {FIELDS.filter((f) => f.step === 0 && (!f.showIf || f.showIf(data))).slice(0, 4).map(renderField)}
                 <LocationBlock prefix="Nacimiento" title="nacimiento" />
-                {FIELDS.filter((f) => f.step === 0).slice(4).map(renderField)}
+                {FIELDS.filter((f) => f.step === 0 && (!f.showIf || f.showIf(data))).slice(4).map(renderField)}
               </div>
             </>
           )}
