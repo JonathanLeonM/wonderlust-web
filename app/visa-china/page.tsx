@@ -39,6 +39,10 @@ const COLOMBIA_GEO: Record<string, string[]> = {
   "Vichada": ["Cumaribo", "La Primavera", "Puerto Carreño", "Santa Rosalía"],
   "Bogotá D.C.": ["Bogotá"],
 };
+function deptoKeysBogotaFirst() {
+  const keys = Object.keys(COLOMBIA_GEO);
+  return ["Bogotá D.C.", ...keys.filter((k) => k !== "Bogotá D.C.")];
+}
 const EMAIL_DOMAINS = ["gmail.com", "hotmail.com", "outlook.com", "yahoo.com", "icloud.com"];
 const COUNTRIES = ["Colombia", "México", "Perú", "Ecuador", "Venezuela", "Chile", "Argentina", "España", "Estados Unidos", "Otro"];
 const WORLD_COUNTRIES = ['Afganistán','Albania','Alemania','Andorra','Angola','Antigua y Barbuda','Arabia Saudita','Argelia','Argentina','Armenia','Aruba','Australia','Austria','Azerbaiyán','Bahamas','Baréin','Bangladés','Barbados','Bélgica','Belice','Benín','Bielorrusia','Birmania (Myanmar)','Bolivia','Bosnia y Herzegovina','Botsuana','Brasil','Brunéi','Bulgaria','Burkina Faso','Burundi','Bután','Cabo Verde','Camboya','Camerún','Canadá','Catar','Chad','Chile','China','Chipre','Ciudad del Vaticano','Colombia','Comoras','Corea del Norte','Corea del Sur','Costa de Marfil','Costa Rica','Croacia','Cuba','Curazao','Dinamarca','Dominica','Ecuador','Egipto','El Salvador','Emiratos Árabes Unidos','Eritrea','Eslovaquia','Eslovenia','España','Estados Unidos','Estonia','Esuatini','Etiopía','Filipinas','Finlandia','Fiyi','Francia','Gabón','Gambia','Georgia','Ghana','Granada','Grecia','Groenlandia','Guatemala','Guyana','Guinea','Guinea-Bisáu','Guinea Ecuatorial','Haití','Honduras','Hong Kong','Hungría','India','Indonesia','Irak','Irán','Irlanda','Islandia','Islas Caimán','Islas Salomón','Israel','Italia','Jamaica','Japón','Jordania','Kazajistán','Kenia','Kirguistán','Kiribati','Kosovo','Kuwait','Laos','Lesoto','Letonia','Líbano','Liberia','Libia','Liechtenstein','Lituania','Luxemburgo','Macao','Macedonia del Norte','Madagascar','Malasia','Malaui','Maldivas','Malí','Malta','Marruecos','Marshall, Islas','Mauricio','Mauritania','México','Micronesia','Moldavia','Mónaco','Mongolia','Montenegro','Mozambique','Namibia','Nauru','Nepal','Nicaragua','Níger','Nigeria','Noruega','Nueva Zelanda','Omán','Países Bajos','Pakistán','Palaos','Palestina','Panamá','Papúa Nueva Guinea','Paraguay','Perú','Polonia','Portugal','Puerto Rico','Reino Unido','República Centroafricana','República Checa','República Democrática del Congo','República Dominicana','República del Congo','Ruanda','Rumanía','Rusia','Samoa','San Cristóbal y Nieves','San Marino','San Vicente y las Granadinas','Santa Lucía','Santo Tomé y Príncipe','Senegal','Serbia','Seychelles','Sierra Leona','Singapur','Siria','Somalia','Sri Lanka','Sudáfrica','Sudán','Sudán del Sur','Suecia','Suiza','Surinam','Tailandia','Taiwán','Tanzania','Tayikistán','Timor Oriental','Togo','Tonga','Trinidad y Tobago','Túnez','Turkmenistán','Turquía','Tuvalu','Ucrania','Uganda','Uruguay','Uzbekistán','Vanuatu','Venezuela','Vietnam','Yemen','Yibuti','Zambia','Zimbabue'];
@@ -72,6 +76,7 @@ const FIELDS: FieldDef[] = [
   { step: 0, type: "text", key: "cedula", label: "Número de cédula", numeric: true, required: true },
   { step: 0, type: "text", key: "fechaNacimiento", label: "Fecha de nacimiento", inputType: "date", required: true },
   { step: 0, type: "choice", key: "estadoCivil", label: "Estado civil", options: ["Casado", "Soltero", "Viudo", "Separado", "Otro"], revealOn: "Otro", revealKey: "estadoCivilOtro", required: true },
+  { step: 0, type: "text", key: "nombreConyuge", label: "Nombre y apellido del esposo/a", required: true, showIf: (d: any) => d.estadoCivil === "Casado" },
   { step: 0, type: "text", key: "fechaNacimientoConyuge", label: "Fecha de nacimiento del esposo/a", inputType: "date", required: true, showIf: (d: any) => d.estadoCivil === "Casado" },
   { step: 0, type: "text", key: "nacionalidad", label: "Nacionalidad", default: "Colombiano", required: true },
   { step: 0, type: "choice", key: "otraNacionalidad", label: "¿Tiene otra nacionalidad?", options: ["Sí", "No"], revealOn: "Sí", revealKey: "otraNacionalidadCual", revealLabel: "¿Cuál?", required: true },
@@ -264,7 +269,7 @@ export default function VisaChinaForm() {
     const out: Record<string, any> = {};
     out['Fecha de envío'] = new Date().toISOString();
     FIELDS.forEach((f: any) => {
-      if (f.key === 'fechaNacimientoConyuge') return;
+      if (f.key === 'fechaNacimientoConyuge' || f.key === 'nombreConyuge') return;
       const val = data[f.key] || '';
       out[f.label] = val;
       if (f.revealKey) {
@@ -304,6 +309,7 @@ export default function VisaChinaForm() {
       out['Hijo ' + n + ' — Nacionalidad'] = h ? (h.nacionalidad || '') : '';
       out['Hijo ' + n + ' — Fecha de nacimiento'] = h ? (h.fecha || '') : '';
     }
+    out['Nombre y apellido del esposo/a'] = data.nombreConyuge || '';
     out['Fecha de nacimiento del esposo/a'] = data.fechaNacimientoConyuge || '';
     out['Autorización tratamiento de datos (Ley 1581 de 2012)'] = consentChecked ? 'Sí' : 'No';
     out['Texto de la autorización aceptada'] = consentChecked ? CONSENT_TEXT : '';
@@ -468,7 +474,7 @@ export default function VisaChinaForm() {
           {isColombia ? (
             <select value={depto} onChange={(e) => setData((d) => ({ ...d, [deptoKey]: e.target.value, [ciudadKey]: "" }))} style={inputStyle(deptoInvalid)}>
               <option value="">Selecciona…</option>
-              {Object.keys(COLOMBIA_GEO).map((d) => <option key={d} value={d}>{d}</option>)}
+              {deptoKeysBogotaFirst().map((d) => <option key={d} value={d}>{d}</option>)}
             </select>
           ) : (
             <input value={depto} onChange={(e) => setField(deptoKey, e.target.value)} placeholder="Departamento / Estado" style={inputStyle(deptoInvalid)} />
