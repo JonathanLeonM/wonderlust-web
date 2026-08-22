@@ -397,8 +397,10 @@ export default function FormularioVisaChina() {
         out["Departamento / Estado de nacimiento"] = data.departamentoNacimiento || "";
         out["Ciudad de nacimiento"] = data.ciudadNacimiento || "";
       }
+      if (f.key === "estadoCivil") {
+        out["¿Tiene hijos?"] = data.tieneHijos || "";
+      }
     });
-    out["¿Tiene hijos?"] = data.tieneHijos || "";
     out["Países visitados en los últimos 2 años"] = (data.paisesVisitadosList || []).join(", ");
     const exps = data.experienciasList || [];
     for (let i = 0; i < 5; i++) {
@@ -424,12 +426,12 @@ export default function FormularioVisaChina() {
       out["Hijo " + n + " — Nacionalidad"] = h ? h.nacionalidad || "" : "";
       out["Hijo " + n + " — Fecha de nacimiento"] = h ? h.fecha || "" : "";
     }
-    out["Nombre y apellido del esposo/a"] = data.nombreConyuge || "";
-    out["Fecha de nacimiento del esposo/a"] = data.fechaNacimientoConyuge || "";
-    out["Ciudad de nacimiento del esposo/a"] = data.ciudadNacimientoConyuge || "";
-    out["Autorización tratamiento de datos (Ley 1581 de 2012)"] = consent ? "Sí" : "No";
-    out["Texto de la autorización aceptada"] = consent ? CONSENT_TEXT : "";
-    out["Navegador/dispositivo (user agent)"] =
+    out["NombreEspos@"] = data.nombreConyuge || "";
+    out["FechaNacimientoEspos@"] = data.fechaNacimientoConyuge || "";
+    out["CiudadEspos@"] = data.ciudadNacimientoConyuge || "";
+    out["Autorizacion?"] = consent ? "Sí" : "No";
+    out["TextoAutorizacion"] = consent ? CONSENT_TEXT : "";
+    out["DispositivoAutorizacion"] =
       typeof navigator !== "undefined" ? navigator.userAgent : "";
     return out;
   };
@@ -1107,7 +1109,7 @@ export default function FormularioVisaChina() {
   const reviewRows = () => {
     const payload = buildOrderedPayload();
     return Object.entries(payload).filter(
-      ([k, v]) => v && k !== "Navegador/dispositivo (user agent)" && k !== "Texto de la autorización aceptada"
+      ([k, v]) => v && k !== "DispositivoAutorizacion" && k !== "TextoAutorizacion"
     );
   };
 
