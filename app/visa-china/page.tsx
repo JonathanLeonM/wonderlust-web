@@ -1,4 +1,4 @@
-2"use client";
+"use client";
 
 /**
  * Formulario Visa China — Wonderlust
@@ -1115,7 +1115,10 @@ export default function FormularioVisaChina() {
   const stepHeads = [
     ["Datos personales", "Tal como aparecen en tu pasaporte."],
     ["Contacto y familia", "Necesitamos estos datos para el formulario consular."],
-    ["China y contacto de emergencia", "Un contacto de confianza en caso de emergencia durante tu viaje."],
+    [
+      "Contacto de emergencia",
+      "Una persona de confianza a quien podamos llamar si ocurre algo durante tu viaje. No tiene que estar en China: puede ser tu mamá, papá, pareja, hermano/a o un amigo cercano.",
+    ],
     ["Antecedentes y seguridad", "Preguntas obligatorias del consulado chino. Responde con sinceridad."],
     ["Ocupación y viaje", "Últimos datos antes de revisar tu formulario."],
     ["Revisa y envía", "Verifica tus respuestas antes de enviar tu formulario."],
