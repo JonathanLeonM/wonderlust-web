@@ -148,6 +148,9 @@ export default function Home() {
                 ● &nbsp;Diligenciamiento del formulario DS-160<br />● &nbsp;Agenda de tu cita consular<br />● &nbsp;Revisión de documentos y soportes<br />● &nbsp;Preparación de entrevista 1 a 1
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <Link href="/visa-usa" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#e0a94a", color: "#14324f", fontSize: 13, fontWeight: 700, padding: "12px 24px", borderRadius: 26, boxShadow: "0 8px 20px rgba(224,169,74,.32)", textDecoration: "none" }}>
+                  Llenar mi formulario →
+                </Link>
                 <a href={WOMPI_US} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#bd5a34", color: "#fff", fontSize: 13, fontWeight: 700, padding: "12px 24px", borderRadius: 26, boxShadow: "0 8px 20px rgba(189,90,52,.35)", textDecoration: "none" }}>
                   <CardIcon />Pagar ya
                 </a>
@@ -193,7 +196,7 @@ export default function Home() {
                   </div>
                   <div style={{ display: "flex", gap: 9, flexWrap: "wrap", marginTop: "auto" }}>
                     {p.pais === "China" && (
-                      <Link href="/visa-china" style={{ display: "inline-flex", alignItems: "center", color: "#14514f", fontSize: 12.5, fontWeight: 700, padding: "10px 6px", textDecoration: "none" }}>Formulario →</Link>
+                      <Link href="/visa-china" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#e0a94a", color: "#14324f", fontSize: 12.5, fontWeight: 700, padding: "10px 18px", borderRadius: 22, boxShadow: "0 6px 16px rgba(224,169,74,.3)", textDecoration: "none" }}>Llenar mi formulario →</Link>
                     )}
                     <a href={p.pais === "China" ? WOMPI_CN : WOMPI_US} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#bd5a34", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "10px 18px", borderRadius: 22, textDecoration: "none" }}>
                       <CardIcon size={15} />Pagar ya
