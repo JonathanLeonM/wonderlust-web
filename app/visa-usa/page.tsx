@@ -329,7 +329,6 @@ export default function VisaUsaPage() {
   const focusProps = (fk: string) => ({
     onFocus: () => { clearTimeout(blurT.current); setEmailFocus(fk); },
     onBlur: () => { clearTimeout(blurT.current); blurT.current = setTimeout(() => setEmailFocus((c) => (c === fk ? "" : c)), 180); },
-    autoComplete: "off" as const,
   });
 
   const geoOpts = (f: Field) => {
@@ -560,7 +559,7 @@ export default function VisaUsaPage() {
         <div style={{ position: "relative", display: "flex", gap: 8, alignItems: "center" }}>
           <input type={t === "date" ? "date" : t === "email" ? "email" : t === "tel" ? "tel" : "text"}
             inputMode={t === "num" ? "numeric" : t === "tel" ? "tel" : t === "email" ? "email" : "text"}
-            value={data[f.k] || ""} placeholder={f.ph}
+            value={data[f.k] || ""} placeholder={f.ph} autoComplete="off"
             onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value), f.resets)}
             {...(t === "email" ? focusProps(f.k) : {})}
             style={inputStyle(err)} />
