@@ -72,8 +72,8 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
 
       { k: "_hViudo", t: "head", l: "Sobre tu cónyuge fallecido(a)", help: "Solo porque marcaste viudo(a).", span: "1/-1", showIf: esViudo },
       { k: "falNombre", l: "Nombres y apellidos", req: true, alpha: true, showIf: esViudo, span: "1/-1" },
-      { k: "falFechaNac", l: "Fecha de nacimiento", t: "date", req: true, showIf: esViudo },
-      { k: "falLugarNac", l: "Lugar de nacimiento", req: true, ph: "Ciudad, país", showIf: esViudo },
+      { k: "falFechaNac", l: "Fecha de nacimiento del cónyuge fallecido", t: "date", req: true, showIf: esViudo },
+      { k: "falLugarNac", l: "Lugar de nacimiento del cónyuge fallecido", req: true, ph: "Ciudad, país", showIf: esViudo },
     ],
   },
   {
@@ -170,7 +170,7 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "empresaNombre", l: "Nombre de la empresa", req: true, span: "1/-1" },
       { k: "empresaDireccion", l: "Dirección de la empresa", req: true, t: "area", span: "1/-1" },
       { k: "empresaTelefono", l: "Teléfono de la empresa", req: true, t: "tel", ph: "6025551234" },
-      { k: "empresaFechaIngreso", l: "Fecha de ingreso", t: "date", req: true },
+      { k: "empresaFechaIngreso", l: "Fecha de ingreso a la empresa", t: "date", req: true },
       { k: "empresaCargo", l: "Cargo que ocupas", req: true, ph: "Directora de proyectos" },
       { k: "empresaIngreso", l: "Ingreso mensual", req: true, t: "num", ph: "6500000" },
       { k: "empresaLabores", l: "Labores que realizas", req: true, t: "area", ph: "Supervisión de obra, control de presupuesto y manejo de proveedores", span: "1/-1" },
@@ -193,7 +193,7 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "institucionDireccion", l: "Dirección de la institución", req: true, t: "area", span: "1/-1" },
       { k: "institucionTelefono", l: "Teléfono de la institución", req: true, t: "tel" },
       { k: "carrera", l: "Carrera o curso realizado", req: true, ph: "Ingeniería civil" },
-      { k: "estudioFechaIngreso", l: "Fecha de ingreso", t: "date", req: true },
+      { k: "estudioFechaIngreso", l: "Fecha de ingreso a la institución", t: "date", req: true },
       { k: "estudioFechaGrado", l: "Fecha de graduación", t: "date", req: true },
       { k: "_hOtros", t: "head", l: "Otros datos", span: "1/-1" },
       { k: "paisesVisitados", l: "Países que has visitado en los últimos 5 años", req: true, t: "chips", span: "1/-1" },
@@ -340,29 +340,40 @@ export default function VisaUsaPage() {
 
   const buildPayload = (rad: string) => {
     const out: Data = { Marca: "Wonderlust", Tramite: "Visa Estados Unidos", Radicado: rad, FechaEnvio: new Date().toLocaleString("es-CO", { timeZone: "America/Bogota" }) };
+    // Nunca dejar que dos campos con la misma etiqueta compartan columna:
+    // el segundo (normalmente vacío) borraría el valor del primero.
+    const put = (label: string, val: any) => {
+      let key = label;
+      if (Object.prototype.hasOwnProperty.call(out, key)) {
+        let n = 2;
+        while (Object.prototype.hasOwnProperty.call(out, `${label} (${n})`)) n++;
+        key = `${label} (${n})`;
+      }
+      out[key] = val;
+    };
     allFields().forEach((f) => {
       if (f.t === "note" || f.t === "head") return;
       const v = data[f.k];
       const max = f.max || 5;
       if (f.t === "multi") {
-        for (let i = 0; i < max; i++) out[`${f.l} ${i + 1}`] = (v && v[i]) || "";
+        for (let i = 0; i < max; i++) put(`${f.l} ${i + 1}`, (v && v[i]) || "");
         return;
       }
       if (f.t === "social") {
         for (let i = 0; i < max; i++) {
           const r = (v || [])[i];
-          out[`Red social ${i + 1}`] = r && r.red ? r.red + (r.usuario ? `: ${r.usuario}` : "") : "";
+          put(`Red social ${i + 1}`, r && r.red ? r.red + (r.usuario ? `: ${r.usuario}` : "") : "");
         }
         return;
       }
       if (f.t === "group") {
         for (let i = 0; i < max; i++) {
           const it = (v || [])[i] || {};
-          (f.sub as Sub[]).forEach((sf) => { out[`${f.itemLabel} ${i + 1} — ${sf.l}`] = it[sf.k] || ""; });
+          (f.sub as Sub[]).forEach((sf) => { put(`${f.itemLabel} ${i + 1} — ${sf.l}`, it[sf.k] || ""); });
         }
         return;
       }
-      out[f.l as string] = Array.isArray(v) ? v.join(", ") : v || "";
+      put(f.l as string, Array.isArray(v) ? v.join(", ") : v || "");
     });
     out.Dispositivo = typeof navigator !== "undefined" ? navigator.userAgent : "";
     return out;
