@@ -48,6 +48,7 @@ export default function Home() {
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2.4vw,30px)" }}>
             <a href="#visas" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Visas</a>
+            <a href="#mi-pasaporte" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Mi pasaporte</a>
             <a href="#paquetes" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Paquetes</a>
             <a href="#viajeros" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Viajeros</a>
             <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#128c4a", color: "#fff", fontSize: "clamp(11px,1.3vw,12.5px)", fontWeight: 700, padding: "9px clamp(12px,1.8vw,20px)", borderRadius: 30, whiteSpace: "nowrap", textDecoration: "none" }}>
@@ -210,6 +211,30 @@ export default function Home() {
           <p style={{ fontSize: 12, color: "#9a8a76", textAlign: "center", margin: "22px 0 0" }}>
             *Los valores corresponden a nuestra asesoría de trámite. Tarifas consulares, de embajada o de terceros no están incluidas.
           </p>
+        </div>
+      </section>
+
+      {/* MI PASAPORTE */}
+      <section id="mi-pasaporte" style={{ background: "#14514f", padding: "clamp(40px,6vw,62px) 0", color: "#fdf7ec" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(24px,4vw,54px)", flexWrap: "wrap" }}>
+          <div style={{ flex: "1 1 380px", minWidth: 280 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <span style={{ height: 1, width: 34, background: "#e0a94a" }} />
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".28em", color: "#e0a94a" }}>YA PRESENTÉ MI VISA</span>
+            </div>
+            <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(25px,3.4vw,38px)", lineHeight: 1.1, margin: 0 }}>Consulta tu visa y programa la entrega de tu pasaporte.</h2>
+            <p style={{ fontSize: "clamp(14px,1.6vw,16px)", lineHeight: 1.65, color: "#c5ddd9", margin: "14px 0 0", maxWidth: 520 }}>Escribe tu cédula: te decimos si la visa ya está estampada y eliges si lo recoges en la oficina, te lo enviamos a casa o va en el paquete de tu grupo.</p>
+          </div>
+          <form action="/devolucion-pasaportes" method="get" style={{ flex: "0 1 380px", minWidth: 270, background: "rgba(253,247,236,.07)", border: "1px solid rgba(231,200,160,.28)", borderRadius: 18, padding: "clamp(20px,2.6vw,26px)", display: "flex", flexDirection: "column", gap: 12 }}>
+            <label htmlFor="cedula-home" style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".03em", color: "#e7c8a0" }}>Número de cédula del solicitante</label>
+            <input id="cedula-home" name="cedula" inputMode="numeric" autoComplete="off" placeholder="Ej. 1020458877" style={{ width: "100%", padding: "14px 16px", borderRadius: 12, border: "1.5px solid rgba(231,200,160,.4)", background: "#fdf7ec", color: "#14324f", fontSize: 16, fontFamily: "'Karla',sans-serif" }} />
+            <button type="submit" style={{ width: "100%", padding: "15px 24px", borderRadius: 999, border: "none", background: "#e0a94a", color: "#14324f", fontSize: 15.5, fontWeight: 700, fontFamily: "'Karla',sans-serif", cursor: "pointer", boxShadow: "0 8px 22px rgba(224,169,74,.3)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9 }}>
+              Consultar mi pasaporte <span style={{ fontSize: 17, lineHeight: 1 }}>→</span>
+            </button>
+            <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "rgba(197,221,217,.85)" }}>
+              Solo para trámites hechos con nosotros. Dudas: <a href={WA} target="_blank" rel="noreferrer" style={{ color: "#e0a94a" }}>WhatsApp +57 313 488 3629</a>
+            </div>
+          </form>
         </div>
       </section>
 
