@@ -12,8 +12,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COLOMBIA_GEO, deptoKeysBogotaFirst } from "@/lib/colombia-geo";
 
-const ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbzCEuN5GkJaK4dS9nL0gLRyE_D8ZsfxF3vjDHpFsxronAOOmfr6K7ZrAcx_lAcdq0MrCA/exec";
 const WA = "https://wa.me/573134883629";
 const OFICINA = "CL 53B # 24 - 30 Oficina 301, Bogotá D.C.";
 
@@ -47,20 +45,12 @@ const CAMPOS: Campo[] = [
   { k: "notas", l: "Indicaciones para el mensajero", area: true, span: "1/-1", dir: true, ph: "Horario preferido, portería, con quién dejarlo…" },
 ];
 
-/* Apps Script redirecciona a googleusercontent y fetch choca con CORS: JSONP. */
-let jsonpN = 0;
-function jsonp(params: Record<string, string>, onOk: (d: any) => void, onErr: () => void) {
-  const cb = "__wlcb" + ++jsonpN + "_" + Date.now();
-  const url =
-    ENDPOINT + "?" + Object.keys(params).map((k) => k + "=" + encodeURIComponent(params[k])).join("&") + "&callback=" + cb;
-  const s = document.createElement("script");
-  let done = false;
-  const limpiar = () => { delete (window as any)[cb]; s.parentNode?.removeChild(s); };
-  const t = setTimeout(() => { if (!done) { done = true; limpiar(); onErr(); } }, 20000);
-  (window as any)[cb] = (data: any) => { if (done) return; done = true; clearTimeout(t); limpiar(); onOk(data); };
-  s.onerror = () => { if (done) return; done = true; clearTimeout(t); limpiar(); onErr(); };
-  s.src = url;
-  document.head.appendChild(s);
+/* Todo pasa por /api/sheet: el navegador no puede llamar a Google directo. */
+async function pedir(params: Record<string, string>) {
+  const qs = new URLSearchParams(params).toString();
+  const r = await fetch("/api/sheet?" + qs, { cache: "no-store" });
+  if (!r.ok) throw new Error("http " + r.status);
+  return r.json();
 }
 
 const norm = (s: string) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
@@ -101,9 +91,8 @@ export default function DevolucionPasaportes() {
     const c = String(cedIn ?? cedula).replace(/\D/g, "");
     if (c.length < 5) { setError("Escribe un número de cédula válido (solo números)."); return; }
     setBuscando(true); setError("");
-    jsonp(
-      { accion: "consultar", cedula: c, hoja: "" },
-      (j) => {
+    pedir({ accion: "consultar", cedula: c, hoja: "" })
+      .then((j) => {
         setBuscando(false);
         if (!j || !j.ok || !j.registro) {
           setError("No encontramos una solicitud con esa cédula. Verifica el número o escríbenos por WhatsApp.");
@@ -120,9 +109,8 @@ export default function DevolucionPasaportes() {
           correo: r.correo || "", depto: dk, ciudad: ck, direccion: r.direccion || "", notas: "",
         });
         setTimeout(toTop, 60);
-      },
-      () => { setBuscando(false); setError("No pudimos consultar en este momento. Intenta de nuevo o escríbenos por WhatsApp."); }
-    );
+      })
+      .catch(() => { setBuscando(false); setError("No pudimos consultar en este momento. Intenta de nuevo o escríbenos por WhatsApp."); });
   };
 
   /* Llega desde el home con ?cedula=... → consulta sola. */
@@ -136,15 +124,13 @@ export default function DevolucionPasaportes() {
     const cod = codigo.trim().toUpperCase();
     if (cod.length < 4) { setError("Escribe el código de grupo completo (ej. GR-4821)."); return; }
     setBuscandoGrupo(true); setError(""); setGrupoInfo(null);
-    jsonp(
-      { accion: "grupo", codigo: cod },
-      (j) => {
+    pedir({ accion: "grupo", codigo: cod })
+      .then((j) => {
         setBuscandoGrupo(false); setCodigo(cod);
         if (j && j.ok && j.grupo) setGrupoInfo(j.grupo);
         else setError("No encontramos un grupo con ese código. Pídeselo de nuevo a la persona que recibe el paquete.");
-      },
-      () => { setBuscandoGrupo(false); setGrupoInfo({ sinVerificar: true }); }
-    );
+      })
+      .catch(() => { setBuscandoGrupo(false); setGrupoInfo({ sinVerificar: true }); });
   };
 
   const enviar = () => {
@@ -179,17 +165,15 @@ export default function DevolucionPasaportes() {
     CAMPOS.forEach((f) => { payload["Envío — " + f.l] = String(vals[f.k] || "").trim(); });
 
     setEnviando(true); setError("");
-    jsonp(
-      { accion: "registrar", datos: JSON.stringify(payload) },
-      (j) => {
+    pedir({ accion: "registrar", datos: JSON.stringify(payload) })
+      .then((j) => {
         setEnviando(false);
         if (j && j.ok === false && j.error === "ya-registrado") {
           setEntrega(j.entrega || null); setModo(""); setTimeout(toTop, 60); return;
         }
         setRadicado(rad); setCodigoGrupo(creaGrupo ? cod : ""); setVista("listo");
-      },
-      () => { setEnviando(false); setError("No pudimos registrar la solicitud. Intenta de nuevo o escríbenos por WhatsApp."); }
-    );
+      })
+      .catch(() => { setEnviando(false); setError("No pudimos registrar la solicitud. Intenta de nuevo o escríbenos por WhatsApp."); });
   };
 
   const volver = () => {
