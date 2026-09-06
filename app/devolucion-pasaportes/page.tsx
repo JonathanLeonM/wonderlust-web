@@ -5,6 +5,9 @@
  * Ruta sugerida: app/devolucion-pasaportes/page.tsx
  *
  * Llega con ?cedula=123 desde la sección "Mi pasaporte" del home y consulta solo.
+ * El Sheet devuelve el estado de la visa, el nombre y la cédula, pero NINGÚN
+ * dato de contacto (dirección, teléfono, correo). Los datos de entrega los
+ * diligencia la persona en el formulario.
  * COLOMBIA_GEO / deptoKeysBogotaFirst son los MISMOS que están inlineados hoy en
  * visa-china-form.tsx: extráelos a lib/colombia-geo.ts y ambos formularios lo usan.
  */
@@ -16,9 +19,7 @@ const WA = "https://wa.me/573134883629";
 const OFICINA = "CL 53B # 24 - 30 Oficina 301, Bogotá D.C.";
 
 type Registro = {
-  cedula: string; nombre: string; correo: string; telefono: string; telefono2: string;
-  pais: string; depto: string; ciudad: string; direccion: string; visa: string;
-  tramite: string; fila: number;
+  nombre: string; cedula: string; visa: string; aprobacion: string; tramite: string; fila: number;
 };
 type Entrega = {
   radicado: string; fecha: string; modo: string; rol: string; codigo: string;
@@ -74,10 +75,13 @@ export default function DevolucionPasaportes() {
   const [enviando, setEnviando] = useState(false);
   const [radicado, setRadicado] = useState("");
   const [codigoGrupo, setCodigoGrupo] = useState("");
+  const [aceptaPago, setAceptaPago] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const deptoKeys = useMemo(() => deptoKeysBogotaFirst(), []);
   const pideDatos = modo === "envio" || (modo === "grupo" && grupoRol === "crear");
+  /* Solo quien paga el envío confirma el contraentrega: no quien se une a un grupo. */
+  const pidePago = pideDatos;
   const listoParaDatos = !!modo && !(modo === "grupo" && !grupoRol);
   const campos = CAMPOS.filter((f) => !f.dir || pideDatos);
   const falta = listoParaDatos ? campos.filter((f) => f.req && !String(vals[f.k] || "").trim()).map((f) => f.k) : [];
@@ -91,23 +95,21 @@ export default function DevolucionPasaportes() {
     const c = String(cedIn ?? cedula).replace(/\D/g, "");
     if (c.length < 5) { setError("Escribe un número de cédula válido (solo números)."); return; }
     setBuscando(true); setError("");
-    pedir({ accion: "consultar", cedula: c, hoja: "" })
+    pedir({ accion: "consultar", cedula: c })
       .then((j) => {
         setBuscando(false);
         if (!j || !j.ok || !j.registro) {
-          setError("No encontramos una solicitud con esa cédula. Verifica el número o escríbenos por WhatsApp.");
+          setError(
+            j && j.error === "demasiados-intentos"
+              ? "Demasiados intentos. Espera " + (j.minutos || 15) + " minutos e inténtalo de nuevo."
+              : "No encontramos una solicitud con esa cédula. Verifica el número o escríbenos por WhatsApp."
+          );
           return;
         }
-        const r: Registro = j.registro;
-        /* El Sheet trae texto libre ("meta", "BOGOTA"): se casa con las listas. */
-        const dk = Object.keys(COLOMBIA_GEO).find((k) => norm(k) === norm(r.depto)) || "";
-        const ck = dk ? COLOMBIA_GEO[dk].find((x) => norm(x) === norm(r.ciudad)) || "" : "";
-        setReg(r); setEntrega(j.entrega || null); setVista("resultado");
-        setModo(""); setSim(""); setSimTipo(""); setGrupoRol(""); setCodigo(""); setGrupoInfo(null); setTouched(false);
-        setVals({
-          nombre: r.nombre || "", cedulaRec: r.cedula || "", telefono: r.telefono || "", telefono2: r.telefono2 || "",
-          correo: r.correo || "", depto: dk, ciudad: ck, direccion: r.direccion || "", notas: "",
-        });
+        setCedula(c);
+        setReg(j.registro); setEntrega(j.entrega || null); setVista("resultado");
+        setModo(""); setSim(""); setSimTipo(""); setGrupoRol(""); setCodigo(""); setGrupoInfo(null);
+        setTouched(false); setVals({}); setAceptaPago(false);
         setTimeout(toTop, 60);
       })
       .catch(() => { setBuscando(false); setError("No pudimos consultar en este momento. Intenta de nuevo o escríbenos por WhatsApp."); });
@@ -141,6 +143,7 @@ export default function DevolucionPasaportes() {
     if (modo === "grupo" && !grupoRol) { setError("Dinos si tú recibes el paquete del grupo o si te unes a uno."); return; }
     if (modo === "grupo" && grupoRol === "unir" && !grupoInfo) { setError("Verifica primero el código de grupo."); return; }
     if (falta.length) { setTouched(true); setError("Completa los campos marcados en rojo (" + falta.length + ")."); return; }
+    if (pidePago && !aceptaPago) { setError("Confirma que el valor del envío se paga contraentrega al mensajero."); return; }
 
     const rad = "WL-" + String(Date.now()).slice(-6);
     const creaGrupo = modo === "grupo" && grupoRol === "crear";
@@ -153,11 +156,12 @@ export default function DevolucionPasaportes() {
     const payload: Record<string, string> = {
       Marca: "Wonderlust", Tramite: "Devolución de Pasaportes", Radicado: rad,
       FechaEnvio: new Date().toLocaleString("es-CO", { timeZone: "America/Bogota" }),
-      "Cédula consultada": reg.cedula, Solicitante: reg.nombre, "Trámite original": reg.tramite,
+      "Cédula consultada": cedula, Solicitante: reg.nombre, "Trámite original": reg.tramite,
       "Número de visa": reg.visa || "", "Fila de origen": String(reg.fila || ""),
       "SIM card": sim, "Tipo de SIM": sim === "Sí" ? simTipo : "",
       "Modo de entrega": etiquetaModo,
       "Punto de recogida": modo === "recoger" ? OFICINA : "",
+      "Pago contraentrega": pidePago ? (aceptaPago ? "Sí, acepta" : "") : "No aplica",
       "Código de grupo": cod,
       "Rol en el grupo": modo === "grupo" ? (creaGrupo ? "Recibe" : "Se une") : "",
       "Grupo verificado": modo === "grupo" && grupoRol === "unir" ? (grupoInfo?.sinVerificar ? "No (revisar manual)" : "Sí") : "",
@@ -179,6 +183,7 @@ export default function DevolucionPasaportes() {
   const volver = () => {
     setVista("consulta"); setCedula(""); setReg(null); setEntrega(null); setModo(""); setSim(""); setSimTipo("");
     setGrupoRol(""); setCodigo(""); setGrupoInfo(null); setTouched(false); setError(""); setCodigoGrupo("");
+    setVals({}); setAceptaPago(false);
     setTimeout(toTop, 60);
   };
 
@@ -195,8 +200,9 @@ export default function DevolucionPasaportes() {
     ? [
         { label: "Solicitante", value: reg.nombre || "—" },
         { label: "Cédula", value: reg.cedula || "—" },
-        { label: "Trámite", value: /respuesta|hoja/i.test(reg.tramite || "") ? "Solicitud de visa" : reg.tramite || "—" },
-        { label: "Número de visa", value: aprobada ? visaReal : "Pendiente" },
+        { label: "Tipo de visa", value: /respuesta|hoja/i.test(reg.tramite || "") ? "Solicitud de visa" : reg.tramite || "—" },
+        { label: "Estado", value: aprobada ? "Aprobada" : "En trámite" },
+        { label: "Fecha de aprobación", value: aprobada ? (reg.aprobacion || "—") : "Pendiente" },
       ]
     : [];
 
@@ -226,14 +232,14 @@ export default function DevolucionPasaportes() {
     modo === "recoger" ? "Sin estos datos no podemos entregar el pasaporte en la oficina. Debe coincidir con la cédula que presenten al recogerlo."
     : modo === "grupo" && grupoRol === "crear" ? "Esta es la dirección donde llegarán todos los pasaportes del grupo. Revísala con cuidado."
     : modo === "grupo" ? "Los necesitamos para avisarte y para la carta que autoriza a quien recibe tu pasaporte."
-    : "Traemos lo que tenemos registrado. Revísalo y corrige lo que haga falta.";
+    : "Escribe la dirección donde quieres recibir el pasaporte.";
   const avisoTexto =
     modo === "recoger" ? "Te esperamos en " + OFICINA + " con tu cédula original. Al confirmar te avisamos por WhatsApp y dejamos el pasaporte separado a tu nombre."
     : modo === "grupo"
     ? grupoRol === "unir"
       ? "Tu pasaporte viajará en el paquete del grupo. Quien lo reciba debe llevar carta de autorización y copia de tu cédula; te la enviamos por WhatsApp."
-      : "Recibirás los pasaportes de todo el grupo: necesitamos carta de autorización de cada persona. Al confirmar te damos el código para compartir y el valor del envío se paga contraentrega."
-    : "Revisa bien la dirección: los reenvíos por datos incorrectos tienen costo adicional. El valor del envío se paga contraentrega al mensajero.";
+      : "Recibirás los pasaportes de todo el grupo: necesitamos carta de autorización de cada persona. Al confirmar te damos el código para compartir; el valor del envío lo pagas al mensajero al recibirlo."
+    : "Revisa bien la dirección: los reenvíos por datos incorrectos tienen costo adicional. Ten listo el valor del envío para pagárselo al mensajero cuando llegue.";
   const btnEnviar = enviando ? "Registrando…"
     : modo === "recoger" ? "Confirmar que lo recojo en la oficina"
     : modo === "grupo" ? (grupoRol === "unir" ? "Sumarme al envío del grupo" : "Crear el grupo y confirmar envío")
@@ -322,6 +328,7 @@ export default function DevolucionPasaportes() {
                 </div>
               </>
             )}
+
 
             {vista === "resultado" && reg && (
               <>
@@ -420,22 +427,22 @@ export default function DevolucionPasaportes() {
                             <div style={{ fontSize: 12.5, color: "#5d7189", lineHeight: 1.55, marginTop: 8 }}>Lunes a viernes 9:00 a.m. – 5:00 p.m. · Sábados 9:00 a.m. – 1:00 p.m. Trae tu cédula original.</div>
                           </div>
 
-                          <div onClick={() => { setModo("envio"); setError(""); }} style={card(modo === "envio", "#2f6fb0")}>
+                          <div onClick={() => { setModo("envio"); setError(""); setAceptaPago(false); }} style={card(modo === "envio", "#2f6fb0")}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
                               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 17, color: "#12325c" }}>Envío a domicilio</div>
-                              <div style={{ ...chip, background: "#e8b323", color: "#12325c" }}>CON COSTO</div>
+                              <div style={{ ...chip, background: "#e8b323", color: "#12325c" }}>PAGO CONTRAENTREGA</div>
                             </div>
                             <div style={{ fontSize: 13.5, color: "#16283f", fontWeight: 600, lineHeight: 1.5 }}>A la dirección que nos indiques</div>
-                            <div style={{ fontSize: 12.5, color: "#5d7189", lineHeight: 1.55, marginTop: 8 }}>Enviamos por mensajería con guía rastreable. El valor del envío se paga contraentrega.</div>
+                            <div style={{ fontSize: 12.5, color: "#5d7189", lineHeight: 1.55, marginTop: 8 }}>Enviamos por mensajería con guía rastreable. <strong>El valor del envío lo pagas al mensajero cuando te lo entregue</strong>, no ahora.</div>
                           </div>
 
-                          <div onClick={() => { setModo("grupo"); setError(""); }} style={card(modo === "grupo", "#2f6fb0")}>
+                          <div onClick={() => { setModo("grupo"); setError(""); setAceptaPago(false); }} style={card(modo === "grupo", "#2f6fb0")}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
                               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 17, color: "#12325c" }}>Envío en grupo</div>
                               <div style={{ ...chip, background: "#2f6fb0", color: "#fff" }}>SE COMPARTE</div>
                             </div>
                             <div style={{ fontSize: 13.5, color: "#16283f", fontWeight: 600, lineHeight: 1.5 }}>Un solo paquete para varias personas</div>
-                            <div style={{ fontSize: 12.5, color: "#5d7189", lineHeight: 1.55, marginTop: 8 }}>Ideal para familias o grupos de viaje: se paga un envío entre todos y llega a una sola dirección.</div>
+                            <div style={{ fontSize: 12.5, color: "#5d7189", lineHeight: 1.55, marginTop: 8 }}>Ideal para familias o grupos de viaje: un solo envío para todos, que paga contraentrega quien lo recibe.</div>
                           </div>
                         </div>
 
@@ -532,9 +539,26 @@ export default function DevolucionPasaportes() {
                           </div>
                         )}
 
+                        {hasModo && pidePago && (
+                          <div
+                            onClick={() => { setAceptaPago(!aceptaPago); setError(""); }}
+                            style={{ marginTop: 26, padding: "16px 18px", borderRadius: "2px 20px 2px 20px", background: aceptaPago ? "#eff8f2" : "#fffbe9", border: "1px solid " + (aceptaPago ? "rgba(31,122,77,.35)" : "rgba(198,146,20,.4)"), display: "flex", gap: 13, alignItems: "flex-start", cursor: "pointer" }}
+                          >
+                            <div style={{ flex: "0 0 auto", width: 24, height: 24, borderRadius: 6, marginTop: 1, border: "2px solid " + (aceptaPago ? "#1f7a4d" : "rgba(198,146,20,.6)"), background: aceptaPago ? "#1f7a4d" : "#fff", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700 }}>{aceptaPago ? "✓" : ""}</div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 13.5, fontWeight: 700, color: "#12325c", lineHeight: 1.45 }}>El envío se paga contraentrega *</div>
+                              <div style={{ fontSize: 12.8, color: "#44586e", lineHeight: 1.55, marginTop: 5 }}>
+                                {modo === "grupo"
+                                  ? "Entiendo que el valor del envío del paquete del grupo lo pago yo al mensajero en el momento de la entrega. Nosotros no cobramos nada por anticipado."
+                                  : "Entiendo que el valor del envío lo pago al mensajero en el momento de la entrega. Nosotros no cobramos nada por anticipado."}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {hasModo && (
                           <>
-                            <div style={{ marginTop: 26, padding: "15px 17px", background: "#eef4fb", border: "1px solid rgba(47,111,176,.3)", borderLeft: "3px solid #e8b323", borderRadius: "2px 18px 2px 18px" }}>
+                            <div style={{ marginTop: 16, padding: "15px 17px", background: "#eef4fb", border: "1px solid rgba(47,111,176,.3)", borderLeft: "3px solid #e8b323", borderRadius: "2px 18px 2px 18px" }}>
                               <div style={{ fontSize: 13, fontWeight: 700, color: "#12325c", marginBottom: 5 }}>Antes de confirmar</div>
                               <div style={{ fontSize: 12.8, color: "#44586e", lineHeight: 1.55 }}>{avisoTexto}</div>
                             </div>
@@ -568,7 +592,7 @@ export default function DevolucionPasaportes() {
                     ? "Dejamos tu pasaporte separado en " + OFICINA + ". Llévate tu cédula original y muestra este radicado."
                     : modo === "grupo" && grupoRol === "unir"
                     ? "Tu pasaporte irá en el paquete del grupo " + codigo + ". Te confirmamos por WhatsApp cuando salga el envío."
-                    : "Programamos tu envío a " + (vals.direccion || "") + (vals.ciudad ? ", " + vals.ciudad : "") + ". Te enviaremos el número de guía por WhatsApp."}
+                    : "Programamos tu envío a " + (vals.direccion || "") + (vals.ciudad ? ", " + vals.ciudad : "") + ". Te enviaremos el número de guía por WhatsApp y el valor del envío lo pagas al mensajero al recibirlo."}
                 </div>
                 <div style={{ display: "inline-block", padding: "12px 22px", borderRadius: "2px 18px 2px 18px", background: "#f5f8fc", border: "1px solid rgba(22,40,63,.12)" }}>
                   <div style={{ ...rotulo, letterSpacing: ".14em", marginBottom: 4 }}>Radicado de entrega</div>
