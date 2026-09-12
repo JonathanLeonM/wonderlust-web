@@ -113,9 +113,11 @@ export default function Home() {
             </span>
           </a>
           <nav style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
+            <span className="nav-links" style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
             <a href="#ofertas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Salidas</a>
             <a href="#visas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Visas</a>
             <a href="#como" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Cómo trabajamos</a>
+            </span>
             <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: NAVY, color: "#fff", fontSize: 14, fontWeight: 600, padding: "12px 22px", borderRadius: 12, textDecoration: "none" }}>
               <WhatsappIcon size={16} />
               Cotizar
@@ -217,7 +219,7 @@ export default function Home() {
           {/* EUROPA */}
           <div style={cardShell}>
             {abierto === "europa" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/europa.webp" alt="Salidas Europa" width={900} height={1200} style={photo} />
               <span style={{ position: "absolute", top: 12, left: 12, background: GOLD, color: "#fff", fontSize: 9.5, fontWeight: 800, letterSpacing: ".08em", padding: "6px 11px", borderRadius: 999 }}>MÁS VENDIDO</span>
             </div>
@@ -258,7 +260,7 @@ export default function Home() {
           {/* AMÉRICA */}
           <div style={cardShell}>
             {abierto === "america" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/america.webp" alt="Salidas América" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -308,7 +310,7 @@ export default function Home() {
           {/* ASIA */}
           <div style={cardShell}>
             {abierto === "asia" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/asia.webp" alt="Salidas Asia" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -355,7 +357,7 @@ export default function Home() {
           {/* OCEANÍA */}
           <div style={cardShell}>
             {abierto === "oceania" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/oceania.webp" alt="Salidas Oceanía" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -387,7 +389,7 @@ export default function Home() {
           {/* ÁFRICA */}
           <div style={cardShell}>
             {abierto === "africa" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/africa.webp" alt="Salidas África" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
