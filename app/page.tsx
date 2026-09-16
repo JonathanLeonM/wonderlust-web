@@ -544,6 +544,26 @@ export default function Home() {
               </div>
             </div>
           ))}
+          <div style={{ gridColumn: "1 / -1", background: "#fff", border: "1px solid rgba(11,21,38,.09)", borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(22px,3.5vw,44px)", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".16em", color: GOLD, marginBottom: 10 }}>RESEÑAS EN GOOGLE</div>
+              <div style={{ fontSize: "clamp(21px,2.6vw,30px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.1, textWrap: "pretty" }}>¿Viajaste con nosotros? Cuéntalo en Google</div>
+              <div style={{ fontSize: 14.5, lineHeight: 1.6, color: "#5d6673", fontWeight: 300, marginTop: 10, maxWidth: "46ch" }}>
+                Tu reseña ayuda a que otros viajeros de Bogotá nos encuentren y sepan con quién están tramitando.
+              </div>
+              <a href="https://g.page/r/CQgbCxwc0CvcECE/review" target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: NAVY, color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "14px 24px", borderRadius: 12, marginTop: 20, textDecoration: "none" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26 6.86.6-5.2 4.52 1.55 6.72L12 16.6l-6.11 3.5 1.55-6.72-5.2-4.52 6.86-.6z" /></svg>
+                Escribir mi reseña
+              </a>
+            </div>
+            <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+              <div style={{ border: "1px solid rgba(11,21,38,.12)", borderRadius: 16, padding: 10, background: "#fff" }}>
+                <img src="/qr-resenas.png" alt="Código QR para dejar una reseña en Google" style={{ display: "block", width: "clamp(116px,13vw,150px)", height: "auto" }} />
+              </div>
+              <div style={{ fontSize: 12.5, color: "#8b93a1", fontWeight: 500, textAlign: "center", maxWidth: "18ch" }}>Escanea con tu celular</div>
+            </div>
+          </div>
+
           <div style={{ gridColumn: "1 / -1", background: INK, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(18px,3vw,40px)", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 14, flexWrap: "wrap" }}>
               <div style={{ fontSize: "clamp(34px,4.4vw,50px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1 }}>+2.400</div>
