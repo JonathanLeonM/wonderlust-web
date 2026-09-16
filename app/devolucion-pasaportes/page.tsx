@@ -274,6 +274,13 @@ export default function DevolucionPasaportes() {
   return (
     <main style={{ minHeight: "100vh", padding: "clamp(20px,5vw,56px) 16px", display: "flex", justifyContent: "center", background: "#eaf0f7", fontFamily: "'Karla',system-ui,sans-serif", color: "#16283f" }}>
       <div style={{ width: "100%", maxWidth: 760 }} ref={topRef}>
+        <div style={{ marginBottom: 18 }}>
+          <a href="https://www.wviajes.co" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#12325c", padding: "9px 16px 9px 13px", border: "1px solid rgba(18,50,92,.22)", borderRadius: 999, background: "#fff", textDecoration: "none" }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+            Volver al inicio
+          </a>
+        </div>
+
 
         <div style={{ textAlign: "center", marginBottom: 26 }}>
           <div style={{ fontFamily: "'Marcellus',serif", fontSize: 11, letterSpacing: ".34em", color: "#c69214", fontWeight: 700, marginBottom: 10 }}>WONDERLUST · AGENCIA DE VIAJES</div>
