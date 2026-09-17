@@ -6,8 +6,9 @@ export const metadata: Metadata = {
   description:
     "Visas, paquetes y tiquetes con asesoría personalizada. Estados Unidos, Canadá, China, Costa Rica y Japón. Bogotá, Colombia.",
   icons: {
-    icon: "/logo-wonderlust.png",
-    apple: "/logo-wonderlust.png",
+    icon: [{ url: "/icon.png?v=3", type: "image/png" }],
+    shortcut: "/icon.png?v=3",
+    apple: "/icon.png?v=3",
   },
 };
 
