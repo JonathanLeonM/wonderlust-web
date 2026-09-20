@@ -47,7 +47,7 @@ export default function ResenasGoogle() {
       .catch(() => {});
   }, []);
 
-  const reviews = data?.reviews?.length ? data.reviews.slice(0, 3) : FALLBACK;
+  const reviews = data?.reviews?.length ? data.reviews.slice(0, 4) : FALLBACK;
   const real = Boolean(data?.reviews?.length);
 
   return (
@@ -74,7 +74,7 @@ export default function ResenasGoogle() {
           style={{ background: "#fff", border: `1px solid ${LINE}`, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", flexDirection: "column" }}
         >
           <Stars n={t.rating} />
-          <blockquote style={{ margin: 0, fontSize: "clamp(15px,1.5vw,16.5px)", lineHeight: 1.65, color: INK, fontWeight: 300, textWrap: "pretty" }}>
+          <blockquote style={{ margin: 0, fontSize: "clamp(15px,1.5vw,16.5px)", lineHeight: 1.65, color: INK, fontWeight: 300, textWrap: "pretty", display: "-webkit-box", WebkitLineClamp: 9, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             “{t.text}”
           </blockquote>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 22 }}>
