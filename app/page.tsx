@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ResenasGoogle from "@/components/ResenasGoogle";
 
 const WA = "https://wa.me/573134883629";
 const NAVY = "#002060";
@@ -527,23 +528,8 @@ export default function Home() {
       {/* PRUEBA SOCIAL */}
       <section style={{ ...wrap, padding: sectionPad }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(270px,1fr))", gap: "clamp(14px,2vw,22px)" }}>
-          {[
-            { q: "“Nos organizaron todo Europa y la visa de Estados Unidos. Viajamos tranquilos, sin una sola sorpresa.”", i: "R", n: "Familia Rodríguez", s: "Bogotá · Europa Fantástica 2025", bg: GOLD },
-            { q: "“Me habían negado la visa antes. Con su asesoría preparé la entrevista y esta vez la aprobaron.”", i: "A", n: "Andrés M.", s: "Visa Americana aprobada · 2025", bg: NAVY },
-            { q: "“Atención cercana y honesta. Respondían cada duda por WhatsApp, incluso los domingos.”", i: "C", n: "Carolina & Julián", s: "Bogotá · Euro Leyendas 2024", bg: INK },
-          ].map((t) => (
-            <div key={t.n} style={{ background: "#fff", border: `1px solid ${LINE}`, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: 14, color: "#e0a521", letterSpacing: ".14em", marginBottom: 14 }}>★★★★★</div>
-              <blockquote style={quote}>{t.q}</blockquote>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 22 }}>
-                <div style={avatar(t.bg)}>{t.i}</div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-.01em" }}>{t.n}</div>
-                  <div style={{ fontSize: 12.5, color: "#8b93a1", fontWeight: 400, marginTop: 2 }}>{t.s}</div>
-                </div>
-              </div>
-            </div>
-          ))}
+          <ResenasGoogle />
+
           <div style={{ gridColumn: "1 / -1", background: "#fff", border: "1px solid rgba(11,21,38,.09)", borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(22px,3.5vw,44px)", flexWrap: "wrap" }}>
             <div style={{ flex: "1 1 320px", minWidth: 0 }}>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".16em", color: GOLD, marginBottom: 10 }}>RESEÑAS EN GOOGLE</div>
