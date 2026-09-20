@@ -37,6 +37,7 @@ function Stars({ n }: { n: number }) {
 
 export default function ResenasGoogle() {
   const [data, setData] = useState<{ rating: number | null; total: number; reviews: Review[] } | null>(null);
+  const [abierta, setAbierta] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/resenas")
@@ -74,9 +75,31 @@ export default function ResenasGoogle() {
           style={{ background: "#fff", border: `1px solid ${LINE}`, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", flexDirection: "column" }}
         >
           <Stars n={t.rating} />
-          <blockquote style={{ margin: 0, fontSize: "clamp(15px,1.5vw,16.5px)", lineHeight: 1.65, color: INK, fontWeight: 300, textWrap: "pretty", display: "-webkit-box", WebkitLineClamp: 9, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <blockquote
+            style={{
+              margin: 0,
+              fontSize: "clamp(15px,1.5vw,16.5px)",
+              lineHeight: 1.65,
+              color: INK,
+              fontWeight: 300,
+              textWrap: "pretty",
+              whiteSpace: "pre-line",
+              ...(abierta === i
+                ? {}
+                : { display: "-webkit-box", WebkitLineClamp: 9, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
+            }}
+          >
             “{t.text}”
           </blockquote>
+          {t.text.length > 300 ? (
+            <button
+              type="button"
+              onClick={() => setAbierta(abierta === i ? null : i)}
+              style={{ alignSelf: "flex-start", marginTop: 10, background: "none", border: "none", padding: 0, color: NAVY, fontSize: 14, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              {abierta === i ? "Leer menos" : "Leer más"}
+            </button>
+          ) : null}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 22 }}>
             {t.photo ? (
               <img
