@@ -1,617 +1,354 @@
 "use client";
 
-import { useRef, useState } from "react";
-import ResenasGoogle from "@/components/ResenasGoogle";
+import Link from "next/link";
 
 const WA = "https://wa.me/573134883629";
-const NAVY = "#002060";
-const INK = "#0b1526";
-const GOLD = "#c8892a";
-const YELLOW = "#f0c040";
-const MUTED = "#5d6673";
-const LINE = "rgba(11,21,38,.09)";
+const WOMPI_US = "https://checkout.wompi.co/l/WadHBw";
+const WOMPI_CA = "https://checkout.wompi.co/l/rpGvBY";
 
-const WhatsappIcon = ({ size = 17 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.03c-.24.68-1.42 1.3-1.95 1.35-.53.05-1.03.24-3.47-.72-2.94-1.16-4.79-4.2-4.93-4.4-.15-.19-1.17-1.55-1.17-2.96 0-1.41.73-2.1 1-2.39.24-.26.53-.33.72-.33.19 0 .39 0 .55.01.19.01.44-.07.68.53.24.58.83 2.02.9 2.17.07.15.12.32.02.51-.1.19-.53.79-.72.99-.14.16-.29.33-.12.63.17.29.75 1.24 1.6 2.01 1.1.98 1.85 1.26 2.14 1.41.24.12.44.1.6-.07.19-.19.72-.84.9-1.13.19-.29.38-.24.63-.15.24.1 1.56.74 1.83.87.26.14.44.21.5.32.07.12.07.68-.17 1.36Z" />
+const WhatsIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.463 3.488" />
   </svg>
 );
 
-const PencilIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+const CardIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <path d="M2 10h20" />
   </svg>
 );
 
-const wrap: React.CSSProperties = { maxWidth: 1300, margin: "0 auto", padding: "0 clamp(16px,3.5vw,44px)" };
-const cardShell: React.CSSProperties = {
-  background: "#fff", border: `1px solid ${LINE}`, borderRadius: 20, overflow: "hidden",
-  display: "flex", flexDirection: "column",
-};
-const photoBox: React.CSSProperties = { position: "relative", aspectRatio: "3 / 4", background: "#eef1f7" };
-const photo: React.CSSProperties = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
-const cardBody: React.CSSProperties = { padding: "16px 16px 18px", display: "flex", flexDirection: "column", gap: 10, flex: 1 };
-const cardTitle: React.CSSProperties = { fontSize: 17.5, fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.12 };
-const cardSub: React.CSSProperties = { fontSize: 12.5, color: MUTED, fontWeight: 400, marginTop: 4 };
-const cardBtn: React.CSSProperties = {
-  border: "none", cursor: "pointer", fontFamily: "inherit", width: "100%", display: "inline-flex",
-  alignItems: "center", justifyContent: "center", background: GOLD, color: "#fff", fontSize: 13,
-  fontWeight: 700, padding: "12px 14px", borderRadius: 10,
-};
-const panel: React.CSSProperties = {
-  gridColumn: "1 / -1", background: "#fff", border: `1px solid ${LINE}`, borderRadius: 20,
-  padding: "clamp(20px,2.4vw,30px)",
-};
-const panelLabel: React.CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: ".16em", color: GOLD, marginBottom: 6 };
-const row: React.CSSProperties = {
-  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
-  flexWrap: "wrap", padding: "16px 0", borderTop: `1px solid ${LINE}`,
-};
-const rowTitle: React.CSSProperties = { fontSize: 17, fontWeight: 700, letterSpacing: "-.025em" };
-const rowText: React.CSSProperties = { fontSize: 13, color: MUTED, fontWeight: 400, marginTop: 3 };
-const rowPrice: React.CSSProperties = { fontSize: 20, fontWeight: 800, color: NAVY, letterSpacing: "-.03em" };
-const rowCustom: React.CSSProperties = { fontSize: 14.5, fontWeight: 600, color: NAVY };
-const rowCta: React.CSSProperties = {
-  background: YELLOW, color: NAVY, fontSize: 13, fontWeight: 700, padding: "12px 20px",
-  borderRadius: 11, flexShrink: 0, textDecoration: "none",
-};
-const sectionPad = "clamp(44px,6.5vw,90px) clamp(16px,3.5vw,44px) 0";
-const h2: React.CSSProperties = { fontSize: "clamp(28px,4.2vw,52px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1.02, margin: 0 };
-const visaCard: React.CSSProperties = {
-  background: "#fff", borderRadius: 20, padding: 22, display: "flex", flexDirection: "column", gap: 13, color: INK,
-};
-const visaName: React.CSSProperties = { fontSize: 19, fontWeight: 700, letterSpacing: "-.025em" };
-const visaText: React.CSSProperties = { fontSize: 14, lineHeight: 1.7, color: MUTED, fontWeight: 300 };
-const payBtn: React.CSSProperties = {
-  background: YELLOW, color: NAVY, fontSize: 13, fontWeight: 700, padding: "12px 20px", borderRadius: 11, textDecoration: "none",
-};
-const formBtn: React.CSSProperties = {
-  display: "inline-flex", alignItems: "center", gap: 7,
-  background: "linear-gradient(135deg,#c6f000,#7ee81f)", color: INK, fontSize: 13.5, fontWeight: 800,
-  letterSpacing: ".01em", padding: "13px 20px", borderRadius: 11,
-  boxShadow: "0 4px 16px rgba(160,225,20,.55)", border: "1.5px solid #a8e000", textDecoration: "none",
-};
-const quote: React.CSSProperties = {
-  fontSize: "clamp(16px,1.8vw,19px)", lineHeight: 1.45, fontWeight: 400, margin: 0,
-  letterSpacing: "-.015em", textWrap: "pretty" as React.CSSProperties["textWrap"],
-};
-const avatar = (bg: string): React.CSSProperties => ({
-  width: 42, height: 42, borderRadius: 999, background: bg, color: "#fff", fontSize: 17, fontWeight: 700,
-  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-});
-const footLink: React.CSSProperties = { fontSize: 14, color: "rgba(255,255,255,.85)", fontWeight: 300, textDecoration: "none" };
-const footHead: React.CSSProperties = { fontSize: 11.5, fontWeight: 700, letterSpacing: ".16em", color: "rgba(255,255,255,.45)" };
+const paquetes = [
+  { titulo: "Europa Fantástica", img: "/paquetes/europa-fantastica.png", sub: "Atención personalizada · París · Roma · Barcelona", precio: "USD 3.319", destacado: true, href: WA },
+  { titulo: "Euro Leyendas", img: "/paquetes/euro-leyendas.png", sub: "Atención personalizada · Londres · Ámsterdam · Praga", precio: "USD 2.890", destacado: false, href: WA },
+  { titulo: "Europa Chic", img: "/paquetes/europa-chic.png", sub: "Atención personalizada · París · Venecia · Roma", precio: "USD 2.450", destacado: false, href: WA },
+  { titulo: "Canadá en Familia", img: "/paquetes/canada-panoramica.png", sub: "Atención personalizada · Toronto · Niágara · Quebec · Montreal", precio: "USD 2.345", destacado: false, href: "/paquetes/canada" },
+];
 
-type Continente = "europa" | "america" | "asia" | "oceania" | "africa" | null;
+const paisesCompactos = [
+  { pais: "Costa Rica", flag: "cr" },
+  { pais: "Japón", flag: "jp" },
+  { pais: "China", flag: "cn" },
+];
 
 export default function Home() {
-  const [abierto, setAbierto] = useState<Continente>(null);
-  const cedulaRef = useRef<HTMLInputElement>(null);
-
-  const ver = (c: Exclude<Continente, null>) => () => setAbierto((a) => (a === c ? null : c));
-
-  const consultar = () => {
-    const el = cedulaRef.current;
-    const cedula = (el?.value || "").replace(/\D/g, "");
-    if (!cedula) { el?.focus(); return; }
-    window.location.href = `/devolucion-pasaportes?cedula=${encodeURIComponent(cedula)}`;
-  };
-
   return (
-    <div id="top" style={{ overflowX: "hidden", background: "#f8f8f5", color: INK, minHeight: "100vh", fontFamily: "'Outfit', system-ui, sans-serif" }}>
-      <div style={{ background: INK, color: "#fff", fontSize: 12.5, fontWeight: 500, textAlign: "center", padding: "9px 16px", letterSpacing: ".01em" }}>
-        Asesoría de visas y viajes desde Bogotá · Respuesta el mismo día por WhatsApp
-      </div>
+    <main style={{ width: "100%", fontFamily: "'Karla', system-ui, -apple-system, sans-serif", color: "#3a2c22", background: "#f7f0e4" }}>
 
-      <header style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(251,250,247,.94)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(11,21,38,.09)" }}>
-        <div style={{ ...wrap, padding: "13px clamp(16px,3.5vw,44px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18 }}>
-          <a href="#top" style={{ display: "flex", alignItems: "center", gap: 11, color: INK, textDecoration: "none" }}>
-            <img src="/logo-wonderlust.webp" alt="Wonderlust" width={38} height={38} style={{ width: 38, height: 38, objectFit: "contain", display: "block" }} />
-            <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.08 }}>
-              <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-.035em" }}>Wonderlust</span>
-              <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: ".2em", color: "#8b93a1" }}>WVIAJES.CO</span>
-            </span>
-          </a>
-          <nav style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
-            <span className="nav-links" style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
-            <a href="#ofertas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Salidas</a>
-            <a href="#visas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Visas</a>
-            <a href="#como" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Cómo trabajamos</a>
-            </span>
-            <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: NAVY, color: "#fff", fontSize: 14, fontWeight: 600, padding: "12px 22px", borderRadius: 12, textDecoration: "none" }}>
-              <WhatsappIcon size={16} />
-              Cotizar
+      {/* NAV */}
+      <div style={{ position: "sticky", top: 0, zIndex: 60, background: "rgba(14,61,59,.97)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(231,200,160,.22)" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px clamp(18px,4vw,46px)", gap: 14 }}>
+          <Link href="#top" style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0, textDecoration: "none" }}>
+            <img src="/logo-wonderlust.png" alt="Wonderlust" style={{ width: "clamp(36px,4.4vw,46px)", height: "clamp(36px,4.4vw,46px)", objectFit: "contain" }} />
+            <div style={{ lineHeight: 1 }}>
+              <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(16px,2vw,22px)", letterSpacing: ".16em", color: "#fdf7ec" }}>WONDERLUST</div>
+              <div style={{ fontSize: "clamp(6.5px,.9vw,8.5px)", letterSpacing: ".28em", color: "#e7c8a0", marginTop: 3 }}>AGENCIA DE VIAJES · BOGOTÁ</div>
+            </div>
+          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2.4vw,30px)" }}>
+            <a href="#visas" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Visas</a>
+            <a href="#paquetes" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Paquetes</a>
+            <a href="#viajeros" style={{ fontSize: "clamp(11px,1.3vw,13.5px)", fontWeight: 600, letterSpacing: ".04em", color: "rgba(253,247,236,.88)", textDecoration: "none" }}>Viajeros</a>
+            <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#128c4a", color: "#fff", fontSize: "clamp(11px,1.3vw,12.5px)", fontWeight: 700, padding: "9px clamp(12px,1.8vw,20px)", borderRadius: 30, whiteSpace: "nowrap", textDecoration: "none" }}>
+              <WhatsIcon size={14} />WhatsApp
             </a>
-          </nav>
-        </div>
-      </header>
-
-      <div style={{ background: "#eef1f7", borderBottom: "1px solid rgba(11,21,38,.09)" }}>
-        <div style={{ ...wrap, padding: "9px clamp(16px,3.5vw,44px)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", color: NAVY }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
-            <rect x="4" y="2" width="16" height="20" rx="2" />
-            <circle cx="12" cy="10" r="3" />
-            <path d="M8.5 17h7" />
-          </svg>
-          <span style={{ fontSize: 13.5, fontWeight: 600 }}>Consulta el estado de tu visa</span>
-          <span style={{ fontSize: 13.5, color: MUTED, fontWeight: 400 }}>y dinos dónde quieres recibir tu pasaporte</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto", flexWrap: "wrap" }}>
-            <input
-              ref={cedulaRef}
-              type="text"
-              inputMode="numeric"
-              placeholder="Número de cédula"
-              onKeyDown={(e) => { if (e.key === "Enter") consultar(); }}
-              style={{ width: 170, border: "1px solid rgba(11,21,38,.2)", background: "#fff", borderRadius: 9, padding: "9px 12px", fontFamily: "inherit", fontSize: 13.5, color: INK, outline: "none" }}
-            />
-            <button type="button" onClick={consultar} style={{ border: "none", cursor: "pointer", background: NAVY, color: "#fff", fontFamily: "inherit", fontSize: 13.5, fontWeight: 700, padding: "10px 18px", borderRadius: 9 }}>
-              Consultar
-            </button>
           </div>
         </div>
       </div>
 
       {/* HERO */}
-      <section style={{ ...wrap, padding: "clamp(14px,2vw,22px) clamp(16px,3.5vw,44px) 0" }}>
-        <div style={{ position: "relative", borderRadius: "clamp(18px,2.4vw,26px)", overflow: "hidden", minHeight: "clamp(280px,32vw,380px)", display: "flex", alignItems: "center", padding: "clamp(22px,3vw,44px)" }}>
-          <img src="/hero/pano.webp" alt="Europa" width={2000} height={1100} fetchPriority="high" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "35% center" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(100deg,rgba(3,10,28,.9) 0%,rgba(3,10,28,.64) 48%,rgba(3,10,28,.15) 100%)" }} />
-          <div style={{ position: "relative", width: "100%", color: "#fff" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.13)", border: "1px solid rgba(255,255,255,.3)", backdropFilter: "blur(8px)", padding: "6px 13px", borderRadius: 999, fontSize: 11.5, fontWeight: 600, marginBottom: 14 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 999, background: YELLOW, flexShrink: 0 }} />
-              +800 visas aprobadas · +12 años
+      <section id="top" style={{
+        position: "relative", minHeight: "88vh", display: "flex", flexDirection: "column", justifyContent: "flex-end",
+        overflow: "hidden", color: "#fdf7ec",
+      }}>
+        <video autoPlay loop muted playsInline poster="/europa-pano.png" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0,
+        }}>
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 1,
+          backgroundImage: "linear-gradient(90deg,rgba(24,15,9,.85) 0%,rgba(24,15,9,.5) 48%,rgba(24,15,9,.12) 100%),linear-gradient(180deg,rgba(24,15,9,.15) 0%,transparent 30%,rgba(24,15,9,.35) 100%)",
+        }} />
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 1220, width: "100%", margin: "0 auto", padding: "clamp(40px,8vh,90px) clamp(20px,5vw,46px) clamp(30px,5vh,50px)", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ maxWidth: 660 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 22 }}>
+              <span style={{ height: 1, width: 38, background: "#e7c8a0" }} />
+              <span style={{ fontSize: "clamp(10px,1.2vw,11.5px)", fontWeight: 700, letterSpacing: ".3em", color: "#e7c8a0" }}>EUROPA · VISAS USA Y CANADÁ</span>
             </div>
-            <h1 style={{ fontSize: "clamp(27px,3.6vw,48px)", fontWeight: 800, lineHeight: 1.04, letterSpacing: "-.04em", margin: 0, maxWidth: "17ch", textWrap: "balance" }}>
-              Viaja sin pensar en el papeleo.
+            <h1 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(38px,6.2vw,66px)", lineHeight: 1.04, margin: 0, textShadow: "0 4px 34px rgba(0,0,0,.5)" }}>
+              Viaja a Europa como siempre lo soñaste.
             </h1>
-            <p style={{ fontSize: "clamp(14px,1.4vw,16.5px)", lineHeight: 1.5, color: "rgba(255,255,255,.88)", maxWidth: 420, margin: "12px 0 0", fontWeight: 300 }}>
-              Visas, paquetes y tiquetes con una sola persona respondiéndote de principio a fin.
+            <p style={{ fontSize: "clamp(15px,1.8vw,18.5px)", lineHeight: 1.6, color: "rgba(253,247,236,.92)", margin: "26px 0 0", maxWidth: 540, textShadow: "0 2px 14px rgba(0,0,0,.5)" }}>
+              Paquetes cuidados al detalle y asesoría de visa a Estados Unidos y Canadá. Tú sueñas el destino; nosotros nos encargamos de todo lo demás.
             </p>
-            <div style={{ display: "flex", gap: 9, flexWrap: "wrap", marginTop: 20 }}>
-              <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: GOLD, color: "#fff", fontSize: 14.5, fontWeight: 700, padding: "13px 24px", borderRadius: 12, textDecoration: "none" }}>
-                <WhatsappIcon />
-                Planear mi viaje
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 34, flexWrap: "wrap" }}>
+              <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#128c4a", color: "#fff", fontSize: "clamp(14px,1.7vw,16px)", fontWeight: 700, padding: "16px clamp(22px,3vw,32px)", borderRadius: 34, boxShadow: "0 14px 32px rgba(0,0,0,.32)", textDecoration: "none" }}>
+                <WhatsIcon size={20} />Planea tu viaje por WhatsApp
               </a>
-              <a href="#visas" style={{ display: "inline-flex", alignItems: "center", background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.42)", backdropFilter: "blur(8px)", color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "13px 22px", borderRadius: 12, textDecoration: "none" }}>
-                Tramitar mi visa
-              </a>
+              <a href="#paquetes" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1.5px solid rgba(253,247,236,.55)", color: "#fdf7ec", fontSize: "clamp(13px,1.5vw,15px)", fontWeight: 600, padding: "15px clamp(20px,2.6vw,28px)", borderRadius: 34, textDecoration: "none" }}>Ver paquetes de viaje</a>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* GARANTÍAS */}
-      <div style={{ ...wrap, padding: "clamp(12px,1.6vw,18px) clamp(16px,3.5vw,44px) 0" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "clamp(10px,1.4vw,16px)" }}>
-          {[
-            { t: "Una sola asesora", s: "de principio a fin", d: <path d="M20 6 9 17l-5-5" /> },
-            { t: "Pago en línea", s: "tarjeta, PSE o Nequi", d: <><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></> },
-            { t: "Respuesta en minutos", s: "domingo a viernes", d: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></> },
-            { t: "Agencia registrada", s: "Bogotá, Colombia", d: <path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7l7-4Z" /> },
-          ].map((it) => (
-            <div key={it.t} style={{ display: "flex", alignItems: "center", gap: 13, background: "#fff", border: `1px solid ${LINE}`, borderRadius: 16, padding: "16px 18px" }}>
-              <div style={{ width: 38, height: 38, borderRadius: 11, background: "#eef1f7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{it.d}</svg>
-              </div>
-              <div>
-                <div style={{ fontSize: 14.5, fontWeight: 600, lineHeight: 1.2 }}>{it.t}</div>
-                <div style={{ fontSize: 13, color: MUTED, fontWeight: 300, marginTop: 2 }}>{it.s}</div>
-              </div>
-            </div>
-          ))}
+        <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "clamp(16px,2.6vw,28px)", flexWrap: "wrap", padding: "15px clamp(20px,5vw,46px)", background: "rgba(20,12,8,.5)", backdropFilter: "blur(5px)", fontSize: "clamp(10.5px,1.2vw,12px)", color: "#e7d9c4" }}>
+          <span style={{ color: "#e7c8a0" }}>★★★★★</span>
+          <span>+2.400 viajeros felices</span><span style={{ width: 1, height: 13, background: "rgba(231,200,160,.4)" }} />
+          <span>Registro Nacional de Turismo</span><span style={{ width: 1, height: 13, background: "rgba(231,200,160,.4)" }} />
+          <span>Acompañamiento de principio a fin</span><span style={{ width: 1, height: 13, background: "rgba(231,200,160,.4)" }} />
+          <span>Pagos 100% seguros</span>
         </div>
-      </div>
-
-      {/* SALIDAS */}
-      <section id="ofertas" style={{ ...wrap, padding: "clamp(38px,5vw,70px) clamp(16px,3.5vw,44px) 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 20, flexWrap: "wrap", marginBottom: "clamp(20px,3vw,30px)" }}>
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".18em", color: GOLD, marginBottom: 10 }}>SALIDAS 2026 · DESDE BOGOTÁ</div>
-            <h2 style={{ fontSize: "clamp(26px,3.4vw,42px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, margin: 0 }}>Elige tu continente</h2>
-            <p style={{ fontSize: 15, lineHeight: 1.55, color: MUTED, fontWeight: 300, margin: "11px 0 0", maxWidth: "52ch" }}>
-              Vuelos, hoteles, traslados y tours con guía en español. Todo incluido y sin letra pequeña.
-            </p>
-          </div>
-          <a href={WA} target="_blank" rel="noopener" style={{ fontSize: 14.5, fontWeight: 600, flexShrink: 0, color: NAVY }}>Quiero otro destino →</a>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gridAutoFlow: "row dense", gap: "clamp(14px,1.8vw,22px)" }}>
-          {/* EUROPA */}
-          <div style={cardShell}>
-            {abierto === "europa" && <div style={{ height: 4, background: GOLD }} />}
-            <div className="foto-destino" style={photoBox}>
-              <img src="/destinos/europa.webp" alt="Salidas Europa" width={900} height={1200} style={photo} />
-              <span style={{ position: "absolute", top: 12, left: 12, background: GOLD, color: "#fff", fontSize: 9.5, fontWeight: 800, letterSpacing: ".08em", padding: "6px 11px", borderRadius: 999 }}>MÁS VENDIDO</span>
-            </div>
-            <div style={cardBody}>
-              <div>
-                <div style={cardTitle}>Salidas Europa</div>
-                <div style={cardSub}>París · Roma · Barcelona</div>
-              </div>
-              <div style={{ height: 1, background: LINE, marginTop: "auto" }} />
-              <div>
-                <span style={{ fontSize: 11, color: "#8b93a1", fontWeight: 500 }}>Desde </span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: NAVY, letterSpacing: "-.03em" }}>USD 2.450</span>
-              </div>
-              <button type="button" onClick={ver("europa")} style={cardBtn}>{abierto === "europa" ? "Ocultar" : "Ver salidas"}</button>
-            </div>
-          </div>
-
-          {abierto === "europa" && (
-            <div style={panel}>
-              <div style={panelLabel}>SALIDAS A EUROPA · 3 CIRCUITOS</div>
-              {[
-                { n: "Europa Fantástica", d: "19 días · 17 noches · París, Roma, Barcelona · consulta fechas disponibles", p: "USD 3.319", q: "Quiero el itinerario de Europa Fantástica" },
-                { n: "Euro Leyendas", d: "Londres, Ámsterdam, Praga · guías en español", p: "USD 2.890", q: "Quiero el itinerario de Euro Leyendas" },
-                { n: "Europa Chic", d: "París, Venecia, Roma · hoteles seleccionados", p: "USD 2.450", q: "Quiero el itinerario de Europa Chic" },
-              ].map((c) => (
-                <div key={c.n} style={row}>
-                  <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                    <div style={rowTitle}>{c.n}</div>
-                    <div style={rowText}>{c.d}</div>
-                  </div>
-                  <div style={rowPrice}>{c.p}</div>
-                  <a href={`${WA}?text=${encodeURIComponent(c.q)}`} target="_blank" rel="noopener" style={rowCta}>Pedir itinerario</a>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* AMÉRICA */}
-          <div style={cardShell}>
-            {abierto === "america" && <div style={{ height: 4, background: GOLD }} />}
-            <div className="foto-destino" style={photoBox}>
-              <img src="/destinos/america.webp" alt="Salidas América" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={cardBody}>
-              <div>
-                <div style={cardTitle}>Salidas América</div>
-                <div style={cardSub}>Disney · Nueva York · Canadá · Machu Picchu · Rep. Dominicana</div>
-              </div>
-              <div style={{ height: 1, background: LINE, marginTop: "auto" }} />
-              <div>
-                <span style={{ fontSize: 11, color: "#8b93a1", fontWeight: 500 }}>Desde </span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: NAVY, letterSpacing: "-.03em" }}>USD 680</span>
-              </div>
-              <button type="button" onClick={ver("america")} style={cardBtn}>{abierto === "america" ? "Ocultar" : "Ver salidas"}</button>
-            </div>
-          </div>
-
-          {abierto === "america" && (
-            <div style={panel}>
-              <div style={panelLabel}>SALIDAS A AMÉRICA</div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>Río de Janeiro e Iguazú</div>
-                  <div style={rowText}>4 días · 3 noches · city tour y cataratas · salidas diarias</div>
-                </div>
-                <div style={rowPrice}>USD 680</div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero el itinerario de Río e Iguazú")}`} target="_blank" rel="noopener" style={rowCta}>Pedir itinerario</a>
-              </div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>Canadá en Familia</div>
-                  <div style={rowText}>9 días · Toronto, Niagara, Ottawa, Mont-Tremblant, Quebec y Montreal · con vuelo o solo terrestre</div>
-                </div>
-                <div style={rowPrice}>USD 2.345</div>
-                <a href="/paquetes/canada" style={rowCta}>Ver paquete</a>
-              </div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>Estados Unidos</div>
-                  <div style={rowText}>Orlando, Nueva York, Miami · armamos vuelos, hotel y parques</div>
-                </div>
-                <div style={rowCustom}>A tu medida</div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero cotizar un viaje a Estados Unidos")}`} target="_blank" rel="noopener" style={rowCta}>Pedir cotización</a>
-              </div>
-            </div>
-          )}
-
-          {/* ASIA */}
-          <div style={cardShell}>
-            {abierto === "asia" && <div style={{ height: 4, background: GOLD }} />}
-            <div className="foto-destino" style={photoBox}>
-              <img src="/destinos/asia.webp" alt="Salidas Asia" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={cardBody}>
-              <div>
-                <div style={cardTitle}>Salidas Asia</div>
-                <div style={cardSub}>Dubái · Japón · China</div>
-              </div>
-              <div style={{ height: 1, background: LINE, marginTop: "auto" }} />
-              <div style={{ fontSize: 13.5, fontWeight: 600, color: NAVY }}>A tu medida</div>
-              <button type="button" onClick={ver("asia")} style={cardBtn}>{abierto === "asia" ? "Ocultar" : "Ver salidas"}</button>
-            </div>
-          </div>
-
-          {abierto === "asia" && (
-            <div style={panel}>
-              <div style={panelLabel}>SALIDAS A ASIA Y MEDIO ORIENTE</div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>Dubái y Emiratos Árabes</div>
-                  <div style={rowText}>Dubái y Abu Dabi · desierto, Burj Khalifa y traslados privados</div>
-                </div>
-                <div style={rowCustom}>A tu medida</div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero cotizar un viaje a Dubái y Emiratos")}`} target="_blank" rel="noopener" style={rowCta}>Pedir cotización</a>
-              </div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>Japón</div>
-                  <div style={rowText}>Tokio, Kioto y Osaka · incluye trámite de visa japonesa</div>
-                </div>
-                <div style={rowCustom}>A tu medida</div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero cotizar un viaje a Japón")}`} target="_blank" rel="noopener" style={rowCta}>Pedir cotización</a>
-              </div>
-              <div style={row}>
-                <div style={{ flex: "1 1 280px", minWidth: 0 }}>
-                  <div style={rowTitle}>China</div>
-                  <div style={rowText}>Pekín, Shanghái y Cantón · asesoría de visa china incluida</div>
-                </div>
-                <div style={rowCustom}>A tu medida</div>
-                <a href="/visa-china" style={rowCta}>Llenar formulario</a>
-              </div>
-            </div>
-          )}
-
-          {/* OCEANÍA */}
-          <div style={cardShell}>
-            {abierto === "oceania" && <div style={{ height: 4, background: GOLD }} />}
-            <div className="foto-destino" style={photoBox}>
-              <img src="/destinos/oceania.webp" alt="Salidas Oceanía" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={cardBody}>
-              <div>
-                <div style={cardTitle}>Salidas Oceanía</div>
-                <div style={cardSub}>Australia · N. Zelanda</div>
-              </div>
-              <div style={{ height: 1, background: LINE, marginTop: "auto" }} />
-              <div style={{ fontSize: 13.5, fontWeight: 600, color: NAVY }}>A tu medida</div>
-              <button type="button" onClick={ver("oceania")} style={cardBtn}>{abierto === "oceania" ? "Ocultar" : "Ver salidas"}</button>
-            </div>
-          </div>
-
-          {abierto === "oceania" && (
-            <div style={panel}>
-              <div style={panelLabel}>SALIDAS A OCEANÍA</div>
-              <div style={{ ...row, gap: 20, paddingBottom: 0, marginTop: 6 }}>
-                <div style={{ flex: "1 1 300px", minWidth: 0 }}>
-                  <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-.025em" }}>Oceanía se arma a la medida</div>
-                  <div style={{ fontSize: 14, color: MUTED, fontWeight: 300, lineHeight: 1.6, marginTop: 5 }}>
-                    Australia, Nueva Zelanda y Polinesia no tienen salida fija: definimos ciudades, fechas y presupuesto contigo y te mandamos el itinerario en 24 horas.
-                  </div>
-                </div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero cotizar un viaje a Oceanía")}`} target="_blank" rel="noopener" style={{ ...rowCta, fontSize: 13.5, padding: "13px 22px" }}>Pedir cotización</a>
-              </div>
-            </div>
-          )}
-
-          {/* ÁFRICA */}
-          <div style={cardShell}>
-            {abierto === "africa" && <div style={{ height: 4, background: GOLD }} />}
-            <div className="foto-destino" style={photoBox}>
-              <img src="/destinos/africa.webp" alt="Salidas África" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={cardBody}>
-              <div>
-                <div style={cardTitle}>Salidas África</div>
-                <div style={cardSub}>Egipto · Marruecos · Kenia</div>
-              </div>
-              <div style={{ height: 1, background: LINE, marginTop: "auto" }} />
-              <div style={{ fontSize: 13.5, fontWeight: 600, color: NAVY }}>A tu medida</div>
-              <button type="button" onClick={ver("africa")} style={cardBtn}>{abierto === "africa" ? "Ocultar" : "Ver salidas"}</button>
-            </div>
-          </div>
-
-          {abierto === "africa" && (
-            <div style={panel}>
-              <div style={panelLabel}>SALIDAS A ÁFRICA</div>
-              <div style={{ ...row, gap: 20, paddingBottom: 0, marginTop: 6 }}>
-                <div style={{ flex: "1 1 300px", minWidth: 0 }}>
-                  <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-.025em" }}>África se arma a la medida</div>
-                  <div style={{ fontSize: 14, color: MUTED, fontWeight: 300, lineHeight: 1.6, marginTop: 5 }}>
-                    Egipto, Marruecos, Sudáfrica y Kenia con guía en español. Cuéntanos cuántos viajan y en qué fechas, y te mandamos el itinerario en 24 horas.
-                  </div>
-                </div>
-                <a href={`${WA}?text=${encodeURIComponent("Quiero cotizar un viaje a África")}`} target="_blank" rel="noopener" style={{ ...rowCta, fontSize: 13.5, padding: "13px 22px" }}>Pedir cotización</a>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <p style={{ fontSize: 12.5, color: "#8b93a1", margin: "16px 0 0", fontWeight: 300 }}>
-          Precios por persona, sujetos a disponibilidad y a la acomodación de cada paquete al momento de reservar. Aplican términos y condiciones.
-        </p>
       </section>
 
       {/* VISAS */}
-      <section id="visas" style={{ ...wrap, padding: sectionPad }}>
-        <div style={{ background: NAVY, borderRadius: "clamp(22px,3vw,32px)", padding: "clamp(24px,3.6vw,52px)", color: "#fff" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 22, flexWrap: "wrap", marginBottom: "clamp(22px,3vw,34px)" }}>
-            <div style={{ maxWidth: 560 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".18em", color: YELLOW, marginBottom: 11 }}>CONSULTORÍA DE VISAS</div>
-              <h2 style={{ ...h2, textWrap: "pretty" }}>Paga tu asesoría y empezamos hoy</h2>
-              <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "rgba(255,255,255,.82)", margin: "12px 0 0", fontWeight: 300 }}>
-                El valor es de nuestra asesoría. Las tarifas consulares se pagan aparte, directamente al consulado.
+      <section id="visas" style={{ background: "#f7f0e4", padding: "clamp(52px,8vw,80px) 0" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap", marginBottom: "clamp(28px,4vw,42px)" }}>
+            <div style={{ maxWidth: 600 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#bd5a34", marginBottom: 14 }}>CONSULTORÍA DE VISAS · NUESTRA PRIMERA PROMESA</div>
+              <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(28px,4vw,44px)", lineHeight: 1.08, margin: 0, color: "#14514f" }}>
+                Tu visa, sin la angustia — y paga tu asesoría en línea.
+              </h2>
+              <p style={{ fontSize: "clamp(14px,1.6vw,16px)", lineHeight: 1.65, color: "#7c6a58", margin: "16px 0 0" }}>
+                Tramitamos tu visa para Estados Unidos, Canadá, Costa Rica, Japón y China. Te acompañamos en cada paso —formularios, cita, documentos y entrevista— y pagas en línea de forma segura con Wompi.
+              </p>
+              <p style={{ fontSize: 12, lineHeight: 1.5, color: "#9a8a76", margin: "10px 0 0" }}>
+                *Valor de nuestra asesoría. No incluye tarifas consulares, gubernamentales ni de terceros, que se pagan aparte según el país.
               </p>
             </div>
-            <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.38)", color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "14px 24px", borderRadius: 13, textDecoration: "none" }}>
-              Tengo dudas, quiero hablar
-            </a>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(255px,1fr))", gap: "clamp(12px,1.6vw,18px)" }}>
-            <div style={visaCard}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <img src="https://flagcdn.com/w80/us.png" alt="Estados Unidos" width={36} height={27} style={{ width: 36, height: "auto", borderRadius: 5, display: "block" }} />
-                <div style={visaName}>Estados Unidos</div>
-              </div>
-              <div style={visaText}>DS-160 diligenciado · agenda de cita · simulación de entrevista</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto" }}>
-                <a href="/visa-usa" style={formBtn}><PencilIcon />Llenar formulario</a>
-                <a href="https://checkout.wompi.co/l/WadHBw" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
-              </div>
-            </div>
-
-            <div style={visaCard}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <img src="https://flagcdn.com/w80/ca.png" alt="Canadá" width={36} height={27} style={{ width: 36, height: "auto", borderRadius: 5, display: "block" }} />
-                <div style={visaName}>Canadá</div>
-              </div>
-              <div style={visaText}>Perfil migratorio · carta de solicitud · plan de viaje y soportes</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto" }}>
-                <a href="https://checkout.wompi.co/l/urqCID" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
-                <a href={WA} target="_blank" rel="noopener" style={{ background: "#1268d3", color: "#fff", fontSize: 13, fontWeight: 700, padding: "12px 18px", borderRadius: 11, textDecoration: "none" }}>Preguntar</a>
-              </div>
-            </div>
-
-            <div style={visaCard}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <img src="https://flagcdn.com/w80/cn.png" alt="China" width={36} height={27} style={{ width: 36, height: "auto", borderRadius: 5, display: "block" }} />
-                <div style={visaName}>China</div>
-              </div>
-              <div style={visaText}>Formulario en línea · carta de invitación · radicación y seguimiento</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto" }}>
-                <a href="/visa-china" style={formBtn}><PencilIcon />Llenar formulario</a>
-                <a href="https://checkout.wompi.co/l/gpUtlB" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
-              </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(40px,6vw,58px)", color: "#bd5a34", lineHeight: 1 }}>+800</div>
+              <div style={{ fontSize: 11, letterSpacing: ".14em", color: "#9a8a76" }}>VISAS APROBADAS</div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px,1.6vw,18px)", flexWrap: "wrap", marginTop: "clamp(12px,1.6vw,18px)", background: "rgba(255,255,255,.1)", borderRadius: 18, padding: "15px 20px" }}>
-            <img src="https://flagcdn.com/w80/cr.png" alt="Costa Rica" width={28} height={21} style={{ width: 28, height: "auto", borderRadius: 4, display: "block" }} />
-            <span style={{ fontSize: 15, fontWeight: 600 }}>Costa Rica</span>
-            <img src="https://flagcdn.com/w80/jp.png" alt="Japón" width={28} height={21} style={{ width: 28, height: "auto", borderRadius: 4, display: "block" }} />
-            <span style={{ fontSize: 15, fontWeight: 600 }}>Japón</span>
-            <span style={{ flex: "1 1 130px", fontSize: 14, color: "rgba(255,255,255,.78)", fontWeight: 300 }}>También tramitamos estos destinos.</span>
-            <a href="https://checkout.wompi.co/l/WadHBw" target="_blank" rel="noopener" style={payBtn}>Pagar asesoría</a>
+          <div style={{ display: "flex", gap: "clamp(12px,2vw,20px)", flexWrap: "wrap", marginBottom: "clamp(24px,3vw,32px)" }}>
+            {[
+              { n: "01", t: "Escríbenos", d: "Cuéntanos tu caso por WhatsApp. Evaluamos tu perfil sin costo." },
+              { n: "02", t: "Preparamos tu caso", d: "Formularios, documentos y simulacro de entrevista, contigo." },
+              { n: "03", t: "Presentas con confianza", d: "Llegas a la cita preparado y con todo en orden." },
+            ].map((s) => (
+              <div key={s.n} style={{ flex: "1 1 200px", display: "flex", alignItems: "flex-start", gap: 13, background: "#fdf9f0", borderRadius: 14, padding: "20px 22px", border: "1px solid rgba(58,44,34,.07)" }}>
+                <div style={{ fontFamily: "'Marcellus',serif", fontSize: 26, color: "#e0a94a", lineHeight: 1, flexShrink: 0 }}>{s.n}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14.5, color: "#14514f", marginBottom: 3 }}>{s.t}</div>
+                  <div style={{ fontSize: 13, color: "#7c6a58", lineHeight: 1.5 }}>{s.d}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
 
-      {/* CÓMO TRABAJAMOS */}
-      <section id="como" style={{ ...wrap, padding: sectionPad }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))", gap: "clamp(18px,2.6vw,34px)", alignItems: "center" }}>
-          <div style={{ minWidth: 0 }}>
-            <h2 style={h2}>Cómo trabajamos</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: "clamp(20px,2.6vw,28px)" }}>
-              {[
-                { n: "01", t: "Nos escribes", d: "Cuéntanos tu caso por WhatsApp. Sin formularios largos ni filas." },
-                { n: "02", t: "Preparamos tu caso", d: "Formularios, documentos, citas y soportes revisados uno por uno." },
-                { n: "03", t: "Viajas tranquilo", d: "Llegas a la cita y al aeropuerto con todo en orden y alguien pendiente." },
-              ].map((p, i) => (
-                <div key={p.n} style={{ display: "flex", gap: 16, padding: "18px 0", borderTop: "1px solid rgba(11,21,38,.1)", borderBottom: i === 2 ? "1px solid rgba(11,21,38,.1)" : undefined }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: GOLD, flexShrink: 0, width: 26 }}>{p.n}</div>
-                  <div>
-                    <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-.02em" }}>{p.t}</div>
-                    <div style={{ fontSize: 14.5, lineHeight: 1.6, color: MUTED, fontWeight: 300, marginTop: 4 }}>{p.d}</div>
+          <div style={{ display: "flex", gap: "clamp(16px,2.4vw,24px)", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 320px", background: "#14514f", borderRadius: 18, padding: "clamp(24px,3vw,34px)", color: "#eaf3f1" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 18 }}>
+                <img src="https://flagcdn.com/w80/us.png" alt="Estados Unidos" style={{ width: 40, height: "auto", borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,.35)" }} />
+                <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.6vw,27px)", color: "#fff" }}>Visa Estados Unidos</div>
+              </div>
+              <div style={{ fontSize: 14, lineHeight: 2.05, color: "#c5ddd9", marginBottom: 24 }}>
+                ● &nbsp;Diligenciamiento del formulario DS-160<br />● &nbsp;Agenda de tu cita consular<br />● &nbsp;Revisión de documentos y soportes<br />● &nbsp;Preparación de entrevista 1 a 1
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a href={WOMPI_US} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#bd5a34", color: "#fff", fontSize: 13, fontWeight: 700, padding: "12px 24px", borderRadius: 26, boxShadow: "0 8px 20px rgba(189,90,52,.35)", textDecoration: "none" }}>
+                  <CardIcon />Pagar ya
+                </a>
+                <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", background: "transparent", border: "1.5px solid #e7c8a0", color: "#e7c8a0", fontSize: 13, fontWeight: 700, padding: "11px 22px", borderRadius: 26, textDecoration: "none" }}>
+                  Agenda tu asesoría →
+                </a>
+              </div>
+            </div>
+            <div style={{ flex: "1 1 320px", background: "#14514f", borderRadius: 18, padding: "clamp(24px,3vw,34px)", color: "#eaf3f1" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 18 }}>
+                <img src="https://flagcdn.com/w80/ca.png" alt="Canadá" style={{ width: 40, height: "auto", borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,.35)" }} />
+                <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.6vw,27px)", color: "#fff" }}>Visa Canadá</div>
+              </div>
+              <div style={{ fontSize: 14, lineHeight: 2.05, color: "#c5ddd9", marginBottom: 24 }}>
+                ● &nbsp;Solicitud y armado de perfil migratorio<br />● &nbsp;Carta de solicitud y plan de viaje<br />● &nbsp;Soportes financieros y laborales<br />● &nbsp;Revisión completa antes de enviar
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a href="/visa-canada" style={{ display: "inline-flex", alignItems: "center", background: "#e0a94a", color: "#14324f", fontSize: 13, fontWeight: 700, padding: "12px 24px", borderRadius: 26, boxShadow: "0 8px 20px rgba(224,169,74,.32)", textDecoration: "none" }}>
+                  Llenar mi formulario →
+                </a>
+                <a href={WOMPI_CA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#bd5a34", color: "#fff", fontSize: 13, fontWeight: 700, padding: "12px 24px", borderRadius: 26, boxShadow: "0 8px 20px rgba(189,90,52,.35)", textDecoration: "none" }}>
+                  <CardIcon />Pagar ya
+                </a>
+                <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", background: "transparent", border: "1.5px solid #e7c8a0", color: "#e7c8a0", fontSize: 13, fontWeight: 700, padding: "11px 22px", borderRadius: 26, textDecoration: "none" }}>
+                  Agenda tu asesoría →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: "clamp(30px,3.6vw,42px)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+              <span style={{ height: 1, flex: 1, background: "rgba(58,44,34,.14)" }} />
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".2em", color: "#7c6a58", whiteSpace: "nowrap" }}>TAMBIÉN TRAMITAMOS TU VISA PARA</span>
+              <span style={{ height: 1, flex: 1, background: "rgba(58,44,34,.14)" }} />
+            </div>
+            <div style={{ display: "flex", gap: "clamp(14px,2vw,20px)", flexWrap: "wrap" }}>
+              {paisesCompactos.map((p) => (
+                <div key={p.pais} style={{ flex: "1 1 240px", background: "#fdf9f0", border: "1px solid rgba(58,44,34,.08)", borderRadius: 16, padding: 22, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <img src={`https://flagcdn.com/w80/${p.flag}.png`} alt={p.pais} style={{ width: 38, height: "auto", borderRadius: 3, boxShadow: "0 2px 6px rgba(0,0,0,.18)" }} />
+                    <div>
+                      <div style={{ fontFamily: "'Marcellus',serif", fontSize: 20, color: "#14514f" }}>{p.pais}</div>
+                      <div style={{ fontSize: 12, color: "#9a8a76" }}>Asesoría y trámite de visa</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 9, flexWrap: "wrap", marginTop: "auto" }}>
+                    <a href={WOMPI_US} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#bd5a34", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "10px 18px", borderRadius: 22, textDecoration: "none" }}>
+                      <CardIcon size={15} />Pagar ya
+                    </a>
+                    <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", color: "#14514f", fontSize: 12.5, fontWeight: 700, padding: "10px 6px", textDecoration: "none" }}>Asesoría →</a>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ minWidth: 0, display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "auto auto", gap: 12 }}>
-            <div style={{ gridColumn: "1 / -1", borderRadius: 22, overflow: "hidden", aspectRatio: "16 / 9", background: "#eef1f7" }}>
-              <img src="/como/paris.webp" alt="París" width={1400} height={788} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={{ borderRadius: 22, overflow: "hidden", aspectRatio: "1 / 1", background: "#eef1f7" }}>
-              <img src="/como/roma.webp" alt="Roma" width={800} height={800} loading="lazy" decoding="async" style={photo} />
-            </div>
-            <div style={{ borderRadius: 22, overflow: "hidden", aspectRatio: "1 / 1", background: "#eef1f7" }}>
-              <img src="/como/iguazu.webp" alt="Cataratas de Iguazú" width={800} height={800} loading="lazy" decoding="async" style={photo} />
-            </div>
+          <p style={{ fontSize: 12, color: "#9a8a76", textAlign: "center", margin: "22px 0 0" }}>
+            *Los valores corresponden a nuestra asesoría de trámite. Tarifas consulares, de embajada o de terceros no están incluidas.
+          </p>
+        </div>
+      </section>
+
+      {/* PAQUETES */}
+      <section id="paquetes" style={{ background: "#efe4d2", padding: "clamp(52px,8vw,80px) 0" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(30px,4vw,46px)" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#bd5a34", marginBottom: 14 }}>PAQUETES · SALIDAS DESDE BOGOTÁ</div>
+            <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(28px,4vw,44px)", lineHeight: 1.08, margin: 0, color: "#14514f" }}>Paquetes para vivir el mundo, no solo recorrerlo.</h2>
+            <p style={{ fontSize: "clamp(14px,1.6vw,16px)", color: "#7c6a58", margin: "14px auto 0", maxWidth: 560, lineHeight: 1.6 }}>Vuelos, hoteles seleccionados, traslados y tours con guías en español. Todo incluido y sin letra pequeña.</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "clamp(16px,2.4vw,24px)" }}>
+            {paquetes.map((p) => {
+              const isInternal = p.href.startsWith("/");
+              const cardInner = (
+                <>
+                  <div style={{ position: "relative", height: 170 }}>
+                    <img src={p.img} alt={p.titulo} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    {p.destacado && (
+                      <span style={{ position: "absolute", top: 12, left: 12, background: "#bd5a34", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", padding: "5px 11px", borderRadius: 20 }}>MÁS VENDIDO</span>
+                    )}
+                  </div>
+                  <div style={{ padding: "clamp(20px,2.4vw,26px)" }}>
+                    <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.4vw,26px)", color: "#14514f" }}>{p.titulo}</div>
+                    <div style={{ fontSize: 12.5, color: "#9a8a76", margin: "7px 0 14px" }}>{p.sub}</div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 18 }}>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>✈ Vuelos</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🏨 Hoteles</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, color: "#14514f", background: "#e5efe9", padding: "4px 10px", borderRadius: 20 }}>🎟 Tours</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderTop: "1px solid rgba(58,44,34,.1)", paddingTop: 16 }}>
+                      <div>
+                        <span style={{ fontSize: 11, color: "#9a8a76" }}>Desde</span><br />
+                        <span style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.6vw,27px)", color: "#bd5a34" }}>{p.precio}</span>
+                      </div>
+                      {isInternal ? (
+                        <Link href={p.href} style={{ background: "#14514f", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "11px 20px", borderRadius: 24, textDecoration: "none" }}>Ver itinerario</Link>
+                      ) : (
+                        <a href={p.href} target="_blank" rel="noreferrer" style={{ background: "#14514f", color: "#fff", fontSize: 12.5, fontWeight: 700, padding: "11px 20px", borderRadius: 24, textDecoration: "none" }}>Ver itinerario</a>
+                      )}
+                    </div>
+                  </div>
+                </>
+              );
+              return (
+                <div key={p.titulo} style={{ background: "#fdf9f0", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 34px rgba(58,44,34,.1)" }}>
+                  {cardInner}
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ textAlign: "center", marginTop: "clamp(28px,3.5vw,40px)" }}>
+            <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-block", color: "#14514f", fontSize: 14, fontWeight: 700, borderBottom: "2px solid #e0a94a", paddingBottom: 3, textDecoration: "none" }}>¿Buscas otro destino? Armamos tu viaje a la medida →</a>
           </div>
         </div>
       </section>
 
       {/* PRUEBA SOCIAL */}
-      <section style={{ ...wrap, padding: sectionPad }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(270px,1fr))", gap: "clamp(14px,2vw,22px)" }}>
-          <ResenasGoogle />
-
-          <div style={{ gridColumn: "1 / -1", background: "#fff", border: "1px solid rgba(11,21,38,.09)", borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(22px,3.5vw,44px)", flexWrap: "wrap" }}>
-            <div style={{ flex: "1 1 320px", minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".16em", color: GOLD, marginBottom: 10 }}>RESEÑAS EN GOOGLE</div>
-              <div style={{ fontSize: "clamp(21px,2.6vw,30px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.1, textWrap: "pretty" }}>¿Viajaste con nosotros? Cuéntalo en Google</div>
-              <div style={{ fontSize: 14.5, lineHeight: 1.6, color: "#5d6673", fontWeight: 300, marginTop: 10, maxWidth: "46ch" }}>
-                Tu reseña ayuda a que otros viajeros de Bogotá nos encuentren y sepan con quién están tramitando.
-              </div>
-              <a href="https://g.page/r/CQgbCxwc0CvcECE/review" target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: NAVY, color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "14px 24px", borderRadius: 12, marginTop: 20, textDecoration: "none" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26 6.86.6-5.2 4.52 1.55 6.72L12 16.6l-6.11 3.5 1.55-6.72-5.2-4.52 6.86-.6z" /></svg>
-                Escribir mi reseña
-              </a>
-            </div>
-            <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-              <div style={{ border: "1px solid rgba(11,21,38,.12)", borderRadius: 16, padding: 10, background: "#fff" }}>
-                <img src="/qr-resenas.png" alt="Código QR para dejar una reseña en Google" style={{ display: "block", width: "clamp(116px,13vw,150px)", height: "auto" }} />
-              </div>
-              <div style={{ fontSize: 12.5, color: "#8b93a1", fontWeight: 500, textAlign: "center", maxWidth: "18ch" }}>Escanea con tu celular</div>
-            </div>
+      <section id="viajeros" style={{ background: "#f7f0e4", padding: "clamp(52px,8vw,80px) 0" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(30px,4vw,44px)" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#bd5a34", marginBottom: 14 }}>HISTORIAS REALES</div>
+            <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(26px,3.6vw,42px)", lineHeight: 1.08, margin: 0, color: "#14514f" }}>Confían en nosotros para el viaje de su vida.</h2>
           </div>
-
-          <div style={{ gridColumn: "1 / -1", background: INK, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(18px,3vw,40px)", flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 14, flexWrap: "wrap" }}>
-              <div style={{ fontSize: "clamp(34px,4.4vw,50px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1 }}>+2.400</div>
-              <div style={{ fontSize: 14.5, color: "rgba(255,255,255,.72)", fontWeight: 300, maxWidth: "34ch" }}>
-                viajeros acompañados desde 2013, con visas para cinco consulados.
+          <div style={{ display: "flex", gap: "clamp(16px,2.4vw,22px)", flexWrap: "wrap", marginBottom: "clamp(30px,4vw,42px)" }}>
+            {[
+              { q: "Nos organizaron todo Europa y la visa de Estados Unidos. Viajamos tranquilos, sin una sola sorpresa.", init: "R", grad: "linear-gradient(135deg,#bd5a34,#e0a94a)", name: "Familia Rodríguez", meta: "Bogotá · Europa Fantástica 2025" },
+              { q: "Me habían negado la visa antes. Con su asesoría preparé la entrevista y esta vez la aprobaron.", init: "A", grad: "linear-gradient(135deg,#14514f,#2c8a86)", name: "Andrés M.", meta: "Visa Americana aprobada · 2025" },
+              { q: "Atención cercana y honesta. Respondían cada duda por WhatsApp, incluso los fines de semana.", init: "C", grad: "linear-gradient(135deg,#a04726,#bd5a34)", name: "Carolina & Julián", meta: "Bogotá · Euro Leyendas 2024" },
+            ].map((t) => (
+              <div key={t.name} style={{ flex: "1 1 300px", background: "#fdf9f0", borderRadius: 18, padding: "clamp(22px,2.6vw,30px)", border: "1px solid rgba(58,44,34,.07)" }}>
+                <div style={{ color: "#e0a94a", letterSpacing: 2, marginBottom: 14, fontSize: 15 }}>★★★★★</div>
+                <p style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(17px,2vw,20px)", lineHeight: 1.5, color: "#3a2c22", margin: "0 0 20px" }}>&quot;{t.q}&quot;</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 42, height: 42, borderRadius: "50%", background: t.grad, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontFamily: "'Marcellus',serif", fontSize: 18 }}>{t.init}</div>
+                  <div>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#14514f" }}>{t.name}</div>
+                    <div style={{ fontSize: 11.5, color: "#9a8a76" }}>{t.meta}</div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, border: "1px solid rgba(255,255,255,.4)", color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "13px 22px", borderRadius: 12, flexShrink: 0, textDecoration: "none" }}>
-              Quiero ser el siguiente
-            </a>
+            ))}
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: "clamp(28px,6vw,64px)", flexWrap: "wrap", borderTop: "1px solid rgba(58,44,34,.12)", paddingTop: "clamp(28px,3.5vw,38px)" }}>
+            {[["+12", "AÑOS DE EXPERIENCIA"], ["+2.400", "VIAJEROS FELICES"], ["+800", "VISAS APROBADAS"], ["25+", "DESTINOS EN EUROPA"]].map(([n, l]) => (
+              <div key={l} style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(30px,4vw,42px)", color: "#14514f" }}>{n}</div>
+                <div style={{ fontSize: 11, letterSpacing: ".12em", color: "#9a8a76" }}>{l}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ ...wrap, padding: "clamp(44px,6.5vw,90px) clamp(16px,3.5vw,44px)" }}>
-        <div style={{ position: "relative", borderRadius: "clamp(22px,3vw,32px)", overflow: "hidden", padding: "clamp(32px,4.6vw,70px) clamp(24px,3.6vw,52px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "clamp(22px,4vw,48px)", flexWrap: "wrap" }}>
-          <img src="/cta/fondo.webp" alt="" width={1800} height={760} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(95deg,rgba(3,10,28,.92),rgba(3,10,28,.55))" }} />
-          <div style={{ position: "relative", color: "#fff", maxWidth: 580 }}>
-            <h2 style={{ fontSize: "clamp(28px,4.4vw,54px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1.02, margin: 0, textWrap: "pretty" }}>
-              Cuéntanos tu próximo viaje
-            </h2>
-            <p style={{ fontSize: 16, lineHeight: 1.55, color: "rgba(255,255,255,.85)", margin: "13px 0 0", fontWeight: 300 }}>
-              Escríbenos y armamos tu plan hoy mismo. Sin compromiso.
-            </p>
-          </div>
-          <a href={WA} target="_blank" rel="noopener" style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 11, background: GOLD, color: "#fff", fontSize: 17, fontWeight: 700, padding: "19px 32px", borderRadius: 14, flexShrink: 0, textDecoration: "none" }}>
-            <WhatsappIcon size={20} />
-            +57 313 488 3629
+      <section style={{ background: "linear-gradient(135deg,#14514f,#0e3d3b)", padding: "clamp(56px,9vw,90px) 0", textAlign: "center", color: "#eaf3f1" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".3em", color: "#e7c8a0", marginBottom: 16 }}>EMPIEZA HOY</div>
+          <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: "clamp(30px,4.6vw,50px)", lineHeight: 1.1, margin: 0, color: "#fff" }}>¿Listo para tu próximo viaje? Hablemos hoy.</h2>
+          <p style={{ fontSize: "clamp(14px,1.7vw,16px)", color: "#c5ddd9", margin: "20px auto 34px", maxWidth: 500, lineHeight: 1.6 }}>Cuéntanos a dónde sueñas ir. Te respondemos por WhatsApp con un plan a tu medida, sin compromiso.</p>
+          <a href={WA} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 11, background: "#128c4a", color: "#fff", fontSize: "clamp(15px,1.8vw,17px)", fontWeight: 700, padding: "18px clamp(28px,3.4vw,40px)", borderRadius: 34, boxShadow: "0 14px 34px rgba(0,0,0,.32)", textDecoration: "none" }}>
+            <WhatsIcon size={21} />Escríbenos por WhatsApp
           </a>
+          <div style={{ fontSize: 12.5, color: "#9fc0bb", marginTop: 22 }}>+57 313 488 3629 · Bogotá, Colombia</div>
         </div>
       </section>
 
-      <footer style={{ background: INK, color: "#fff" }}>
-        <div style={{ ...wrap, padding: "clamp(28px,3.6vw,44px) clamp(16px,3.5vw,44px)", display: "flex", justifyContent: "space-between", gap: 22, flexWrap: "wrap", alignItems: "flex-start" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 12 }}>
-              <img src="/logo-wonderlust.webp" alt="" width={32} height={32} style={{ width: 32, height: 32, objectFit: "contain", display: "block" }} />
-              <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-.03em" }}>Wonderlust</span>
-              <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".2em", color: YELLOW }}>WVIAJES.CO</span>
+      {/* FOOTER */}
+      <footer style={{ background: "#0e3d3b", padding: "clamp(36px,5vw,52px) 0 26px" }}>
+        <div style={{ maxWidth: 1220, margin: "0 auto", padding: "0 clamp(20px,5vw,46px)", display: "flex", gap: "clamp(24px,5vw,60px)", flexWrap: "wrap", justifyContent: "space-between" }}>
+          <div style={{ maxWidth: 300 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 14 }}>
+              <img src="/logo-wonderlust.png" alt="" style={{ width: 38, height: 38, objectFit: "contain" }} />
+              <span style={{ fontFamily: "'Marcellus',serif", fontSize: 19, letterSpacing: ".16em", color: "#e7c8a0" }}>WONDERLUST</span>
             </div>
-            <div style={{ fontSize: 13.5, color: "rgba(255,255,255,.6)", fontWeight: 300, lineHeight: 1.6 }}>
-              Agencia de viajes y consultoría de visas<br />Bogotá, Colombia · +57 313 488 3629
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: "#a8c0bc", margin: 0 }}>Agencia de viajes en Bogotá. Paquetes a Europa y Canadá, y consultoría de visas a USA y Canadá, con acompañamiento de principio a fin.</p>
+          </div>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".2em", color: "#e7c8a0", marginBottom: 14 }}>EXPLORA</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5 }}>
+              <a href="#visas" style={{ color: "#c5ddd9", textDecoration: "none" }}>Visas USA y Canadá</a>
+              <a href="#paquetes" style={{ color: "#c5ddd9", textDecoration: "none" }}>Paquetes de viaje</a>
+              <a href="#viajeros" style={{ color: "#c5ddd9", textDecoration: "none" }}>Historias de viajeros</a>
             </div>
           </div>
-          <div style={{ display: "flex", gap: "clamp(24px,4vw,60px)", flexWrap: "wrap" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              <div style={footHead}>SERVICIOS</div>
-              <a href="#visas" style={footLink}>Visas</a>
-              <a href="#ofertas" style={footLink}>Paquetes</a>
-              <a href={WA} target="_blank" rel="noopener" style={footLink}>Tiquetes</a>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              <div style={footHead}>TRÁMITES</div>
-              <a href="/visa-usa" style={footLink}>Formulario EE. UU.</a>
-              <a href="/visa-china" style={footLink}>Formulario China</a>
-              <a href="/devolucion-pasaportes" style={footLink}>Devolución de pasaportes</a>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".2em", color: "#e7c8a0", marginBottom: 14 }}>CONTACTO</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13.5, color: "#c5ddd9" }}>
+              <a href={WA} target="_blank" rel="noreferrer" style={{ color: "#c5ddd9", textDecoration: "none" }}>WhatsApp · +57 313 488 3629</a>
+              <span>Bogotá, Colombia</span>
             </div>
           </div>
         </div>
+        <div style={{ maxWidth: 1220, margin: "26px auto 0", padding: "20px clamp(20px,5vw,46px) 0", borderTop: "1px solid rgba(231,200,160,.16)", fontSize: 11.5, color: "#7ea19c" }}>
+          © 2026 Wonderlust by Villamor S.A.S · Registro Nacional de Turismo · Todos los derechos reservados.
+        </div>
       </footer>
-    </div>
+
+      {/* WHATSAPP FLOTANTE */}
+      <a href={WA} target="_blank" rel="noreferrer" title="Escríbenos por WhatsApp" style={{ position: "fixed", bottom: 24, right: 24, zIndex: 90, width: 60, height: 60, borderRadius: "50%", background: "#25d366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 26px rgba(37,211,102,.5)" }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.463 3.488" /></svg>
+      </a>
+    </main>
   );
 }
