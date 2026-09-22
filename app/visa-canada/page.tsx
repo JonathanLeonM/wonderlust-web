@@ -6,6 +6,7 @@
 // (ya cargadas en el layout, igual que en /visa-usa).
 
 import { useRef, useState } from "react";
+import { COLOMBIA_GEO, WORLD_COUNTRIES } from "../visa-usa/geo-datos";
 
 const SHEETS_WEBHOOK = "https://script.google.com/macros/s/AKfycbwF4RVzXTe-rmAz54sue5kvbLUESVGBuVe6RZY7Si0zIZy6ys8ILuyxy7P8HrTPRrq8/exec";
 const WOMPI = "https://checkout.wompi.co/l/rpGvBY";
@@ -22,13 +23,19 @@ const ERR = "#c0392b";
 const EMAIL_DOMAINS = ["gmail.com", "hotmail.com", "outlook.com", "outlook.es", "yahoo.com", "yahoo.es", "icloud.com", "live.com", "hotmail.es"];
 const ESTADO_CIVIL = ["Soltero(a)", "Casado(a)", "Unión libre", "Separado(a)", "Divorciado(a)", "Viudo(a)"];
 const SI_NO = ["Sí", "No"];
+const PAISES: string[] = ["Colombia"].concat((WORLD_COUNTRIES as string[]).filter((p) => p !== "Colombia"));
+const DEPTOS: string[] = ["Bogotá D.C."].concat(Object.keys(COLOMBIA_GEO as Record<string, string[]>).filter((k) => k !== "Bogotá D.C."));
+const CIUDADES_CO: string[] = Array.from(
+  new Set(Object.values(COLOMBIA_GEO as Record<string, string[]>).flat())
+).sort((a, b) => a.localeCompare(b, "es"));
 
 type Data = Record<string, any>;
-type Sub = { k: string; l: string; t?: string; ph?: string; help?: string; span?: string; alpha?: boolean };
+type Sub = { k: string; l: string; t?: string; ph?: string; help?: string; span?: string; alpha?: boolean; optsKind?: string; opts?: string[]; dep?: string };
 type Field = {
   k: string; l?: string; t?: string; req?: boolean; ph?: string; help?: string; span?: string;
-  opts?: string[]; alpha?: boolean; none?: boolean; sub?: Sub[]; max?: number;
+  opts?: string[]; optsKind?: string; def?: string; resets?: string[]; alpha?: boolean; none?: boolean; sub?: Sub[]; max?: number;
   addLabel?: string; itemLabel?: string; showIf?: (d: Data) => boolean;
+  geo?: { level: "depto" | "ciudad"; pais: string; depto?: string };
 };
 
 const esSepDiv = (d: Data) => d.estadoCivil === "Separado(a)" || d.estadoCivil === "Divorciado(a)";
@@ -43,16 +50,25 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
     title: "Tu solicitud y tu pasaporte",
     sub: "Escribe tus datos exactamente como aparecen en el pasaporte: IRCC los compara letra por letra.",
     fields: [
-      { k: "correo", l: "Correo electrónico", t: "email", req: true, ph: "tunombre@gmail.com", span: "1/-1" },
+      { k: "_hContacto", t: "head", l: "Cómo te contactamos", help: "Por aquí te avisamos de cada paso del trámite.", span: "1/-1" },
+      { k: "correo", l: "Correo electrónico", t: "email", req: true, ph: "tunombre@gmail.com" },
+      { k: "celular", l: "Celular de contacto", req: true, t: "tel", ph: "3101234567" },
+      { k: "_hViaje", t: "head", l: "Tu viaje", span: "1/-1" },
       { k: "motivoVisa", l: "¿Por qué necesitas la visa?", req: true, t: "choice", opts: ["Turismo", "Visita a familia o amigos", "Negocios", "Curso corto (menos de 6 meses)", "Tránsito", "Otro"], span: "1/-1" },
       { k: "motivoDetalle", l: "Cuéntanos en una frase para qué es el viaje", req: true, t: "area", ph: "Conocer Toronto y las cataratas del Niágara con mi familia", span: "1/-1", showIf: (d) => d.motivoVisa === "Otro" },
+      { k: "_hPasaporte", t: "head", l: "Tu pasaporte", span: "1/-1" },
       { k: "pasaporteNumero", l: "Número de pasaporte", req: true, ph: "AQ123456" },
       { k: "pasaporteVencimiento", l: "Fecha de vencimiento del pasaporte", t: "date", req: true },
+      { k: "_hDatos", t: "head", l: "Tus datos personales", span: "1/-1" },
       { k: "nombreCompleto", l: "Nombre completo del solicitante", help: "Nombres y apellidos como aparecen en el pasaporte.", req: true, alpha: true, span: "1/-1" },
       { k: "fechaNacimiento", l: "Fecha de nacimiento", req: true, t: "date" },
-      { k: "lugarNacimiento", l: "Lugar de nacimiento (ciudad y departamento)", req: true, ph: "Cali, Valle del Cauca" },
-      { k: "celular", l: "Celular de contacto", req: true, t: "tel", ph: "3101234567" },
-      { k: "ciudadResidencia", l: "Ciudad donde vives hoy", req: true, ph: "Cali" },
+      { k: "paisNacimiento", l: "País de nacimiento", req: true, t: "select", optsKind: "paises", def: "Colombia", resets: ["deptoNacimiento", "ciudadNacimiento"] },
+      { k: "deptoNacimiento", l: "Departamento / Estado de nacimiento", req: true, t: "geo", geo: { level: "depto", pais: "paisNacimiento" }, resets: ["ciudadNacimiento"], ph: "Departamento / Estado" },
+      { k: "ciudadNacimiento", l: "Ciudad de nacimiento", req: true, t: "geo", geo: { level: "ciudad", pais: "paisNacimiento", depto: "deptoNacimiento" }, ph: "Ciudad" },
+      { k: "_hVives", t: "head", l: "Dónde vives hoy", span: "1/-1" },
+      { k: "paisResidencia", l: "País donde vives hoy", req: true, t: "select", optsKind: "paises", def: "Colombia", resets: ["deptoResidencia", "ciudadResidencia"] },
+      { k: "deptoResidencia", l: "Departamento / Estado donde vives", req: true, t: "geo", geo: { level: "depto", pais: "paisResidencia" }, resets: ["ciudadResidencia"], ph: "Departamento / Estado" },
+      { k: "ciudadResidencia", l: "Ciudad donde vives hoy", req: true, t: "geo", geo: { level: "ciudad", pais: "paisResidencia", depto: "deptoResidencia" }, ph: "Ciudad" },
     ],
   },
   {
@@ -87,7 +103,7 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
           { k: "apellido", l: "Apellidos", alpha: true },
           { k: "nombre", l: "Nombre de pila", alpha: true },
           { k: "fechaNac", l: "Fecha de nacimiento", t: "date" },
-          { k: "paisNac", l: "País o territorio de nacimiento", ph: "Colombia" },
+          { k: "paisNac", l: "País o territorio de nacimiento", t: "select", optsKind: "paises" },
           { k: "fallecido", l: "¿Ha fallecido? (Sí / No)", ph: "No" },
           { k: "mismaDireccion", l: "¿Vive en tu misma dirección? (Sí / No)", ph: "Sí" },
           { k: "acompana", l: "¿Te acompaña a Canadá? (Sí / No / NA)", ph: "No" },
@@ -105,7 +121,7 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "conyugeApellidos", l: "Apellidos del cónyuge o pareja de hecho", req: true, alpha: true, ph: "Obando Melo", showIf: tienePareja },
       { k: "conyugeNombres", l: "Nombre de pila del cónyuge o pareja de hecho", req: true, alpha: true, ph: "Johana Lorena", showIf: tienePareja },
       { k: "conyugeFechaNac", l: "Fecha de nacimiento del cónyuge o pareja", t: "date", req: true, showIf: tienePareja },
-      { k: "conyugePaisNac", l: "País o territorio de nacimiento del cónyuge o pareja", req: true, ph: "Colombia", showIf: tienePareja },
+      { k: "conyugePaisNac", l: "País o territorio de nacimiento del cónyuge o pareja", req: true, t: "select", optsKind: "paises", def: "Colombia", showIf: tienePareja },
       { k: "conyugeOcupacion", l: "Ocupación actual del cónyuge o pareja", req: true, ph: "Empleada", span: "1/-1", showIf: tienePareja },
       { k: "conyugeMismaDireccion", l: "¿Vive en tu misma dirección?", req: true, t: "choice", opts: SI_NO, span: "1/-1", showIf: tienePareja },
       { k: "conyugeDireccion", l: "Dirección donde vive tu cónyuge o pareja", req: true, ph: "Cra 45 #12-34, Cali", span: "1/-1", showIf: (d) => tienePareja(d) && d.conyugeMismaDireccion === "No" },
@@ -155,7 +171,16 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
     sub: "Los viajes previos son buena señal: muestran que cumples las reglas migratorias.",
     fields: [
       { k: "viajo5anos", l: "En los últimos 5 años, ¿has viajado a un país distinto del tuyo o de donde resides?", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
-      { k: "detalleViajes", l: "Cuéntanos esos viajes", help: "Uno por línea: año y mes · país · duración · propósito.", req: true, t: "area", ph: "Noviembre 2023 · Ecuador · 5 días · turismo\nJulio 2022 · México · 15 días · turismo", span: "1/-1", showIf: (d) => d.viajo5anos === "Sí" },
+      {
+        k: "viajes", l: "Tus viajes de los últimos 5 años", help: "Agrega un bloque por viaje. Si fuiste dos veces al mismo país, son dos bloques.", t: "group", max: 8, itemLabel: "Viaje", addLabel: "Agregar otro viaje", req: true, span: "1/-1",
+        showIf: (d) => d.viajo5anos === "Sí",
+        sub: [
+          { k: "pais", l: "País visitado", t: "select", optsKind: "paises" },
+          { k: "mes", l: "Mes y año del viaje", t: "month" },
+          { k: "dias", l: "¿Cuántos días estuviste?", t: "num", ph: "5" },
+          { k: "proposito", l: "Propósito del viaje", t: "select", opts: ["Turismo", "Visita a familia o amigos", "Negocios", "Estudio", "Tránsito", "Otro"] },
+        ],
+      },
       { k: "excedioEstadia", l: "¿Alguna vez permaneciste en Canadá más allá de tu estatus, estudiaste sin autorización o trabajaste sin autorización allí?", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
       { k: "excedioDetalle", l: "Cuéntanos cuándo y qué pasó", req: true, t: "area", span: "1/-1", showIf: (d) => d.excedioEstadia === "Sí" },
       { k: "negaronVisa", l: "¿Alguna vez te han negado una visa o permiso, te han negado la entrada o te han ordenado salir de algún país?", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
@@ -163,7 +188,8 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "visaCanadaPrevia", l: "¿Has tenido visa canadiense antes?", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
       { k: "uciPrevio", l: "Número de cliente (UCI) de tu trámite anterior", help: "Aparece en las cartas de IRCC, 8 a 10 dígitos. Si no lo tienes, toca “Ninguno”.", none: true, span: "1/-1", showIf: (d) => d.visaCanadaPrevia === "Sí" },
       { k: "visaUsaVigente", l: "¿Tienes visa de Estados Unidos vigente?", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
-      { k: "visaUsaDetalle", l: "Tipo de visa americana y fecha de vencimiento", req: true, ph: "B1/B2 · Vence marzo 2031", span: "1/-1", showIf: (d) => d.visaUsaVigente === "Sí" },
+      { k: "visaUsaTipo", l: "Tipo de visa americana", req: true, t: "select", opts: ["B1/B2 (turismo y negocios)", "F1 (estudiante)", "J1 (intercambio)", "H1B (trabajo)", "Otra"], showIf: (d) => d.visaUsaVigente === "Sí" },
+      { k: "visaUsaVence", l: "Fecha de vencimiento de la visa americana", req: true, t: "date", showIf: (d) => d.visaUsaVigente === "Sí" },
     ],
   },
   {
@@ -172,7 +198,19 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
     sub: "Los últimos 10 años sin huecos de tiempo: trabajos, negocios, estudios, desempleo o pensión.",
     fields: [
       { k: "estudiosSuperiores", l: "¿Has cursado estudios superiores (universidad, instituto o centro de formación)?", help: "No necesitas tener título o diploma.", req: true, t: "choice", opts: SI_NO, span: "1/-1" },
-      { k: "estudiosDetalle", l: "Cuéntanos qué estudiaste", help: "Institución, ciudad, programa, fechas de inicio y fin, y si te graduaste.", req: true, t: "area", ph: "Universidad del Valle · Cali · Ingeniería civil · 2008–2013 · graduado", span: "1/-1", showIf: (d) => d.estudiosSuperiores === "Sí" },
+      {
+        k: "estudios", l: "Tus estudios superiores", help: "Un bloque por cada programa que hayas cursado, te hayas graduado o no.", t: "group", max: 4, itemLabel: "Estudio", addLabel: "Agregar otro estudio", req: true, span: "1/-1",
+        showIf: (d) => d.estudiosSuperiores === "Sí",
+        sub: [
+          { k: "institucion", l: "Institución", ph: "Universidad del Valle" },
+          { k: "programa", l: "Programa o carrera", ph: "Ingeniería civil" },
+          { k: "pais", l: "País", t: "select", optsKind: "paises" },
+          { k: "ciudad", l: "Ciudad", t: "ciudadCo", dep: "pais", ph: "Cali" },
+          { k: "inicio", l: "Fecha de inicio", t: "month" },
+          { k: "fin", l: "Fecha de finalización", t: "month" },
+          { k: "graduado", l: "¿Te graduaste?", t: "select", opts: ["Sí, me gradué", "No, no terminé", "Aún estoy estudiando"] },
+        ],
+      },
       { k: "_hEmpleos", t: "head", l: "Empleos y actividades de los últimos 10 años", help: "Agrega un bloque por cada trabajo, negocio, estudio o periodo sin empleo. Hasta 6.", span: "1/-1" },
       {
         k: "empleos", l: "Empleos y actividades", t: "group", max: 6, itemLabel: "Actividad", addLabel: "Agregar otra actividad", req: true, span: "1/-1",
@@ -180,7 +218,8 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
           { k: "actividad", l: "Trabajo o actividad", ph: "Empleado / Independiente / Estudiante" },
           { k: "titulo", l: "Título profesional o cargo", ph: "Ingeniero de redes" },
           { k: "empresa", l: "Empresa o institución", ph: "Claro Colombia" },
-          { k: "pais", l: "Ciudad y país", ph: "Cali, Colombia" },
+          { k: "pais", l: "País", t: "select", optsKind: "paises" },
+          { k: "ciudad", l: "Ciudad", t: "ciudadCo", dep: "pais", ph: "Cali" },
           { k: "inicio", l: "Fecha de inicio", t: "date" },
           { k: "fin", l: "Fecha de finalización", help: "Déjala vacía si sigues ahí.", t: "date" },
         ],
@@ -198,7 +237,7 @@ function defaultData(): Data {
   const d: Data = {};
   allFields().forEach((f) => {
     if (f.t === "note" || f.t === "head") return;
-    d[f.k] = f.t === "group" ? [] : "";
+    d[f.k] = f.t === "group" ? [] : f.def || "";
   });
   return d;
 }
@@ -254,7 +293,20 @@ export default function VisaCanadaPage() {
 
   const bad = (k: string) => showError && missing.indexOf(k) !== -1;
 
-  const set = (k: string, v: any) => setData((d) => ({ ...d, [k]: v }));
+  const set = (k: string, v: any, resets?: string[]) =>
+    setData((d) => {
+      const nd = { ...d, [k]: v };
+      (resets || []).forEach((r) => { nd[r] = ""; });
+      return nd;
+    });
+
+  // Lista de un campo geo: solo desplegable dentro de Colombia; fuera, texto libre.
+  const geoOpts = (f: Field): string[] | null => {
+    const g = f.geo!;
+    if (data[g.pais] !== "Colombia") return null;
+    if (g.level === "depto") return DEPTOS;
+    return (COLOMBIA_GEO as Record<string, string[]>)[data[g.depto!]] || [];
+  };
 
   const setSub = (k: string, idx: number, sk: string, v: any) =>
     setData((d) => {
@@ -403,9 +455,28 @@ export default function VisaCanadaPage() {
                 {(f.sub || []).map((sf) => (
                   <div key={sf.k} style={{ gridColumn: sf.span || "auto", display: "flex", flexDirection: "column", gap: 5 }}>
                     <label style={{ fontSize: 11.5, fontWeight: 700, color: "#44586e" }}>{sf.l}</label>
-                    <input type={sf.t === "date" ? "date" : "text"} value={(it || {})[sf.k] || ""} placeholder={sf.ph || ""}
-                      onChange={(e) => setSub(f.k, i, sf.k, cleanVal(sf.t, sf.alpha, e.target.value))}
-                      style={{ ...inputStyle(false), padding: "9px 12px", borderRadius: 9, fontSize: 13.5, height: 40 }} />
+                    {(() => {
+                      const st = sf.t || "text";
+                      const sStyle = { ...inputStyle(false), padding: "9px 12px", borderRadius: 9, fontSize: 13.5, height: 40 };
+                      const opts =
+                        st === "select" ? (sf.optsKind === "paises" ? PAISES : sf.opts || [])
+                        : st === "ciudadCo" && (it || {})[sf.dep!] === "Colombia" ? CIUDADES_CO
+                        : null;
+                      if (opts)
+                        return (
+                          <select value={(it || {})[sf.k] || ""} onChange={(e) => setSub(f.k, i, sf.k, e.target.value)}
+                            style={{ ...sStyle, color: (it || {})[sf.k] ? INK : "#9db0c4" }}>
+                            <option value="">{st === "ciudadCo" ? "Elige tu ciudad…" : "Selecciona…"}</option>
+                            {opts.map((o) => <option key={o} value={o}>{o}</option>)}
+                          </select>
+                        );
+                      return (
+                        <input type={st === "date" ? "date" : st === "month" ? "month" : "text"}
+                          inputMode={st === "num" ? "numeric" : "text"}
+                          value={(it || {})[sf.k] || ""} placeholder={sf.ph || ""}
+                          onChange={(e) => setSub(f.k, i, sf.k, cleanVal(sf.t, sf.alpha, e.target.value))} style={sStyle} />
+                      );
+                    })()}
                   </div>
                 ))}
               </div>
@@ -419,6 +490,16 @@ export default function VisaCanadaPage() {
           )}
         </div>
       );
+    } else if (t === "select" || (t === "geo" && geoOpts(f))) {
+      const opts = t === "select" ? (f.optsKind === "paises" ? PAISES : f.opts || []) : geoOpts(f) || [];
+      const vacio = t === "geo" && f.geo!.level === "ciudad" && !data[f.geo!.depto!];
+      control = (
+        <select value={data[f.k] || ""} onChange={(e) => set(f.k, e.target.value, f.resets)}
+          style={{ ...inputStyle(err), color: data[f.k] ? INK : "#9db0c4" }}>
+          <option value="">{vacio ? "Elige primero el departamento" : "Selecciona…"}</option>
+          {opts.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      );
     } else {
       const sug = t === "email" ? emailSuggest(f.k, data[f.k], (nv) => set(f.k, nv)) : [];
       control = (
@@ -429,7 +510,7 @@ export default function VisaCanadaPage() {
             autoComplete={t === "email" ? "off" : "on"}
             value={data[f.k] || ""}
             placeholder={f.ph || ""}
-            onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value))}
+            onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value), f.resets)}
             onFocus={t === "email" ? () => { clearTimeout(blurT.current); setEmailFocus(f.k); } : undefined}
             onBlur={t === "email" ? () => { clearTimeout(blurT.current); blurT.current = setTimeout(() => setEmailFocus(""), 180); } : undefined}
             style={inputStyle(err)} />
