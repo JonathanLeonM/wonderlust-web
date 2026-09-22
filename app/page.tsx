@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ResenasGoogle from "@/components/ResenasGoogle";
 
 const WA = "https://wa.me/573134883629";
 const NAVY = "#002060";
@@ -113,9 +114,11 @@ export default function Home() {
             </span>
           </a>
           <nav style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
+            <span className="nav-links" style={{ display: "flex", alignItems: "center", gap: "clamp(12px,2vw,26px)" }}>
             <a href="#ofertas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Salidas</a>
             <a href="#visas" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Visas</a>
             <a href="#como" style={{ fontSize: 14.5, fontWeight: 500, color: INK, textDecoration: "none" }}>Cómo trabajamos</a>
+            </span>
             <a href={WA} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: NAVY, color: "#fff", fontSize: 14, fontWeight: 600, padding: "12px 22px", borderRadius: 12, textDecoration: "none" }}>
               <WhatsappIcon size={16} />
               Cotizar
@@ -217,7 +220,7 @@ export default function Home() {
           {/* EUROPA */}
           <div style={cardShell}>
             {abierto === "europa" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/europa.webp" alt="Salidas Europa" width={900} height={1200} style={photo} />
               <span style={{ position: "absolute", top: 12, left: 12, background: GOLD, color: "#fff", fontSize: 9.5, fontWeight: 800, letterSpacing: ".08em", padding: "6px 11px", borderRadius: 999 }}>MÁS VENDIDO</span>
             </div>
@@ -258,7 +261,7 @@ export default function Home() {
           {/* AMÉRICA */}
           <div style={cardShell}>
             {abierto === "america" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/america.webp" alt="Salidas América" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -308,7 +311,7 @@ export default function Home() {
           {/* ASIA */}
           <div style={cardShell}>
             {abierto === "asia" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/asia.webp" alt="Salidas Asia" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -355,7 +358,7 @@ export default function Home() {
           {/* OCEANÍA */}
           <div style={cardShell}>
             {abierto === "oceania" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/oceania.webp" alt="Salidas Oceanía" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -387,7 +390,7 @@ export default function Home() {
           {/* ÁFRICA */}
           <div style={cardShell}>
             {abierto === "africa" && <div style={{ height: 4, background: GOLD }} />}
-            <div style={photoBox}>
+            <div className="foto-destino" style={photoBox}>
               <img src="/destinos/africa.webp" alt="Salidas África" width={900} height={1200} loading="lazy" decoding="async" style={photo} />
             </div>
             <div style={cardBody}>
@@ -458,8 +461,8 @@ export default function Home() {
               </div>
               <div style={visaText}>Perfil migratorio · carta de solicitud · plan de viaje y soportes</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "auto" }}>
-                <a href="https://checkout.wompi.co/l/urqCID" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
-                <a href={WA} target="_blank" rel="noopener" style={{ background: "#1268d3", color: "#fff", fontSize: 13, fontWeight: 700, padding: "12px 18px", borderRadius: 11, textDecoration: "none" }}>Preguntar</a>
+                <a href="/visa-canada" style={formBtn}><PencilIcon />Llenar formulario</a>
+                <a href="https://checkout.wompi.co/l/rpGvBY" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
               </div>
             </div>
 
@@ -525,23 +528,28 @@ export default function Home() {
       {/* PRUEBA SOCIAL */}
       <section style={{ ...wrap, padding: sectionPad }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(270px,1fr))", gap: "clamp(14px,2vw,22px)" }}>
-          {[
-            { q: "“Nos organizaron todo Europa y la visa de Estados Unidos. Viajamos tranquilos, sin una sola sorpresa.”", i: "R", n: "Familia Rodríguez", s: "Bogotá · Europa Fantástica 2025", bg: GOLD },
-            { q: "“Me habían negado la visa antes. Con su asesoría preparé la entrevista y esta vez la aprobaron.”", i: "A", n: "Andrés M.", s: "Visa Americana aprobada · 2025", bg: NAVY },
-            { q: "“Atención cercana y honesta. Respondían cada duda por WhatsApp, incluso los domingos.”", i: "C", n: "Carolina & Julián", s: "Bogotá · Euro Leyendas 2024", bg: INK },
-          ].map((t) => (
-            <div key={t.n} style={{ background: "#fff", border: `1px solid ${LINE}`, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: 14, color: "#e0a521", letterSpacing: ".14em", marginBottom: 14 }}>★★★★★</div>
-              <blockquote style={quote}>{t.q}</blockquote>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 22 }}>
-                <div style={avatar(t.bg)}>{t.i}</div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-.01em" }}>{t.n}</div>
-                  <div style={{ fontSize: 12.5, color: "#8b93a1", fontWeight: 400, marginTop: 2 }}>{t.s}</div>
-                </div>
+          <ResenasGoogle />
+
+          <div style={{ gridColumn: "1 / -1", background: "#fff", border: "1px solid rgba(11,21,38,.09)", borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(22px,3.5vw,44px)", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".16em", color: GOLD, marginBottom: 10 }}>RESEÑAS EN GOOGLE</div>
+              <div style={{ fontSize: "clamp(21px,2.6vw,30px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.1, textWrap: "pretty" }}>¿Viajaste con nosotros? Cuéntalo en Google</div>
+              <div style={{ fontSize: 14.5, lineHeight: 1.6, color: "#5d6673", fontWeight: 300, marginTop: 10, maxWidth: "46ch" }}>
+                Tu reseña ayuda a que otros viajeros de Bogotá nos encuentren y sepan con quién están tramitando.
               </div>
+              <a href="https://g.page/r/CQgbCxwc0CvcECE/review" target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: NAVY, color: "#fff", fontSize: 14.5, fontWeight: 600, padding: "14px 24px", borderRadius: 12, marginTop: 20, textDecoration: "none" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26 6.86.6-5.2 4.52 1.55 6.72L12 16.6l-6.11 3.5 1.55-6.72-5.2-4.52 6.86-.6z" /></svg>
+                Escribir mi reseña
+              </a>
             </div>
-          ))}
+            <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+              <div style={{ border: "1px solid rgba(11,21,38,.12)", borderRadius: 16, padding: 10, background: "#fff" }}>
+                <img src="/qr-resenas.png" alt="Código QR para dejar una reseña en Google" style={{ display: "block", width: "clamp(116px,13vw,150px)", height: "auto" }} />
+              </div>
+              <div style={{ fontSize: 12.5, color: "#8b93a1", fontWeight: 500, textAlign: "center", maxWidth: "18ch" }}>Escanea con tu celular</div>
+            </div>
+          </div>
+
           <div style={{ gridColumn: "1 / -1", background: INK, borderRadius: 22, padding: "clamp(22px,2.8vw,32px)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(18px,3vw,40px)", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 14, flexWrap: "wrap" }}>
               <div style={{ fontSize: "clamp(34px,4.4vw,50px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1 }}>+2.400</div>
