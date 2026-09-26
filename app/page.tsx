@@ -476,6 +476,7 @@ export default function Home() {
                 <a href="/visa-china" style={formBtn}><PencilIcon />Llenar formulario</a>
                 <a href="https://checkout.wompi.co/l/gpUtlB" target="_blank" rel="noopener" style={payBtn}>Pagar ya</a>
               </div>
+              <a href="/guia-alipay" style={{ fontSize: 13.5, fontWeight: 600, color: "#fff", textDecoration: "underline", textUnderlineOffset: 3 }}>Guía: cómo pagar en China con Alipay →</a>
             </div>
           </div>
 
@@ -487,6 +488,12 @@ export default function Home() {
             <span style={{ flex: "1 1 130px", fontSize: 14, color: "rgba(255,255,255,.78)", fontWeight: 300 }}>También tramitamos estos destinos.</span>
             <a href="https://checkout.wompi.co/l/WadHBw" target="_blank" rel="noopener" style={payBtn}>Pagar asesoría</a>
           </div>
+
+          <a href="/guia-alipay" style={{ display: "flex", alignItems: "center", gap: "8px 16px", flexWrap: "wrap", marginTop: 12, background: "#fff", color: INK, borderRadius: 18, padding: "16px 20px", textDecoration: "none" }}>
+            <span style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".16em", color: GOLD }}>RECURSOS · GUÍA GRATUITA</span>
+            <span style={{ flex: "1 1 240px", fontSize: 15.5, fontWeight: 600 }}>¿Viajas a China? Aprende a pagar con Alipay y qué llevar en el equipaje de mano.</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>Ver guía →</span>
+          </a>
         </div>
       </section>
 
@@ -608,6 +615,7 @@ export default function Home() {
               <a href="/visa-usa" style={footLink}>Formulario EE. UU.</a>
               <a href="/visa-china" style={footLink}>Formulario China</a>
               <a href="/devolucion-pasaportes" style={footLink}>Devolución de pasaportes</a>
+              <a href="/guia-alipay" style={footLink}>Guía Alipay China</a>
             </div>
           </div>
         </div>
