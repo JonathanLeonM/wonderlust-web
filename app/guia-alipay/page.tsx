@@ -32,7 +32,10 @@ export default function GuiaAlipay() {
               <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".2em", color: "#8b93a1" }}>WVIAJES.CO</span>
             </span>
           </a>
-          <a href={WA} target="_blank" rel="noopener" style={{ background: NAVY, color: "#fff", fontSize: 14, fontWeight: 600, padding: "11px 18px", borderRadius: 12, textDecoration: "none" }}>Dudas por WhatsApp</a>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <a href="/" style={{ background: "#fff", color: NAVY, border: `2px solid ${NAVY}`, fontSize: 17, fontWeight: 700, padding: "13px 24px", borderRadius: 14, textDecoration: "none" }}>← Inicio</a>
+            <a href={WA} target="_blank" rel="noopener" style={{ background: NAVY, color: "#fff", fontSize: 14, fontWeight: 600, padding: "11px 18px", borderRadius: 12, textDecoration: "none" }}>Dudas por WhatsApp</a>
+          </div>
         </div>
       </header>
 
@@ -69,6 +72,7 @@ export default function GuiaAlipay() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             <a href={WA} target="_blank" rel="noopener" style={{ background: GOLD, color: "#fff", fontSize: 15, fontWeight: 700, padding: "14px 22px", borderRadius: 12, textDecoration: "none" }}>Escribir por WhatsApp</a>
             <a href="/visa-china" style={{ background: "rgba(255,255,255,.12)", color: "#fff", fontSize: 15, fontWeight: 600, padding: "14px 22px", borderRadius: 12, textDecoration: "none" }}>Tramitar visa China</a>
+            <a href="/" style={{ background: "#fff", color: NAVY, fontSize: 17, fontWeight: 700, padding: "14px 24px", borderRadius: 12, textDecoration: "none" }}>Ya me antojé, ¡quiero viajar! ✈</a>
           </div>
         </section>
       </main>
