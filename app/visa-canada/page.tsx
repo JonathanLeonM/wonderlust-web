@@ -11,7 +11,7 @@ import { COLOMBIA_GEO, WORLD_COUNTRIES } from "../visa-usa/geo-datos";
 const SHEETS_WEBHOOK = "https://script.google.com/macros/s/AKfycbwF4RVzXTe-rmAz54sue5kvbLUESVGBuVe6RZY7Si0zIZy6ys8ILuyxy7P8HrTPRrq8/exec";
 const WOMPI = "https://checkout.wompi.co/l/rpGvBY";
 const WA = "https://wa.me/573134883629";
-const LOGO = "/logo-wonderlust.png";
+const LOGO = "/logo-wonderlust.webp";
 
 const NAVY = "#12325c";
 const BLUE = "#2f6fb0";
@@ -69,6 +69,9 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "paisResidencia", l: "País donde vives hoy", req: true, t: "select", optsKind: "paises", def: "Colombia", resets: ["deptoResidencia", "ciudadResidencia"] },
       { k: "deptoResidencia", l: "Departamento / Estado donde vives", req: true, t: "geo", geo: { level: "depto", pais: "paisResidencia" }, resets: ["ciudadResidencia"], ph: "Departamento / Estado" },
       { k: "ciudadResidencia", l: "Ciudad donde vives hoy", req: true, t: "geo", geo: { level: "ciudad", pais: "paisResidencia", depto: "deptoResidencia" }, ph: "Ciudad" },
+      { k: "direccionResidencia", l: "Dirección de residencia", req: true, ph: "Cra 45 #12-34, apto 302", span: "1/-1" },
+      { k: "barrio", l: "Barrio", req: true, ph: "Granada" },
+      { k: "postalResidencia", l: "Código postal", help: "Si no lo sabes, escribe NA.", req: true, ph: "760001" },
     ],
   },
   {
