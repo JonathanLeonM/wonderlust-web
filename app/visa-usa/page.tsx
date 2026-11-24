@@ -4,6 +4,7 @@
 // Ubicación sugerida en tu app Next.js: app/visa-usa/page.tsx
 // Requiere: geo-datos.js (o .ts) en la misma carpeta y /logo-wonderlust.png en /public
 // Configura SHEETS_WEBHOOK con la URL /exec de tu Apps Script.
+// Paso 1 (Pasaporte): sube la foto/PDF al mismo Apps Script, que lo guarda en Drive y devuelve los datos leídos.
 
 import { useMemo, useRef, useState } from "react";
 import { COLOMBIA_GEO, WORLD_COUNTRIES } from "./geo-datos";
@@ -36,7 +37,7 @@ type Sub = { k: string; l: string; t?: string; ph?: string; span?: string; alpha
 type Field = {
   k: string; l?: string; t?: string; req?: boolean; ph?: string; help?: string; span?: string;
   opts?: string[]; optsKind?: string; def?: string; resets?: string[]; alpha?: boolean; none?: boolean;
-  sub?: any; max?: number; addLabel?: string; itemLabel?: string;
+  sub?: any; max?: number; addLabel?: string; itemLabel?: string; code?: boolean;
   geo?: { level: "depto" | "ciudad"; pais: string; depto?: string };
   showIf?: (d: Data) => boolean;
 };
@@ -45,11 +46,34 @@ const esSepDiv = (d: Data) => d.estadoCivil === "Separado(a)" || d.estadoCivil =
 const esViudo = (d: Data) => d.estadoCivil === "Viudo(a)";
 const tienePareja = (d: Data) => d.estadoCivil === "Casado(a)" || d.estadoCivil === "Unión libre";
 
+const venceEnMenosDe6Meses = (d: Data) => {
+  if (!d.pasaporteFechaVenc) return false;
+  const lim = new Date();
+  lim.setMonth(lim.getMonth() + 6);
+  return new Date(d.pasaporteFechaVenc + "T00:00:00") < lim;
+};
+
 const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] = [
+  {
+    tab: "Pasaporte",
+    title: "Tu pasaporte",
+    sub: "Empieza por aquí: lo leemos y te ahorramos buena parte del formulario.",
+    fields: [
+      { k: "pasaporteArchivo", l: "Pasaporte (archivo en Drive)", t: "upload", req: true, span: "1/-1" },
+      { k: "_hPas", t: "head", l: "Datos del pasaporte", help: "Compáralos letra por letra con tu pasaporte. Si algo quedó mal leído, corrígelo aquí mismo.", span: "1/-1" },
+      { k: "pasaporteNumero", l: "Número de pasaporte", req: true, code: true, ph: "AY1234567" },
+      { k: "pasaporteNacionalidad", l: "Nacionalidad", req: true, alpha: true, def: "Colombiana", ph: "Colombiana" },
+      { k: "sexo", l: "Sexo", req: true, t: "choice", opts: ["Femenino", "Masculino"], span: "1/-1" },
+      { k: "pasaporteFechaExp", l: "Fecha de expedición", req: true, t: "date" },
+      { k: "pasaporteFechaVenc", l: "Fecha de vencimiento", req: true, t: "date" },
+      { k: "pasaporteLugarExp", l: "Ciudad donde se expidió", req: true, ph: "Bogotá", span: "1/-1" },
+      { k: "_nVence", t: "note", l: "Tu pasaporte vence pronto", help: "Estados Unidos exige que el pasaporte esté vigente durante todo el viaje. Si vence en menos de 6 meses, escríbenos antes de agendar la cita: conviene renovarlo primero.", span: "1/-1", showIf: venceEnMenosDe6Meses },
+    ],
+  },
   {
     tab: "Datos",
     title: "Datos personales",
-    sub: "Escríbelos exactamente como aparecen en tu pasaporte.",
+    sub: "Si subiste tu pasaporte, ya llenamos lo que pudimos leer (lo marcamos en dorado). Revisa y completa el resto tal como aparece en el pasaporte.",
     fields: [
       { k: "correo", l: "Correo electrónico", t: "email", req: true, ph: "tunombre@gmail.com", span: "1/-1" },
       { k: "nombres", l: "Nombres", req: true, alpha: true, ph: "Como en el pasaporte" },
@@ -107,7 +131,19 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
       { k: "alojCorreo", l: "Correo del alojamiento", req: true, t: "email", ph: "info@hotel.com", span: "1/-1" },
       { k: "_hComp", t: "head", l: "Quién viaja y quién paga", span: "1/-1" },
       { k: "quienPaga", l: "¿Quién pagará el viaje?", req: true, t: "choice", opts: ["Yo", "Mi empresa", "Un familiar", "Otra persona"], def: "Yo", span: "1/-1" },
-      { k: "quienPagaDatos", l: "Datos de quien paga tu viaje", help: "Nombres y apellidos, parentesco o empresa, celular y correo.", req: true, t: "area", span: "1/-1", showIf: (d) => d.quienPaga && d.quienPaga !== "Yo" },
+      { k:'pagaApellidos', l:'Apellidos de quien paga', req:true, alpha:true, ph:'Hernández Díaz', showIf: (d) => d.quienPaga === 'Un familiar' || d.quienPaga === 'Otra persona' },
+      { k:'pagaNombres', l:'Nombres de quien paga', req:true, alpha:true, ph:'Yiseth Yuliana', showIf: (d) => d.quienPaga === 'Un familiar' || d.quienPaga === 'Otra persona' },
+      { k:'pagaEmpresa', l:'Nombre de la empresa que paga', req:true, ph:'Empresa S.A.S.', span:'1/-1', showIf: (d) => d.quienPaga === 'Mi empresa' },
+      { k:'pagaTelefono', l:'Teléfono de quien paga', req:true, t:'tel', ph:'3101234567', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' },
+      { k:'pagaCorreo', l:'Correo de quien paga', help:'Si no tiene, toca “Ninguno”.', req:true, none:true, ph:'correo@gmail.com', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' },
+      { k:'pagaParentesco', l:'Parentesco contigo', req:true, t:'select', opts:['Padre / Madre','Hijo(a)','Esposo(a)','Hermano(a)','Otro familiar','Amigo(a)','Otro'], showIf: (d) => d.quienPaga === 'Un familiar' || d.quienPaga === 'Otra persona' },
+      { k:'pagaRelacionEmpresa', l:'Tu relación con la empresa', req:true, ph:'Empleado — Analista contable', showIf: (d) => d.quienPaga === 'Mi empresa' },
+      { k:'pagaMismaDireccion', l:'¿Su dirección es la misma que la tuya?', req:true, t:'choice', opts:['Sí','No'], def:'Sí', span:'1/-1', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' },
+      { k:'pagaDireccion', l:'Dirección de quien paga', req:true, ph:'Cra 45 #12-34, apto 302', span:'1/-1', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' && d.pagaMismaDireccion === 'No' },
+      { k:'pagaCiudad', l:'Ciudad', req:true, ph:'Cali', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' && d.pagaMismaDireccion === 'No' },
+      { k:'pagaDepto', l:'Departamento / Estado', help:'Si no aplica, toca “Ninguno”.', req:true, none:true, ph:'Valle del Cauca', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' && d.pagaMismaDireccion === 'No' },
+      { k:'pagaPostal', l:'Código postal', help:'Si no lo sabes o no aplica, toca “Ninguno”.', req:true, none:true, ph:'760001', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' && d.pagaMismaDireccion === 'No' },
+      { k:'pagaPais', l:'País', req:true, t:'select', optsKind:'paises', def:'Colombia', showIf: (d) => d.quienPaga && d.quienPaga !== 'Yo' && d.pagaMismaDireccion === 'No' },
       { k: "viajaSolo", l: "¿Viajas solo(a)?", req: true, t: "choice", opts: ["Sí", "No"], def: "Sí", span: "1/-1" },
       { k: "acompanantesNombres", l: "Personas con las que viajarás", help: "Nombres y apellidos completos, uno por línea.", req: true, t: "area", span: "1/-1", showIf: (d) => d.viajaSolo === "No" },
       { k: "acompanantesParentesco", l: "Parentesco con esas personas", req: true, ph: "Esposa e hijos", span: "1/-1", showIf: (d) => d.viajaSolo === "No" },
@@ -207,7 +243,8 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
 const allFields = () => SECTIONS.reduce<Field[]>((a, s) => a.concat(s.fields), []);
 
 const ALPHA_RE = /[^A-Za-zÁÉÍÓÚáéíóúÜüÑñÀ-ÿ'’.\-\s]/g;
-const cleanVal = (t: string | undefined, alpha: boolean | undefined, v: string) => {
+const cleanVal = (t: string | undefined, alpha: boolean | undefined, v: string, code?: boolean) => {
+  if (code) return v.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (t === "num") return v.replace(/[^0-9]/g, "");
   if (t === "tel") return v.replace(/[^0-9+\-\s()]/g, "");
   if (alpha) return v.replace(ALPHA_RE, "");
@@ -218,7 +255,8 @@ function defaultData(): Data {
   const d: Data = {};
   allFields().forEach((f) => {
     if (f.t === "note" || f.t === "head") return;
-    if (f.t === "chips") d[f.k] = [];
+    if (f.t === "upload") d[f.k] = "";
+    else if (f.t === "chips") d[f.k] = [];
     else if (f.t === "multi") d[f.k] = [""];
     else if (f.t === "social") d[f.k] = [{ red: "", usuario: "" }];
     else if (f.t === "group") d[f.k] = [];
@@ -229,6 +267,67 @@ function defaultData(): Data {
 
 const PAISES = ["Colombia", ...WORLD_COUNTRIES.filter((p: string) => p !== "Colombia")];
 const DEPTOS = ["Bogotá D.C.", ...Object.keys(COLOMBIA_GEO).filter((k) => k !== "Bogotá D.C.")];
+
+// ── Lectura de pasaporte ──────────────────────────────────────
+const MAX_MB = 15;
+type UpState = { status: "idle" | "busy" | "done" | "error"; name?: string; preview?: string; isPdf?: boolean; leido?: boolean; filled?: number; msg?: string; detalle?: string };
+const normTxt = (s: string) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const titulo = (s: string) => String(s || "").toLowerCase().replace(/(^|[\s\-(])([a-zñáéíóú])/g, (_m, a, b) => a + b.toUpperCase()).replace(/\bD\.c\./i, "D.C.");
+
+// Imágenes: se reducen a 2400 px en JPEG (sube rápido y el OCR lee igual de bien).
+// PDF y lo que el navegador no pueda abrir (algunos HEIC) se envían tal cual.
+function prepararArchivo(file: File): Promise<{ base64: string; mime: string }> {
+  const leerCrudo = () => new Promise<{ base64: string; mime: string }>((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res({ base64: String(r.result).split(",")[1] || "", mime: file.type || (/\.pdf$/i.test(file.name) ? "application/pdf" : "image/jpeg") });
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+  if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) return leerCrudo();
+  return new Promise((res) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const k = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k);
+        c.height = Math.round(img.naturalHeight * k);
+        const ctx = c.getContext("2d")!;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        res({ base64: c.toDataURL("image/jpeg", 0.9).split(",")[1], mime: "image/jpeg" });
+      } catch {
+        leerCrudo().then(res);
+      }
+    };
+    img.onerror = () => { leerCrudo().then(res); };
+    img.src = url;
+  });
+}
+
+// Busca la ciudad de nacimiento en la lista de Colombia ("BOGOTA D.C.", "CALI (VALLE)").
+function ubicarCiudad(ciudadTxt: string, deptoTxt?: string) {
+  const c = normTxt(ciudadTxt), dpt = normTxt(deptoTxt || "");
+  if (!c) return null;
+  let mejor: { p: number; depto: string; ciudad: string } | null = null;
+  Object.keys(COLOMBIA_GEO).forEach((dep) => {
+    const nd = normTxt(dep);
+    ((COLOMBIA_GEO as any)[dep] || []).forEach((ci: string) => {
+      const nc = normTxt(ci);
+      if (!nc) return;
+      let p = 0;
+      if (nc === c) p = 3;
+      else if (c.indexOf(nc) === 0 || nc.indexOf(c) === 0) p = 2;
+      if (!p) return;
+      if (dpt && (nd.indexOf(dpt) === 0 || dpt.indexOf(nd) === 0)) p += 2;
+      if (nd === "bogotadc" && c.indexOf("bogota") === 0) p += 1;
+      if (!mejor || p > mejor.p) mejor = { p, depto: dep, ciudad: ci };
+    });
+  });
+  return mejor as { p: number; depto: string; ciudad: string } | null;
+}
 
 const inputStyle = (err?: boolean): React.CSSProperties => ({
   padding: "10px 13px", borderRadius: 10, border: `1.5px solid ${err ? ERR : "rgba(22,40,63,.2)"}`,
@@ -258,6 +357,9 @@ export default function VisaUsaPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [radicado, setRadicado] = useState("");
+  const [auto, setAuto] = useState<Record<string, string>>({});
+  const [up, setUp] = useState<UpState>({ status: "idle" });
+  const [dragOver, setDragOver] = useState(false);
   const topRef = useRef<HTMLDivElement | null>(null);
   const blurT = useRef<any>(null);
 
@@ -287,6 +389,7 @@ export default function VisaUsaPage() {
 
   const go = (n: number) => { setStep(n); setShowError(false); setTimeout(scrollTop, 20); };
   const next = () => {
+    if (step === 0 && up.status === "busy") return;
     if (!isReview && missing.length) { setShowError(true); setTimeout(scrollTop, 20); return; }
     go(Math.min(step + 1, SECTIONS.length));
   };
@@ -401,9 +504,170 @@ export default function VisaUsaPage() {
     `Hola Wonderlust, soy ${`${(data.nombres || "").trim()} ${(data.apellidos || "").trim()}`.trim()}. Acabo de enviar mi formulario de visa a Estados Unidos (radicado ${radicado}).`
   )}`;
 
+  // ── Pasaporte: subir, guardar en Drive y llenar ─────────────
+  const falloSubida = (msg?: string, detalle?: string) =>
+    setUp((u) => ({ ...u, status: "error", msg: msg || "No pudimos subir el archivo. Revisa tu conexión e inténtalo otra vez.", detalle: detalle || "" }));
+
+  const aplicarPasaporte = (dt: any, archivoUrl: string) => {
+    const v: Record<string, string> = {
+      nombres: dt.nombres, apellidos: dt.apellidos, fechaNacimiento: dt.fechaNacimiento, documento: dt.documento,
+      pasaporteNumero: dt.pasaporteNumero, pasaporteNacionalidad: dt.nacionalidad ? titulo(dt.nacionalidad) : "",
+      sexo: dt.sexo, pasaporteFechaExp: dt.fechaExpedicion, pasaporteFechaVenc: dt.fechaVencimiento,
+      pasaporteLugarExp: dt.lugarExpedicion ? titulo(dt.lugarExpedicion) : "",
+      paisNacimiento: dt.paisNacimiento,
+    };
+    const pais = dt.paisNacimiento || data.paisNacimiento;
+    if (dt.ciudadNacimientoTxt) {
+      if (pais === "Colombia") {
+        const m = ubicarCiudad(dt.ciudadNacimientoTxt, dt.deptoNacimientoTxt);
+        if (m) { v.deptoNacimiento = m.depto; v.ciudadNacimiento = m.ciudad; }
+      } else {
+        v.ciudadNacimiento = titulo(dt.ciudadNacimientoTxt);
+        if (dt.deptoNacimientoTxt) v.deptoNacimiento = titulo(dt.deptoNacimientoTxt);
+      }
+    }
+    const listo: Record<string, string> = {};
+    Object.keys(v).forEach((k) => { if (v[k]) listo[k] = String(v[k]).trim(); });
+    setData((d) => ({ ...d, ...listo, pasaporteArchivo: archivoUrl }));
+    setAuto(listo);
+    return Object.keys(listo).length;
+  };
+
+  const enviarPasaporte = (base64: string, mime: string, nombre: string) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", SHEETS_WEBHOOK, true);
+    xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+    xhr.timeout = 120000;
+    xhr.onload = () => {
+      let r: any = null;
+      try { r = JSON.parse(xhr.responseText); } catch {}
+      if (!r) { falloSubida(undefined, `El servidor respondió algo que no es JSON (HTTP ${xhr.status}). Revisa que la implementación sea "Cualquier persona".`); return; }
+      if (r.ok && !r.archivo) { falloSubida(undefined, "El Apps Script publicado es la versión anterior: falta pegar el código nuevo y crear una Nueva versión de la implementación."); return; }
+      if (!r.ok) { falloSubida(undefined, "Error del Apps Script: " + (r.error || "desconocido")); return; }
+      const n = aplicarPasaporte(r.datos || {}, r.archivo.url);
+      setUp((u) => ({ ...u, status: "done", leido: n > 0, filled: n }));
+    };
+    xhr.onerror = () => falloSubida(undefined, `Sin respuesta del servidor (HTTP ${xhr.status}).`);
+    xhr.ontimeout = () => falloSubida("La lectura tardó demasiado. Inténtalo de nuevo con una foto más liviana.");
+    xhr.send(JSON.stringify({ accion: "pasaporte", tramite: "Visa Estados Unidos", nombreArchivo: nombre, mimeType: mime, base64 }));
+  };
+
+  const elegirArchivo = (file?: File | null) => {
+    if (!file) return;
+    const tipoOk = /^image\//.test(file.type) || file.type === "application/pdf" || /\.(pdf|jpe?g|png|heic|heif|webp)$/i.test(file.name);
+    if (!tipoOk) { setUp({ status: "error", name: file.name, msg: "Ese archivo no es una foto ni un PDF. Intenta con otro." }); return; }
+    if (file.size > MAX_MB * 1024 * 1024) { setUp({ status: "error", name: file.name, msg: `El archivo pesa más de ${MAX_MB} MB. Toma una foto o escanéalo con menor calidad.` }); return; }
+    const preview = /^image\/(jpeg|png|webp|gif)/.test(file.type) ? URL.createObjectURL(file) : "";
+    const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+    setUp({ status: "busy", name: file.name, preview, isPdf });
+    setShowError(false);
+    prepararArchivo(file)
+      .then(({ base64, mime }) => enviarPasaporte(base64, mime, file.name))
+      .catch(() => falloSubida());
+  };
+
+  const fileInputStyle: React.CSSProperties = { position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", fontSize: 0 };
+  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => { const fl = e.target.files && e.target.files[0]; e.target.value = ""; elegirArchivo(fl); };
+
+  const renderUpload = (f: Field) => {
+    const err = bad(f.k);
+    const st = up.status;
+    const skipped = !!data[f.k] && !/^https?:/.test(data[f.k]);
+    const idle = st === "idle" && !skipped;
+    const msg = skipped
+      ? "Listo: nos lo envías después por WhatsApp. Llena los datos del pasaporte a mano."
+      : st === "error" ? up.msg
+      : up.leido ? `✓ Recibido y leído. Llenamos ${up.filled} datos por ti: revísalos abajo y en el paso 2.`
+      : "✓ Recibido. No logramos leer los datos esta vez: llénalos a mano abajo (o prueba con una foto más nítida y sin reflejos).";
+    const pill: React.CSSProperties = { position: "relative", overflow: "hidden", display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px", borderRadius: 999, fontSize: 13, fontWeight: 700, letterSpacing: ".03em", cursor: "pointer" };
+    return (
+      <div key={f.k} style={{ gridColumn: "1/-1", display: "flex", flexDirection: "column", gap: 6 }}>
+        <div
+          onDragOver={(e) => { e.preventDefault(); if (!dragOver) setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => { e.preventDefault(); setDragOver(false); elegirArchivo(e.dataTransfer?.files?.[0]); }}
+          style={{ border: `1.5px dashed ${err ? ERR : dragOver ? GOLD : "rgba(47,111,176,.45)"}`, background: dragOver ? "#fdf8ea" : "#f5f8fc", borderRadius: "2px 22px 2px 22px", padding: "clamp(18px,3.4vw,26px)", transition: "background .2s ease,border-color .2s ease" }}>
+          {idle && (
+            <>
+              <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ flex: "0 0 64px", width: 64, height: 64, borderRadius: "2px 16px 2px 16px", background: NAVY, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2" /><circle cx="12" cy="10" r="3.2" /><path d="M8.8 10h6.4M12 6.8c1 .9 1.4 2 1.4 3.2s-.4 2.3-1.4 3.2M12 6.8c-1 .9-1.4 2-1.4 3.2s.4 2.3 1.4 3.2" /><path d="M8 17.5h8" /></svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 220 }}>
+                  <div style={{ fontFamily: "'Marcellus',serif", fontSize: 17, color: NAVY, marginBottom: 4 }}>Sube tu pasaporte y llenamos el formulario por ti</div>
+                  <div style={{ fontSize: 12.8, color: MUTED, lineHeight: 1.55 }}>Una foto nítida de la página de datos (la que tiene tu foto y las dos líneas con &lt;&lt;&lt; abajo) o el PDF escaneado. Lo guardamos de forma privada para tu trámite.</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 18 }}>
+                <label style={{ ...pill, background: NAVY, color: "#fff" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+                  TOMAR FOTO
+                  <input type="file" accept="image/*" capture="environment" onChange={onFile} style={fileInputStyle} />
+                </label>
+                <label style={{ ...pill, border: "1.5px solid rgba(18,50,92,.35)", background: "#fff", color: NAVY }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4" /><path d="m7 9 5-5 5 5" /><path d="M4 16v4h16v-4" /></svg>
+                  ELEGIR ARCHIVO
+                  <input type="file" accept="image/*,application/pdf,.pdf,.heic,.heif" onChange={onFile} style={fileInputStyle} />
+                </label>
+              </div>
+              <div style={{ fontSize: 11.5, color: "#8496a9", marginTop: 11 }}>JPG, PNG, HEIC o PDF · hasta {MAX_MB} MB · en computador también puedes arrastrarlo a este recuadro.</div>
+            </>
+          )}
+
+          {st === "busy" && (
+            <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+              <div style={{ flex: "0 0 40px", width: 40, height: 40, borderRadius: "50%", border: "3px solid rgba(47,111,176,.2)", borderTopColor: GOLD, animation: "wlspin .9s linear infinite" }} />
+              <div>
+                <div style={{ fontFamily: "'Marcellus',serif", fontSize: 16, color: NAVY }}>Subiendo y leyendo tu pasaporte…</div>
+                <div style={{ fontSize: 12.5, color: MUTED, marginTop: 3 }}>{up.name} · suele tardar entre 5 y 20 segundos.</div>
+              </div>
+            </div>
+          )}
+
+          {(st === "done" || st === "error" || skipped) && st !== "busy" && (
+            <>
+              <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+                {up.preview && st !== "error" && !skipped && (
+                  <img src={up.preview} alt="Pasaporte" style={{ flex: "0 0 auto", width: 104, height: 72, objectFit: "cover", borderRadius: "2px 12px 2px 12px", border: "1px solid rgba(22,40,63,.15)", display: "block" }} />
+                )}
+                {up.isPdf && st !== "error" && !skipped && (
+                  <div style={{ flex: "0 0 auto", width: 72, height: 72, borderRadius: "2px 12px 2px 12px", background: NAVY, color: GOLD, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Marcellus',serif", fontSize: 15, letterSpacing: ".08em" }}>PDF</div>
+                )}
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: st === "error" ? ERR : NAVY, lineHeight: 1.45 }}>{msg}</div>
+                  <div style={{ fontSize: 12, color: "#6b7f96", marginTop: 3, wordBreak: "break-all" }}>{skipped ? "Sin archivo" : up.name}</div>
+                  {st === "error" && up.detalle && <div style={{ fontSize: 11, color: "#8496a9", marginTop: 6, lineHeight: 1.45 }}>{up.detalle}</div>}
+                </div>
+                <label style={{ position: "relative", overflow: "hidden", flex: "0 0 auto", padding: "9px 17px", borderRadius: 999, border: "1.5px solid rgba(22,40,63,.25)", background: "#fff", color: "#44586e", fontSize: 12.5, fontWeight: 700, cursor: "pointer" }}>
+                  {st === "error" ? "INTENTAR DE NUEVO" : "CAMBIAR ARCHIVO"}
+                  <input type="file" accept="image/*,application/pdf,.pdf,.heic,.heif" onChange={onFile} style={fileInputStyle} />
+                </label>
+              </div>
+              {st === "error" && (
+                <button type="button" onClick={() => { set(f.k, "Lo enviará por WhatsApp"); setUp({ status: "idle" }); }}
+                  style={{ marginTop: 14, padding: 0, border: "none", background: "none", color: BLUE, fontSize: 12.5, fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}>
+                  Continuar sin subirlo — lo envío después por WhatsApp
+                </button>
+              )}
+            </>
+          )}
+        </div>
+        {err && <div style={{ fontSize: 12.5, color: ERR, fontWeight: 600, marginTop: 2 }}>Sube tu pasaporte para continuar.</div>}
+      </div>
+    );
+  };
+
   const renderField = (f: Field) => {
     const t = f.t || "text";
     const err = bad(f.k);
+    if (t === "upload") return renderUpload(f);
+    if (t === "note")
+      return (
+        <div key={f.k} style={{ gridColumn: f.span || "auto", background: "#eef4fb", border: "1px solid rgba(47,111,176,.3)", borderLeft: `3px solid ${GOLD}`, borderRadius: "2px 18px 2px 18px", padding: "15px 17px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginBottom: 5 }}>{f.l}</div>
+          <div style={{ fontSize: 12.8, color: "#44586e", lineHeight: 1.55 }}>{f.help}</div>
+        </div>
+      );
     if (t === "head")
       return (
         <div key={f.k} style={{ gridColumn: f.span || "auto", marginTop: 10, paddingTop: 16, borderTop: "1px solid rgba(22,40,63,.12)" }}>
@@ -571,7 +835,7 @@ export default function VisaUsaPage() {
           <input type={t === "date" ? "date" : t === "email" ? "email" : t === "tel" ? "tel" : "text"}
             inputMode={t === "num" ? "numeric" : t === "tel" ? "tel" : t === "email" ? "email" : "text"}
             value={data[f.k] || ""} placeholder={f.ph} autoComplete="off"
-            onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value), f.resets)}
+            onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value, f.code), f.resets)}
             {...(t === "email" ? focusProps(f.k) : {})}
             style={inputStyle(err)} />
           {f.none && (
@@ -592,9 +856,14 @@ export default function VisaUsaPage() {
 
     return (
       <div key={f.k} style={{ gridColumn: f.span || "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-        <label style={{ fontSize: 12.5, fontWeight: 700, color: err ? ERR : INK, lineHeight: 1.4 }}>
-          {f.l}{f.req ? " *" : ""}
-        </label>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <label style={{ fontSize: 12.5, fontWeight: 700, color: err ? ERR : INK, lineHeight: 1.4 }}>
+            {f.l}{f.req ? " *" : ""}
+          </label>
+          {Object.prototype.hasOwnProperty.call(auto, f.k) && auto[f.k] === data[f.k] && (
+            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".07em", color: "#8a6510", background: "#fdf4dc", border: "1px solid rgba(232,179,35,.55)", borderRadius: 999, padding: "2px 8px", whiteSpace: "nowrap" }}>✓ DEL PASAPORTE</span>
+          )}
+        </div>
         {f.help && <div style={{ fontSize: 11.5, color: "#6b7f96", lineHeight: 1.45, marginTop: -2 }}>{f.help}</div>}
         {control}
       </div>
@@ -603,6 +872,7 @@ export default function VisaUsaPage() {
 
   const reviewValue = (f: Field) => {
     const v = data[f.k];
+    if (f.t === "upload") return !v ? "" : /^https?:/.test(v) ? `Recibido ✓ — ${up.name || "archivo"}` : v;
     if (f.t === "multi") return (v || []).filter((x: string) => String(x || "").trim()).join(" · ");
     if (f.t === "social") return (v || []).filter((r: any) => r?.red).map((r: any) => r.red + (r.usuario ? `: ${r.usuario}` : "")).join(" · ");
     if (f.t === "group") return (v || []).map((it: any, i: number) => `${f.itemLabel} ${i + 1}: ${[it?.nombre, it?.cargo].filter(Boolean).join(" — ")}`).join("  |  ");
@@ -614,6 +884,7 @@ export default function VisaUsaPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#eaf0f7", padding: "clamp(20px,5vw,56px) 16px", display: "flex", justifyContent: "center", fontFamily: "'Karla',system-ui,sans-serif", color: INK }}>
       <div style={{ width: "100%", maxWidth: 840 }} ref={topRef}>
+        <style>{`@keyframes wlspin{to{transform:rotate(360deg)}}`}</style>
         <div style={{ marginBottom: 18 }}>
           <a href="https://www.wviajes.co" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#12325c", padding: "9px 16px 9px 13px", border: "1px solid rgba(18,50,92,.22)", borderRadius: 999, background: "#fff", textDecoration: "none" }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
