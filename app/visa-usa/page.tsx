@@ -73,7 +73,7 @@ const SECTIONS: { tab: string; title: string; sub: string; fields: Field[] }[] =
   {
     tab: "Datos",
     title: "Datos personales",
-    sub: "Si subiste tu pasaporte, ya llenamos lo que pudimos leer (lo marcamos en dorado). Revisa y completa el resto tal como aparece en el pasaporte.",
+    sub: "Si subiste tu pasaporte, ya llenamos lo que pudimos leer (lo verás con borde dorado y ✓). Revisa y completa el resto tal como aparece en el pasaporte.",
     fields: [
       { k: "correo", l: "Correo electrónico", t: "email", req: true, ph: "tunombre@gmail.com", span: "1/-1" },
       { k: "nombres", l: "Nombres", req: true, alpha: true, ph: "Como en el pasaporte" },
@@ -661,6 +661,12 @@ export default function VisaUsaPage() {
     const t = f.t || "text";
     const err = bad(f.k);
     if (t === "upload") return renderUpload(f);
+    const isAuto = Object.prototype.hasOwnProperty.call(auto, f.k) && auto[f.k] === data[f.k];
+    const isNone = !!f.none && data[f.k] === "Ninguno";
+    const look: React.CSSProperties = {
+      ...(isAuto && !err ? { borderColor: GOLD, background: "#fffbef" } : {}),
+      ...(isNone ? { background: "#eef1f5", color: "#8496a9" } : {}),
+    };
     if (t === "note")
       return (
         <div key={f.k} style={{ gridColumn: f.span || "auto", background: "#eef4fb", border: "1px solid rgba(47,111,176,.3)", borderLeft: `3px solid ${GOLD}`, borderRadius: "2px 18px 2px 18px", padding: "15px 17px" }}>
@@ -688,7 +694,7 @@ export default function VisaUsaPage() {
     if (asSelect) {
       control = (
         <select value={data[f.k] || ""} onChange={(e) => set(f.k, e.target.value, f.resets)}
-          style={{ ...inputStyle(err), color: data[f.k] ? INK : "#9db0c4" }}>
+          style={{ ...inputStyle(err), ...look, color: data[f.k] ? INK : "#9db0c4" }}>
           <option value="">{t === "geo" && geo && geo.length === 0 ? "Elige primero el departamento" : "Selecciona…"}</option>
           {selOptions.map((o: string) => <option key={o} value={o}>{o}</option>)}
         </select>
@@ -836,11 +842,12 @@ export default function VisaUsaPage() {
             inputMode={t === "num" ? "numeric" : t === "tel" ? "tel" : t === "email" ? "email" : "text"}
             value={data[f.k] || ""} placeholder={f.ph} autoComplete="off"
             onChange={(e) => set(f.k, cleanVal(t, f.alpha, e.target.value, f.code), f.resets)}
+            readOnly={isNone}
             {...(t === "email" ? focusProps(f.k) : {})}
-            style={inputStyle(err)} />
+            style={{ ...inputStyle(err), ...look }} />
           {f.none && (
-            <button type="button" onClick={() => set(f.k, "Ninguno")}
-              style={{ flex: "0 0 auto", height: 44, padding: "0 14px", borderRadius: 10, border: "1.5px solid rgba(22,40,63,.2)", background: "#fff", color: "#44586e", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Ninguno</button>
+            <button type="button" onClick={() => set(f.k, isNone ? "" : "Ninguno")}
+              style={{ flex: "0 0 auto", height: 44, padding: "0 14px", borderRadius: 10, border: `1.5px solid ${isNone ? NAVY : "rgba(22,40,63,.2)"}`, background: isNone ? NAVY : "#fff", color: isNone ? "#fff" : "#44586e", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>{isNone ? "✓ Ninguno" : "Ninguno"}</button>
           )}
           {sug.length > 0 && (
             <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#fff", border: "1px solid rgba(22,40,63,.15)", borderRadius: 10, boxShadow: "0 8px 24px rgba(18,50,92,.16)", zIndex: 30, overflow: "hidden" }}>
@@ -856,12 +863,12 @@ export default function VisaUsaPage() {
 
     return (
       <div key={f.k} style={{ gridColumn: f.span || "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
           <label style={{ fontSize: 12.5, fontWeight: 700, color: err ? ERR : INK, lineHeight: 1.4 }}>
             {f.l}{f.req ? " *" : ""}
           </label>
-          {Object.prototype.hasOwnProperty.call(auto, f.k) && auto[f.k] === data[f.k] && (
-            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".07em", color: "#8a6510", background: "#fdf4dc", border: "1px solid rgba(232,179,35,.55)", borderRadius: 999, padding: "2px 8px", whiteSpace: "nowrap" }}>✓ DEL PASAPORTE</span>
+          {isAuto && (
+            <span title="Leído de tu pasaporte" style={{ flex: "0 0 16px", width: 16, height: 16, borderRadius: "50%", background: GOLD, color: NAVY, fontSize: 10, fontWeight: 800, lineHeight: 1, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>✓</span>
           )}
         </div>
         {f.help && <div style={{ fontSize: 11.5, color: "#6b7f96", lineHeight: 1.45, marginTop: -2 }}>{f.help}</div>}
